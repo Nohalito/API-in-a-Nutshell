@@ -3,12 +3,12 @@
     - TCP/IP & OSI
     - API Typologie (non web API exist)
 2. Web API
+    - Web API typology
+    - Focus REST API
     - HTTP
         - Header
         - Payload
         - Method
-    - Web API typology
-    - Focus REST API
 3. Security
     - Authentification & Authorization
     - Rate & Throttle limit
