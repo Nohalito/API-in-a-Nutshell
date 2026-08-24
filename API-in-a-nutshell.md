@@ -29,14 +29,36 @@ What's an API style ?
 
 What the hell is HATEOAS
 
+What are API ? Vs. How to create an API ?  
+=> Which topic do I cover ?
+
+What actually distinguishes "API A" from "API B"
+
+In the context of API, what are client application
+
+"Uniform interface" ??? REST API
+
 ## API final
+
 ### Dataschool plan
 
+> Context:  
+> Dataschool to initiate fellow colleague to understand what are web APIs.  
+> To illustrate it, I will provide an API example that will adapt itself for each aspect presented.  
+
+---
+
 1. API Basics
+    <!-- Present web API, indicate that HTTP basics are required -->
+    <!-- Illustrate with a button click transition that display a awful json -->
+    - Web APIs
     - API typology
+        <!-- Quick introduction only, reading material exist, but no wasting oral time on it. -->
         - Public APIs
         - Private APIs
         - Partner APIs
+        - Composite APIs
+    <!-- Illustration of an API call and response with every component detailled -->
     - API request
         - Endpoint
         - Method
@@ -49,23 +71,106 @@ What the hell is HATEOAS
         - Response body
 2. API Styles
     - Main character
+        <!-- Introduce REST, its feature and why it's famous -->
         - REST
     - Other
+        <!-- Present quickly other API styles, languages and features -->
         - GraphQL
         - gRPC
         - SOAP
 3. API Features
-4. API Authentication & Security
-5. API Documentation
-6. API Security
-7. API Performance
-8. Integration Patterns
-9. Implementation framework
-10. Testing
+    <!-- Present in one or multiples example the listed feature with an API call and response -->
+    - Rate limiting & Throttling (for security & performance )
+    - Pagination (for performance)
+    - URL & Query parameters
+    - Idempotency
+    - Versioning
+    - Optional: HATEOAS
+    - Optional: Content negotiation
+4. API Authentication & Authorization
+    <!-- Introduce the use of authentication & authorization in in the web, how is it done through API -->
+    <!-- Do not explain each method in detail, only their uses -->
+    - Optional: Basic Auth => outdated
+    - Token => JWT
+    - OAuth => Most used (can still be combined with JWT)
+    - Session Auth (Need to understand where it sit here)
+    - RBAC
+    - ABAC
+5. API Security
+    <!-- Need to merge it with authentication & authorization -->
+    <!-- Present API key, what they're used for and how it's used  -->
+    - API Key
+    - Rate limiting & Throttling
+6. API Performance
+    - Plan for scaling
+    - API contract
+        - Rate limiting & Throttling
+        - Pagination
+        - Statelessness
+        - Idempotency keys on write operation
+    - Infra
+        - Caching
+        - Enable compression
+        - Load balancing => API Gateway
+        - Database indexing
+        - API Monitoring
+        - Performance testing
+7. Integration Patterns
+    - Synchronous vs Asynchronous
+    - Event Driven Architecture
+    - Microservice Architecture
+    - API Gateway
+    - Webhook vs API Polling
+    - Batch Processing
+    - Message Queue
+8. Implementation framework
+    - Python
+        - Flask
+        - Django
+        - FastAPI
+    - Node.js
+        - Express 
+        - NestJS 
+        - Fastify
+    - Java
+        - Spring
+9. API Documentation
+    - SwaggerUI
+    - Postman
+    - OpenAPI Spec
+    - Redoc
+    - DapperDox
+10. Optional: Testing
+    - API Testing
+    - Mocking APIs
+    - API contracts
 
-### Live demo:
+---
 
-example with API key use in weather app: https://www.youtube.com/watch?v=6ULyxuHKxg8
+- Live demo:
+
+- Potential topic:
+    - example with API key use in weather app: https://www.youtube.com/watch?v=6ULyxuHKxg8
+
+## Abstract
+### Types of API
+
+https://www.abstractapi.com/guides/api-glossary/types-of-api
+
+- Types of APIs
+- API protocol
+- API structures
+    - Monolithic APIs
+    - Microservices APIs
+    - Unified APIs
+    - Stateless vs. Statefull
+- API Security
+    - API Key
+    - OAuth & JWT
+    - Rate limiting
+
+> However, when you dive deeper, API types multiply, categorized by several distinct features at once.  
+> Communication protocols, structures, and whether they are web or system APIs
 
 ## Geeksforgeeks
 ### Roadmap
@@ -224,3 +329,39 @@ Loa
 ### API Gateway
 
 https://www.youtube.com/watch?v=6ULyxuHKxg8
+
+## Java Brains
+
+### HATEOAS
+
+https://www.youtube.com/watch?v=NK3HNEwDXUk
+
+`rel` attribute
+
+```shell
+HTTP/1.1 200 OK
+Content-Type: application/json
+Link: <https://api.example.com/v2/products?category=shoes&page=3&limit=10>; rel="next",
+      <https://api.example.com/v2/products?category=shoes&page=1&limit=10>; rel="prev"
+
+{
+  "data": [
+    {"id": 101, "name": "Trail Runner", "price": 79.99 },
+    {"id": 102, "name": "Road Racer", "price": 89.50 }
+  ],
+  "pagination": { "page": 2, "limit": 10, "total_pages": 8, "total_items": 76 },
+  "_links": {
+    # "rel(ation)": "", "href": ""
+    "self": "/v2/products?category=shoes&page=2&limit=10",
+    "next": "/v2/products?category=shoes&page=3&limit=10",
+    "prev": "/v2/products?category=shoes&page=1&limit=10"
+  }
+}
+```
+
+## Kiki's Bytes
+### HATEOAS
+
+https://www.youtube.com/watch?v=HNTSrytKCoQ
+
+Web API are not restful on the web since they're removing HATEOAS uniform interface key constraint of REST.
