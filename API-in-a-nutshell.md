@@ -38,6 +38,18 @@ In the context of API, what are client application
 
 "Uniform interface" ??? REST API
 
+What's the worst kind of API ?
+
+What kind of risk in exposing an API ? (see cybelAngel)
+
+WHAT'S JSON ????
+
+What are the REST principles ? (6?)
+
+Stake of learning API ?
+
+Should I make a guide of best practice ?
+
 ## API final
 
 ### Dataschool plan
@@ -87,6 +99,7 @@ In the context of API, what are client application
     - Versioning
     - Optional: HATEOAS
     - Optional: Content negotiation
+    <!-- Optional: ISO-8601 UTC: timestamp norm -->
 4. API Authentication & Authorization
     <!-- Introduce the use of authentication & authorization in in the web, how is it done through API -->
     <!-- Do not explain each method in detail, only their uses -->
@@ -106,8 +119,8 @@ In the context of API, what are client application
     - API contract
         - Rate limiting & Throttling
         - Pagination
-        - Statelessness
-        - Idempotency keys on write operation
+        - Statelessness <!-- wtf ? -->
+        - Idempotency keys on write operation <!-- wtf ? -->
     - Infra
         - Caching
         - Enable compression
@@ -116,6 +129,7 @@ In the context of API, what are client application
         - API Monitoring
         - Performance testing
 7. Integration Patterns
+    <!-- It can perhaps be kept for a future dataschool -->
     - Synchronous vs Asynchronous
     - Event Driven Architecture
     - Microservice Architecture
@@ -365,3 +379,38 @@ Link: <https://api.example.com/v2/products?category=shoes&page=3&limit=10>; rel=
 https://www.youtube.com/watch?v=HNTSrytKCoQ
 
 Web API are not restful on the web since they're removing HATEOAS uniform interface key constraint of REST.
+
+## CybelAngel
+### API security risk
+
+https://cybelangel.com/blog/api-security-risks/
+
+Implement firewalls  
+Use OAuth  
+Validate all received data  
+Build an API inventory ?  
+Set rate limits  
+Monitor traffic with limits  
+Enable runtime protection  
+
+## API 101
+### Course
+
+https://api101.org/en
+
+- JSON
+- API
+    - Call components
+    - Response components
+- REST API
+    - URL patterns: `/users` vs. `/users/{id}`
+    - Naming rules
+    - Relationship: Nested routes: `/users/{id}/posts` 
+- Authentication
+    - 401 vs. 403
+    - API Key golden rules
+    - Token vs. API keys
+    - Oauth
+- API Documentation
+    - ISO doc
+- Webhook vs. Polling
