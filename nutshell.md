@@ -88,6 +88,79 @@ Application Programming Interface (API): A connection between computers or compu
 
 > Before going further, some pre-requisite need to be covered.  
 > As I spoke about connection, I already mentionned two advantages : Information and logic. In both case, you will need to exchange information (Okay this is a bit repetitive). And to do so, some basic about information display are needed.  
-> You can have access to a JSON cheatSheet at your own convenience to understand how structured data can 
+> You can have access to a JSON cheatSheet at your own convenience to understand how structured data can be representated as JSON object
 
 - TCP/IP or OSI
+
+> Introduction to TCP/IP model to explain where does the `web API` lives  
+> Illustrate the travel from a machine to another
+
+## 2°/ API Basics
+
+- Styles
+    - REST
+    - GraphQL
+    - gRPC
+
+> Explain that many API type exist, linking it to different cable type to continue on the metaphore
+
+- Call & Responses
+    - Method
+    > Reminder on CRUD operation
+    - Endpoint
+    > Explain URI/URL ?
+    - Parameters
+    > What kind of parameters to expect
+    - Status
+    > Reminder on HTTP status
+    - Header
+    > Metadata
+    - Body
+    > Data => show JSON
+
+> Explain that each component can justify a new style of API: ex JSON vs. Protobuff  
+> Illustrate with an API call + response in a two columns format with each part being highlighted in div block  
+> Explain different way to query public facing API or even provide an API key for a specific call.  
+> Prepare some content for the viewer to copy paste so that he can make his first API call with his method of his choice.
+
+- Features
+    - Rate limiting
+    - Pagination
+    - URL & Query parameters
+    - Idempotency
+    - Versionning
+
+> Explain what kind of features we can expect from using a proper 'cable'  
+> Illustrate with an API call + response with highlighted parameters. And icons or diagrams
+
+## 3°/ API security
+
+- Authentication
+    - API Key
+    - JWT
+
+> Explain the use case of authentication    
+> Table to compare API Key and JWT  
+> Prepare an API call example that won't work with API key but with JWT ? Or too much work idk
+
+- Authorization
+    - OAuth
+    - RBAC
+    - ABAC
+
+> Now that we know who the user is, we can define what the user is allowed to do.  
+> Highlight OAuth function with sequence diagram
+
+- Rate limiting & throttling
+
+## 4°/ API performance
+
+- Contract
+    - Rate limiting
+    - Pagination
+- Infra
+    - Caching
+    - Load balancing => API gateway
+    - enable compression
+
+> Highlight said performance feature with illustration/diagram.
