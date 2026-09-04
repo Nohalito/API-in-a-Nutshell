@@ -93,7 +93,7 @@ Application Programming Interface (API): A connection between computers or compu
 - TCP/IP or OSI
 
 > Introduction to TCP/IP model to explain where does the `web API` lives  
-> Illustrate the travel from a machine to another
+> Illustrate the *information* travel from a machine to another
 
 ## 2°/ API Basics
 
