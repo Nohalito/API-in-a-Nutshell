@@ -150,6 +150,7 @@ Application Programming Interface (API): A connection between computers or compu
 
 > Now that we know who the user is, we can define what the user is allowed to do.  
 > Highlight OAuth function with sequence diagram
+> Additionally, present 401 Vs 403
 
 - Rate limiting & throttling
 

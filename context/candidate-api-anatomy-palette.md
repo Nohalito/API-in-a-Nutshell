@@ -18,6 +18,14 @@ Each category is one hue: a pale tint as the solid box fill, and a fully-saturat
 
 Note: Header and Status intentionally share the exact same green — both represent response/request metadata as one visual family.
 
+## Deck extension — fifth color ("Where to go next")
+
+Not part of the original `candidate-api-anatomy.html` template — added for the "API in a Nutshell" slide deck, which needed a fifth hue once its "Where to go next" closing section split off from the "API at Scale" (body/orange) family. Same pairing rule as above: pale tint fill, saturated dark text, same hue.
+
+| Category | Fill (hex) | Fill (RGB) | Text (hex) | Text (RGB) |
+|---|---|---|---|---|
+| Next | `#ffe1ec` | 255, 225, 236 | `#be123c` | 190, 18, 60 |
+
 ## Neutral / chrome colors
 
 | Role | Hex | RGB | Used for |
@@ -44,6 +52,7 @@ For pasting into PowerPoint's "recent colors":
 4. `#1d4ed8` / `#dbeafe` — endpoint (blue)
 5. `#15803d` / `#dcf5e2` — header / status (green)
 6. `#b3540a` / `#ffe7cf` — body (orange)
+7. `#be123c` / `#ffe1ec` — next (rose, deck extension)
 
 ## Fonts (not color, but part of the look)
 

@@ -3,7 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>API in a Nutshell — Dataschool</title>
+  <title>API in a Nutshell</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -29,15 +30,13 @@
        ============================================================ -->
   <main class="deck" id="deck">
 
-    <!-- ---------- 1. Introduction ---------- -->
+    <!-- ---------- 1. Welcome page ---------- -->
     <section class="slide slide--cover" data-nav-group="overview" data-family="foundations">
       <div class="slide__inner">
         <p class="eyebrow">Dataschool · Web APIs</p>
         <h1 class="cover__title">API in a Nutshell</h1>
         <p class="cover__thesis">
-          An API is a <strong>contract</strong>: you send a structured request to an address,
-          you get a structured answer back — and everything else in this hour
-          is a clause of that contract.
+          A presentation made to clarify exactly what APIs are, understand their uses, get the gist of designing them, and highlight why you, too, must know about them.
         </p>
         <p class="cover__nav-hint">
           <kbd>&larr;</kbd> <kbd>&rarr;</kbd> to navigate &nbsp;·&nbsp;
@@ -46,79 +45,67 @@
       </div>
     </section>
 
-    <!-- ---------- 2. Table of contents, part I ---------- -->
+    <!-- ---------- 2. Motivation ---------- -->
+    <section class="slide slide--about" data-nav-group="overview" data-family="foundations">
+      <div class="slide__inner">
+        <h2 class="slide__title">Motivation of this dataschool</h2>
+
+        <div class="about-card">
+          <div class="about-card__top">
+            <img class="about-card__photo" src="assets/major_CoD.webp" alt="Noa Boimond">
+            <p class="cover__presenter">
+              <span class="cover__presenter-name">Noa</span>
+              <span class="cover__presenter-family">Boimond</span>
+              <span class="cover__presenter-sep">·</span>
+              <span class="cover__presenter-family">Data Engineer</span>
+            </p>
+          </div>
+          <ul class="points">
+            <li>A liking toward computer as a whole</li>
+            <li>To help other avoid the struggle I faced</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- 3. Table of contents ---------- -->
     <section class="slide slide--toc" data-nav-group="overview" data-family="anatomy">
       <div class="slide__inner">
-        <p class="eyebrow">Table of contents · Part I</p>
-        <h2 class="slide__title">Foundations &amp; anatomy</h2>
-        <p class="slide__lede">What an API is, and what a single call is actually made of.</p>
+        <h2 class="slide__title">Table of contents</h2>
 
         <ol class="toc">
           <li class="toc__item" data-family="foundations">
-            <span class="toc__num">0</span>
-            <span class="toc__body">
-              <span class="toc__label">Cold open <span class="toc__time">4 min</span></span>
-              <span class="toc__desc">A live call with no explanation — the hook before the definition</span>
-            </span>
-          </li>
-          <li class="toc__item" data-family="foundations">
             <span class="toc__num">1</span>
             <span class="toc__body">
-              <span class="toc__label">Kesako &amp; why care <span class="toc__time">9 min</span></span>
-              <span class="toc__desc">The cable metaphore, borrowing data vs borrowing logic, JSON</span>
+              <span class="toc__label">Introduction</span>
+              <span class="toc__desc">Topic presentation, its purpose, and its prerequisites</span>
             </span>
           </li>
           <li class="toc__item" data-family="anatomy">
             <span class="toc__num">2</span>
             <span class="toc__body">
-              <span class="toc__label">Anatomy of a call <span class="toc__time">14 min</span> <span class="toc__flag">the core</span></span>
-              <span class="toc__desc">Request and response, component by component — then everyone makes one</span>
+              <span class="toc__label">API Basics <span class="toc__flag">the core</span></span>
+              <span class="toc__desc">Anatomy of a request and response, then the styles that reshape them</span>
             </span>
           </li>
-          <li class="toc__item" data-family="anatomy">
+          <li class="toc__item" data-family="contract">
             <span class="toc__num">3</span>
             <span class="toc__body">
-              <span class="toc__label">Styles <span class="toc__time">5 min</span></span>
-              <span class="toc__desc">REST, GraphQL, gRPC, SOAP — different cables, same electricity</span>
-            </span>
-          </li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- ---------- 3. Table of contents, part II ---------- -->
-    <section class="slide slide--toc" data-nav-group="overview" data-family="contract">
-      <div class="slide__inner">
-        <p class="eyebrow">Table of contents · Part II</p>
-        <h2 class="slide__title">The contract &amp; the horizon</h2>
-        <p class="slide__lede">The clauses you will be held to, and where the road continues.</p>
-
-        <ol class="toc">
-          <li class="toc__item" data-family="contract">
-            <span class="toc__num">4</span>
-            <span class="toc__body">
-              <span class="toc__label">The contract's clauses <span class="toc__time">9 min</span></span>
-              <span class="toc__desc">Rate limiting, pagination, versioning, idempotency — each taught once</span>
-            </span>
-          </li>
-          <li class="toc__item" data-family="contract">
-            <span class="toc__num">5</span>
-            <span class="toc__body">
-              <span class="toc__label">Who are you, what may you do <span class="toc__time">10 min</span></span>
-              <span class="toc__desc">Authentication vs authorization, keys, tokens, OAuth</span>
+              <span class="toc__label">API Advanced</span>
+              <span class="toc__desc">The contract's clauses, then who you are and what you may do</span>
             </span>
           </li>
           <li class="toc__item" data-family="horizon">
-            <span class="toc__num">6</span>
+            <span class="toc__num">4</span>
             <span class="toc__body">
-              <span class="toc__label">When it has to scale <span class="toc__time">6 min</span></span>
+              <span class="toc__label">API at Scale</span>
               <span class="toc__desc">Caching, compression, and the gateway as one front door</span>
             </span>
           </li>
-          <li class="toc__item" data-family="horizon">
-            <span class="toc__num">7</span>
+          <li class="toc__item" data-family="next">
+            <span class="toc__num">5</span>
             <span class="toc__body">
-              <span class="toc__label">Where to go next <span class="toc__time">3 min</span></span>
+              <span class="toc__label">Where to go next</span>
               <span class="toc__desc">API vs URL vs SDK vs MCP, and one closing provocation</span>
             </span>
           </li>
@@ -126,7 +113,210 @@
       </div>
     </section>
 
-    <!-- ---------- 4. §0 ---------- -->
+    <!-- ---------- 4. §1 ---------- -->
+    <section class="slide slide--toc" data-nav-group="overview" data-family="anatomy">
+      <div class="slide__inner">
+        <h2 class="slide__title">Introduction</h2>
+
+        <ol class="toc">
+          <li class="toc__item toc__item--current" data-family="foundations">
+            <span class="toc__num">1</span>
+            <span class="toc__body">
+              <span class="toc__label">Introduction</span>
+            </span>
+          </li>
+          <li class="toc__item" data-family="anatomy">
+            <span class="toc__num">2</span>
+            <span class="toc__body">
+              <span class="toc__label">API Basics <span class="toc__flag">the core</span></span>
+          
+            </span>
+          </li>
+          <li class="toc__item" data-family="contract">
+            <span class="toc__num">3</span>
+            <span class="toc__body">
+              <span class="toc__label">API Advanced</span>
+              
+            </span>
+          </li>
+          <li class="toc__item" data-family="horizon">
+            <span class="toc__num">4</span>
+            <span class="toc__body">
+              <span class="toc__label">API at Scale</span>
+              
+            </span>
+          </li>
+          <li class="toc__item" data-family="next">
+            <span class="toc__num">5</span>
+            <span class="toc__body">
+              <span class="toc__label">Where to go next</span>
+            </span>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ---------- 5. Axis: API Basics ---------- -->
+    <section class="slide slide--toc" data-nav-group="overview" data-family="anatomy">
+      <div class="slide__inner">
+        <h2 class="slide__title">API Basics</h2>
+
+        <ol class="toc">
+          <li class="toc__item" data-family="foundations">
+            <span class="toc__num">1</span>
+            <span class="toc__body">
+              <span class="toc__label">Introduction</span>
+            </span>
+          </li>
+          <li class="toc__item toc__item--current" data-family="anatomy">
+            <span class="toc__num">2</span>
+            <span class="toc__body">
+              <span class="toc__label">API Basics <span class="toc__flag">the core</span></span>
+            </span>
+          </li>
+          <li class="toc__item" data-family="contract">
+            <span class="toc__num">3</span>
+            <span class="toc__body">
+              <span class="toc__label">API Advanced</span>
+            </span>
+          </li>
+          <li class="toc__item" data-family="horizon">
+            <span class="toc__num">4</span>
+            <span class="toc__body">
+              <span class="toc__label">API at Scale</span>
+            </span>
+          </li>
+          <li class="toc__item" data-family="next">
+            <span class="toc__num">5</span>
+            <span class="toc__body">
+              <span class="toc__label">Where to go next</span>
+            </span>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ---------- 6. Axis: API Advanced ---------- -->
+    <section class="slide slide--toc" data-nav-group="overview" data-family="contract">
+      <div class="slide__inner">
+        <h2 class="slide__title">API Advanced</h2>
+
+        <ol class="toc">
+          <li class="toc__item" data-family="foundations">
+            <span class="toc__num">1</span>
+            <span class="toc__body">
+              <span class="toc__label">Introduction</span>
+            </span>
+          </li>
+          <li class="toc__item" data-family="anatomy">
+            <span class="toc__num">2</span>
+            <span class="toc__body">
+              <span class="toc__label">API Basics <span class="toc__flag">the core</span></span>
+            </span>
+          </li>
+          <li class="toc__item toc__item--current" data-family="contract">
+            <span class="toc__num">3</span>
+            <span class="toc__body">
+              <span class="toc__label">API Advanced</span>
+            </span>
+          </li>
+          <li class="toc__item" data-family="horizon">
+            <span class="toc__num">4</span>
+            <span class="toc__body">
+              <span class="toc__label">API at Scale</span>
+            </span>
+          </li>
+          <li class="toc__item" data-family="next">
+            <span class="toc__num">5</span>
+            <span class="toc__body">
+              <span class="toc__label">Where to go next</span>
+            </span>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ---------- 7. Axis: API at Scale ---------- -->
+    <section class="slide slide--toc" data-nav-group="overview" data-family="horizon">
+      <div class="slide__inner">
+        <h2 class="slide__title">API at Scale</h2>
+
+        <ol class="toc">
+          <li class="toc__item" data-family="foundations">
+            <span class="toc__num">1</span>
+            <span class="toc__body">
+              <span class="toc__label">Introduction</span>
+            </span>
+          </li>
+          <li class="toc__item" data-family="anatomy">
+            <span class="toc__num">2</span>
+            <span class="toc__body">
+              <span class="toc__label">API Basics <span class="toc__flag">the core</span></span>
+            </span>
+          </li>
+          <li class="toc__item" data-family="contract">
+            <span class="toc__num">3</span>
+            <span class="toc__body">
+              <span class="toc__label">API Advanced</span>
+            </span>
+          </li>
+          <li class="toc__item toc__item--current" data-family="horizon">
+            <span class="toc__num">4</span>
+            <span class="toc__body">
+              <span class="toc__label">API at Scale</span>
+            </span>
+          </li>
+          <li class="toc__item" data-family="next">
+            <span class="toc__num">5</span>
+            <span class="toc__body">
+              <span class="toc__label">Where to go next</span>
+            </span>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ---------- 8. Axis: Where to go next ---------- -->
+    <section class="slide slide--toc" data-nav-group="overview" data-family="next">
+      <div class="slide__inner">
+        <h2 class="slide__title">Where to go next</h2>
+
+        <ol class="toc">
+          <li class="toc__item" data-family="foundations">
+            <span class="toc__num">1</span>
+            <span class="toc__body">
+              <span class="toc__label">Introduction</span>
+            </span>
+          </li>
+          <li class="toc__item" data-family="anatomy">
+            <span class="toc__num">2</span>
+            <span class="toc__body">
+              <span class="toc__label">API Basics <span class="toc__flag">the core</span></span>
+            </span>
+          </li>
+          <li class="toc__item" data-family="contract">
+            <span class="toc__num">3</span>
+            <span class="toc__body">
+              <span class="toc__label">API Advanced</span>
+            </span>
+          </li>
+          <li class="toc__item" data-family="horizon">
+            <span class="toc__num">4</span>
+            <span class="toc__body">
+              <span class="toc__label">API at Scale</span>
+            </span>
+          </li>
+          <li class="toc__item toc__item--current" data-family="next">
+            <span class="toc__num">5</span>
+            <span class="toc__body">
+              <span class="toc__label">Where to go next</span>
+            </span>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ---------- 5. §0 ---------- -->
     <section class="slide slide--section"
              data-section="0" data-title="Cold open" data-duration="4 min"
              data-family="foundations" data-part="Part I · Foundations">
@@ -136,7 +326,6 @@
           <span class="section__num">0</span>
           <div>
             <h2 class="section__title">Cold open</h2>
-            <p class="section__duration">4 min</p>
           </div>
         </div>
         <ul class="points">
@@ -148,7 +337,7 @@
       </div>
     </section>
 
-    <!-- ---------- 5. §1 ---------- -->
+    <!-- ---------- 6. §1 ---------- -->
     <section class="slide slide--section"
              data-section="1" data-title="Kesako &amp; why care" data-duration="9 min"
              data-family="foundations" data-part="Part I · Foundations">
@@ -158,7 +347,6 @@
           <span class="section__num">1</span>
           <div>
             <h2 class="section__title">Kesako &amp; why care</h2>
-            <p class="section__duration">9 min</p>
           </div>
         </div>
         <ul class="points">
@@ -171,7 +359,7 @@
       </div>
     </section>
 
-    <!-- ---------- 6. §2 ---------- -->
+    <!-- ---------- 7. §2 ---------- -->
     <section class="slide slide--section"
              data-section="2" data-title="Anatomy of a call" data-duration="14 min"
              data-family="anatomy" data-part="Part I · Anatomy">
@@ -180,8 +368,7 @@
         <div class="section__head">
           <span class="section__num">2</span>
           <div>
-            <h2 class="section__title">Anatomy of a call</h2>
-            <p class="section__duration">14 min &nbsp;·&nbsp; <span class="flag">the core</span></p>
+            <h2 class="section__title">Anatomy of a call <span class="flag">the core</span></h2>
           </div>
         </div>
         <ul class="points">
@@ -194,7 +381,7 @@
       </div>
     </section>
 
-    <!-- ---------- 7. §3 ---------- -->
+    <!-- ---------- 8. §3 ---------- -->
     <section class="slide slide--section"
              data-section="3" data-title="Styles" data-duration="5 min"
              data-family="anatomy" data-part="Part I · Anatomy">
@@ -204,7 +391,6 @@
           <span class="section__num">3</span>
           <div>
             <h2 class="section__title">Styles</h2>
-            <p class="section__duration">5 min</p>
           </div>
         </div>
         <ul class="points">
@@ -217,7 +403,7 @@
       </div>
     </section>
 
-    <!-- ---------- 8. §4 ---------- -->
+    <!-- ---------- 9. §4 ---------- -->
     <section class="slide slide--section"
              data-section="4" data-title="The contract's clauses" data-duration="9 min"
              data-family="contract" data-part="Part II · The contract">
@@ -227,7 +413,6 @@
           <span class="section__num">4</span>
           <div>
             <h2 class="section__title">The contract's clauses</h2>
-            <p class="section__duration">9 min</p>
           </div>
         </div>
         <ul class="points">
@@ -239,7 +424,7 @@
       </div>
     </section>
 
-    <!-- ---------- 9. §5 ---------- -->
+    <!-- ---------- 10. §5 ---------- -->
     <section class="slide slide--section"
              data-section="5" data-title="Who are you, what may you do" data-duration="10 min"
              data-family="contract" data-part="Part II · The contract">
@@ -249,7 +434,6 @@
           <span class="section__num">5</span>
           <div>
             <h2 class="section__title">Who are you, and what may you do</h2>
-            <p class="section__duration">10 min</p>
           </div>
         </div>
         <ul class="points">
@@ -263,7 +447,7 @@
       </div>
     </section>
 
-    <!-- ---------- 10. §6 ---------- -->
+    <!-- ---------- 11. §6 ---------- -->
     <section class="slide slide--section"
              data-section="6" data-title="When it has to scale" data-duration="6 min"
              data-family="horizon" data-part="Part II · Horizon">
@@ -273,7 +457,6 @@
           <span class="section__num">6</span>
           <div>
             <h2 class="section__title">When it has to scale</h2>
-            <p class="section__duration">6 min</p>
           </div>
         </div>
         <ul class="points">
@@ -285,17 +468,16 @@
       </div>
     </section>
 
-    <!-- ---------- 11. §7 ---------- -->
+    <!-- ---------- 12. §7 ---------- -->
     <section class="slide slide--section"
              data-section="7" data-title="Where to go next" data-duration="3 min"
-             data-family="horizon" data-part="Part II · Horizon">
+             data-family="next" data-part="Part II · Horizon">
       <div class="slide__inner">
         <p class="eyebrow">Part II · Horizon</p>
         <div class="section__head">
           <span class="section__num">7</span>
           <div>
             <h2 class="section__title">Where to go next</h2>
-            <p class="section__duration">3 min</p>
           </div>
         </div>
         <ul class="points">

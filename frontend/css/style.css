@@ -5,8 +5,9 @@
    Palette rules honoured here:
    - Solid fills only. No gradients, no alpha blending on any colour.
      Lighter/darker variants are new solid tints, never transparency.
-   - One hue = one family. The four palette hues map to the four
-     halves of the deck, not to eight arbitrary sections.
+   - One hue = one family. Five palette hues map to five families —
+     four map to a pair of sections each, "next" stands alone for
+     the closing section.
    ============================================================ */
 
 :root {
@@ -30,6 +31,8 @@
   --contract-fg: #15803d;
   --horizon-bg: #ffe7cf;      /* body orange    */
   --horizon-fg: #b3540a;
+  --next-bg: #ffe1ec;         /* deck extension: rose */
+  --next-fg: #be123c;
 
   /* the active slide's family, remapped per-slide below */
   --accent-bg: var(--surface-sunk);
@@ -49,6 +52,7 @@
 [data-family="anatomy"]     { --accent-bg: var(--anatomy-bg);     --accent-fg: var(--anatomy-fg); }
 [data-family="contract"]    { --accent-bg: var(--contract-bg);    --accent-fg: var(--contract-fg); }
 [data-family="horizon"]     { --accent-bg: var(--horizon-bg);     --accent-fg: var(--horizon-fg); }
+[data-family="next"]        { --accent-bg: var(--next-bg);        --accent-fg: var(--next-fg); }
 
 * { box-sizing: border-box; }
 
@@ -254,14 +258,6 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
   text-wrap: balance;
 }
 
-.slide__lede {
-  margin: 0 0 34px;
-  max-width: 60ch;
-  font-size: clamp(15px, 1.25vw, 19px);
-  line-height: 1.55;
-  color: var(--text-secondary);
-}
-
 
 /* ============================================================
    Cover slide
@@ -287,11 +283,53 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
 
 .cover__thesis strong { color: var(--text); font-weight: 600; }
 
+.cover__presenter {
+  margin: 0 0 28px;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.cover__presenter-name { font-weight: 600; color: var(--text); }
+
+.cover__presenter-sep { margin: 0 8px; color: var(--border-strong); }
+
 .cover__nav-hint {
   margin: 0;
   font-size: 12.5px;
   color: var(--text-tertiary);
 }
+
+
+/* ============================================================
+   Motivation ("about") slide
+   ============================================================ */
+
+.about-card {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 28px 32px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.about-card__top {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.about-card__photo {
+  width: 84px;
+  height: 84px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  object-fit: cover;
+}
+
+.about-card .cover__presenter { margin: 0; }
 
 
 /* ============================================================
@@ -302,12 +340,15 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
   list-style: none;
   margin: 0;
   padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: repeat(3, auto);
+  grid-auto-flow: column;
+  gap: 12px 28px;
 }
 
 .toc__item {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 18px;
@@ -315,20 +356,35 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 10px;
+  overflow: hidden;
+}
+
+/* Marks the item matching the slide's own axis — a colored spine on
+   the left edge, same hue as that item's number. */
+.toc__item--current::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 5px;
+  background: var(--accent-fg);
 }
 
 .toc__num {
   flex: 0 0 auto;
-  width: 44px;
+  min-width: 44px;
   height: 44px;
+  padding: 0 8px;
   display: grid;
   place-items: center;
   border-radius: 8px;
   background: var(--accent-bg);
   color: var(--accent-fg);
   font-family: var(--font-mono);
-  font-size: 19px;
+  font-size: 17px;
   font-weight: 700;
+  white-space: nowrap;
 }
 
 .toc__body { min-width: 0; display: flex; flex-direction: column; gap: 4px; }
@@ -337,14 +393,6 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
   font-size: clamp(15px, 1.35vw, 19px);
   font-weight: 600;
   letter-spacing: -0.01em;
-}
-
-.toc__time {
-  margin-left: 6px;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--text-tertiary);
 }
 
 .toc__desc {
@@ -404,13 +452,6 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
   line-height: 1.05;
   letter-spacing: -0.025em;
   text-wrap: balance;
-}
-
-.section__duration {
-  margin: 0;
-  font-family: var(--font-mono);
-  font-size: clamp(12px, 1vw, 14px);
-  color: var(--text-secondary);
 }
 
 .points {
@@ -506,6 +547,7 @@ kbd {
   .sidebar__nav { padding: 16px 8px; }
   .toc-link { justify-content: center; padding: 10px 0; border-left-width: 0; }
   .toc-link__num { width: auto; }
+  .toc { grid-template-columns: 1fr; grid-template-rows: none; grid-auto-flow: row; }
 }
 
 
