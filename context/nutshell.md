@@ -82,7 +82,6 @@ Application Programming Interface (API): A connection between computers or compu
 
 - Examples
     - Google maps
-    - Weather app
 
 - JSON, XML, HTTP
 

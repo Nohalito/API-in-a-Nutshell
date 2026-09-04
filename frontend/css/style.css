@@ -419,6 +419,132 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
 
 
 /* ============================================================
+   Concept slides — icon-illustrated bullets
+   ============================================================ */
+
+.slide__lede {
+  margin: 0 0 32px;
+  max-width: 70ch;
+  font-size: clamp(15px, 1.3vw, 18px);
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+
+.concept-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: clamp(14px, 2vw, 24px);
+}
+
+/* Two boxes on top, one centered underneath — apex pointing down. */
+.concept-grid--triangle {
+  grid-template-columns: repeat(2, minmax(240px, 1fr));
+}
+
+.concept-grid--triangle > .concept-card--example {
+  grid-column: 1 / -1;
+  justify-self: center;
+  width: 55%;
+  min-width: 220px;
+}
+
+/* Base card. Modifiers/descendants below all win ties on source
+   order, so keep this rule first among the .concept-card family. */
+.concept-card {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(8px, 1.2vw, 14px);
+  padding: clamp(16px, 2.2vw, 26px) clamp(18px, 2.4vw, 30px);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.concept-card--example {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding-top: clamp(10px, 1.4vw, 16px);
+  padding-bottom: clamp(10px, 1.4vw, 16px);
+}
+
+.concept-card--why {
+  flex-direction: row;
+  align-items: center;
+  gap: clamp(14px, 2vw, 24px);
+}
+
+.concept-card__cols {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: clamp(12px, 1.6vw, 20px);
+}
+
+.concept-card__col {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(8px, 1.2vw, 14px);
+}
+
+.concept-card__branches {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(10px, 1.4vw, 18px);
+}
+
+.concept-card__row {
+  display: flex;
+  align-items: center;
+  gap: clamp(8px, 1.2vw, 14px);
+}
+
+.concept-card__arrow {
+  flex: 0 0 auto;
+  color: var(--accent-fg);
+  font-size: clamp(16px, 1.8vw, 22px);
+  font-weight: 700;
+}
+
+.concept-card__row-label {
+  font-size: clamp(13px, 1.05vw, 15px);
+  color: var(--text-secondary);
+}
+
+.concept-card__icon {
+  width: clamp(36px, 4vw, 48px);
+  height: clamp(36px, 4vw, 48px);
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: var(--accent-bg);
+}
+
+.concept-card__icon img {
+  width: clamp(18px, 2.2vw, 26px);
+  height: clamp(18px, 2.2vw, 26px);
+  object-fit: contain;
+}
+
+.concept-card__title {
+  font-size: clamp(15px, 1.35vw, 18px);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.concept-card__desc {
+  margin: 0;
+  font-size: clamp(13px, 1.05vw, 15px);
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+
+/* ============================================================
    Section title slides
    ============================================================ */
 
@@ -548,6 +674,11 @@ kbd {
   .toc-link { justify-content: center; padding: 10px 0; border-left-width: 0; }
   .toc-link__num { width: auto; }
   .toc { grid-template-columns: 1fr; grid-template-rows: none; grid-auto-flow: row; }
+  .concept-grid { grid-template-columns: 1fr; }
+  .concept-grid--triangle { grid-template-columns: 1fr; }
+  .concept-grid--triangle > .concept-card--example { grid-column: 1; width: 100%; }
+  .concept-card__cols { grid-template-columns: 1fr; }
+  .concept-card--why { flex-direction: column; align-items: stretch; }
 }
 
 
