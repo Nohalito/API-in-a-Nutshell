@@ -32,6 +32,7 @@ LOOK at what microservices have been demanding your respect for all this time, w
 "Hello I would like <img> please"
 
 They have played us for absolute fools.
+```
 
 ========================================================
 
@@ -83,3 +84,9 @@ User: GET server/apo/v1/Joke
 Server: Why did the chicken cross the road?
 User: GET server/api/v1/Punchline
 Server: ...punchline to what?
+
+========================================================
+
+https://programmerhumor.io/memes/api-security
+
+Today's my last day of unpaid internship
