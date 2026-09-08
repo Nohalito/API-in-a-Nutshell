@@ -231,6 +231,20 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
   animation: rise 0.34s ease both;
 }
 
+/* Content slides — anything that is not the cover, the motivation card
+   or an axis/table-of-contents slide. They run flush instead of being
+   centred in a fixed measure: 95% of the deck's width, anchored to the
+   top-left corner 2.5% in from the sidebar and from the top. */
+.slide:not(.slide--cover):not(.slide--about):not(.slide--toc) {
+  align-items: flex-start;
+  padding: 2.5vh 2.5% calc(var(--progress-h) + 2.5vh);
+}
+
+.slide:not(.slide--cover):not(.slide--about):not(.slide--toc) .slide__inner {
+  max-width: none;
+  margin: 0;
+}
+
 @keyframes rise {
   from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -239,6 +253,7 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
 @media (prefers-reduced-motion: reduce) {
   .slide__inner { animation: none; }
   body { transition: none; }
+  .flashcard__faces { transition: none; }
 }
 
 .eyebrow {
@@ -401,8 +416,7 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
   color: var(--text-secondary);
 }
 
-.toc__flag,
-.flag {
+.toc__flag {
   display: inline-block;
   margin-left: 4px;
   padding: 2px 8px;
@@ -545,40 +559,508 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
 
 
 /* ============================================================
-   Section title slides
+   Split slides — two boxes flanking a floating vertical rule
    ============================================================ */
 
-.section__head {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  margin-bottom: 38px;
-  padding-bottom: 28px;
-  border-bottom: 1px solid var(--border);
+.slide__lede--wide { max-width: none; }
+
+.split {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: clamp(18px, 2.6vw, 36px);
+  align-items: start;
 }
 
-.section__num {
-  flex: 0 0 auto;
-  width: clamp(76px, 7vw, 104px);
-  height: clamp(76px, 7vw, 104px);
+.split__box {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(10px, 1.4vw, 16px);
+  padding: clamp(16px, 2.2vw, 26px) clamp(18px, 2.4vw, 30px);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+/* Floats in the gap: inset top and bottom so it reads as a separator
+   between the two boxes rather than as another frame edge. */
+.split__rule {
+  align-self: stretch;
+  width: 1px;
+  margin: clamp(5px, 2vh, 30px) 0;
+  background: var(--border-strong);
+}
+
+.split__title {
+  margin: 0;
+  font-size: clamp(15px, 1.5vw, 20px);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+
+.split__desc {
+  margin: 0;
+  font-size: clamp(13px, 1.05vw, 15px);
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.split__desc strong { color: var(--text); font-weight: 600; }
+
+
+/* --- stand-in for a diagram that has not been supplied yet --- */
+
+.figure--placeholder {
   display: grid;
   place-items: center;
-  border-radius: 14px;
+  min-height: clamp(90px, 14vh, 170px);
+  padding: clamp(10px, 1.4vw, 16px);
+  background: var(--surface-alt);
+  border: 1px dashed var(--border-strong);
+  border-radius: 10px;
+}
+
+.figure__hint {
+  font-family: var(--font-mono);
+  font-size: clamp(11px, 0.95vw, 13px);
+  color: var(--text-tertiary);
+  text-align: center;
+}
+
+
+/* --- HTTP methods: a chip per verb, its CRUD gloss beside it.
+       The chip inherits the slide's family — the palette's own
+       "method" purple. --- */
+
+.method-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(6px, 0.9vw, 10px);
+}
+
+.method {
+  display: flex;
+  align-items: center;
+  gap: clamp(10px, 1.2vw, 14px);
+}
+
+.method__name {
+  flex: 0 0 auto;
+  min-width: clamp(62px, 6vw, 82px);
+  padding: clamp(3px, 0.5vw, 6px) clamp(6px, 0.8vw, 10px);
+  border-radius: 6px;
   background: var(--accent-bg);
   color: var(--accent-fg);
   font-family: var(--font-mono);
-  font-size: clamp(38px, 3.8vw, 52px);
+  font-size: clamp(11px, 1vw, 14px);
   font-weight: 700;
-  line-height: 1;
+  text-align: center;
 }
 
-.section__title {
-  margin: 0 0 8px;
-  font-size: clamp(30px, 3.9vw, 52px);
-  line-height: 1.05;
-  letter-spacing: -0.025em;
-  text-wrap: balance;
+.method__def {
+  font-size: clamp(12px, 1.05vw, 15px);
+  line-height: 1.45;
+  color: var(--text-secondary);
 }
+
+.method__def strong { color: var(--text); font-weight: 600; }
+
+
+/* --- status codes. Each row carries its own family, so the traffic
+       light lands on the category and the meaning's keyword only:
+       green 1xx/2xx, orange 3xx, rose 4xx/5xx. --- */
+
+.status-wrap { overflow-x: auto; }
+
+.status {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: clamp(11px, 1vw, 14px);
+}
+
+.status th,
+.status td {
+  padding: clamp(6px, 0.8vw, 10px) clamp(6px, 0.7vw, 10px);
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--border);
+}
+
+.status thead th {
+  font-size: clamp(10px, 0.8vw, 12px);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  white-space: nowrap;
+}
+
+.status tbody tr:last-child th,
+.status tbody tr:last-child td { border-bottom: 0; }
+
+.status__cat { white-space: nowrap; }
+
+/* The category is the tag; the meaning's keyword only takes the hue.
+   A <th> cannot be the chip itself without breaking the row, so the
+   span inside it carries the fill. Radius matches .method__name. */
+.status__tag {
+  display: inline-block;
+  padding: clamp(2px, 0.3vw, 4px) clamp(6px, 0.8vw, 10px);
+  border-radius: 6px;
+  background: var(--accent-bg);
+  color: var(--accent-fg);
+  font-weight: 700;
+}
+
+.status__range {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.status__keyword {
+  color: var(--accent-fg);
+  font-weight: 700;
+}
+
+.status__gloss { color: var(--text-secondary); }
+
+.status__examples {
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+}
+
+
+/* --- titled variant: a heading sits above each side, and the rule
+       runs the full height of both rows. Placement is explicit so the
+       DOM can keep the two headings together, ahead of the panes. --- */
+
+.split--titled {
+  grid-template-rows: auto minmax(0, 1fr);
+  align-items: stretch;
+  row-gap: clamp(8px, 1.2vh, 16px);
+}
+
+.split__heading--left  { grid-area: 1 / 1; }
+.split__heading--right { grid-area: 1 / 3; }
+.split--titled > .split__rule { grid-area: 1 / 2 / 3 / 3; }
+.split__pane--left  { grid-area: 2 / 1; }
+.split__pane--right { grid-area: 2 / 3; }
+
+.split__heading {
+  margin: 0;
+  font-size: clamp(16px, 1.8vw, 24px);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  color: var(--accent-fg);
+}
+
+.split__pane {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(10px, 1.4vw, 16px);
+  min-width: 0;
+}
+
+
+/* --- flashcard: a table on the front, the same data as JSON on the
+       back. The flip is pure CSS — a hidden checkbox toggled by the
+       label chip, no click handler in the deck controller. --- */
+
+.flashcard {
+  position: relative;
+  flex: 1 1 auto;
+  perspective: 1400px;
+}
+
+.flashcard__toggle {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.flashcard__flip {
+  position: absolute;
+  z-index: 2;
+  top: clamp(8px, 1vw, 12px);
+  right: clamp(8px, 1vw, 12px);
+  padding: clamp(3px, 0.5vw, 6px) clamp(8px, 1vw, 12px);
+  border-radius: 999px;
+  background: var(--accent-bg);
+  color: var(--accent-fg);
+  font-size: clamp(10px, 0.9vw, 12px);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  user-select: none;
+}
+
+.flashcard__faces {
+  position: relative;
+  height: 100%;
+  min-height: clamp(200px, 32vh, 340px);
+  transform-style: preserve-3d;
+  transition: transform 0.5s ease;
+}
+
+.flashcard__toggle:checked ~ .flashcard__faces { transform: rotateY(180deg); }
+
+.flashcard__face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(6px, 0.9vw, 10px);
+  padding: clamp(14px, 1.8vw, 22px);
+  overflow: auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  backface-visibility: hidden;
+}
+
+/* Whichever side is turned away stays inert, so a stray click or a
+   scroll never lands on the face nobody can see. */
+.flashcard__face--back {
+  transform: rotateY(180deg);
+  background: var(--surface-alt);
+  pointer-events: none;
+}
+
+.flashcard__toggle:checked ~ .flashcard__faces .flashcard__face--front { pointer-events: none; }
+.flashcard__toggle:checked ~ .flashcard__faces .flashcard__face--back  { pointer-events: auto; }
+
+.flashcard__caption {
+  margin: 0;
+  padding-right: clamp(48px, 6vw, 72px);  /* clear of the flip chip */
+  font-size: clamp(11px, 0.95vw, 13px);
+  color: var(--text-tertiary);
+}
+
+
+/* --- plain data table, front of the flashcard --- */
+
+.data {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: clamp(11px, 1vw, 14px);
+}
+
+.data th,
+.data td {
+  padding: clamp(5px, 0.7vw, 9px) clamp(6px, 0.7vw, 10px);
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.data thead th {
+  font-family: var(--font-mono);
+  font-size: clamp(10px, 0.85vw, 12px);
+  font-weight: 600;
+  color: var(--text-tertiary);
+  white-space: nowrap;
+}
+
+.data tbody td { font-family: var(--font-mono); color: var(--text-secondary); }
+.data tbody tr:last-child td { border-bottom: 0; }
+
+
+/* --- code cell, back of the flashcard --- */
+
+.code {
+  flex: 1 1 auto;
+  margin: 0;
+  padding: clamp(10px, 1.2vw, 14px);
+  overflow: auto;
+  background: var(--surface-sunk);
+  border-radius: 8px;
+  font-size: clamp(11px, 1vw, 14px);
+  line-height: 1.5;
+  color: var(--text);
+  tab-size: 2;
+}
+
+.code__key { color: var(--accent-fg); font-weight: 700; }
+
+
+/* ============================================================
+   Tabs — a card fronted by browser-style page tabs.
+
+   Driven by three same-name radios that sit ahead of the bar and
+   the body, so :checked ~ can reach both. Selecting a tab both
+   lifts it into the card and swaps the panel underneath. The id
+   selectors are the price of doing this without JavaScript; they
+   are the only ids styled anywhere in the sheet.
+   ============================================================ */
+
+.tabs { display: flex; flex-direction: column; }
+
+.tabs__radio {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Tabs overlap the card's top border by 1px so the selected one
+   reads as continuous with the body below it. */
+.tabs__bar {
+  display: flex;
+  gap: clamp(3px, 0.4vw, 6px);
+  margin-bottom: -1px;
+  padding-left: clamp(8px, 1vw, 14px);
+}
+
+.tabs__tab {
+  position: relative;
+  z-index: 1;
+  padding: clamp(7px, 1vw, 12px) clamp(14px, 2vw, 28px);
+  background: var(--surface-sunk);
+  border: 1px solid var(--border);
+  border-bottom-color: var(--border);
+  border-radius: 9px 9px 0 0;
+  font-size: clamp(12px, 1.15vw, 16px);
+  font-weight: 600;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.tabs__tab:hover { color: var(--text-secondary); }
+
+.tabs__body {
+  display: grid;
+  padding: clamp(16px, 2.2vw, 28px) clamp(18px, 2.4vw, 32px);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0 10px 10px 10px;
+}
+
+/* All three panels share one grid cell and the unselected ones are
+   hidden rather than removed, so the card is always as tall as its
+   longest side and nothing jumps when a tab changes. */
+.tabs__panel {
+  grid-area: 1 / 1;
+  visibility: hidden;
+}
+
+.tabs__lead {
+  margin: 0 0 clamp(8px, 1.2vw, 14px);
+  font-size: clamp(13px, 1.05vw, 15px);
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+
+.tabs__lead:last-child { margin-bottom: 0; }
+.tabs__lead strong { color: var(--text); font-weight: 600; }
+
+.tabs__lead code {
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: var(--accent-bg);
+  color: var(--accent-fg);
+  font-size: 0.92em;
+}
+
+/* --- selected state: one pair of rules per tab --- */
+
+#style-rest:checked    ~ .tabs__bar .tabs__tab[for="style-rest"],
+#style-graphql:checked ~ .tabs__bar .tabs__tab[for="style-graphql"],
+#style-grpc:checked    ~ .tabs__bar .tabs__tab[for="style-grpc"] {
+  background: var(--surface);
+  border-bottom-color: var(--surface);
+  color: var(--accent-fg);
+  font-weight: 700;
+}
+
+#style-rest:checked    ~ .tabs__body .tabs__panel--rest,
+#style-graphql:checked ~ .tabs__body .tabs__panel--graphql,
+#style-grpc:checked    ~ .tabs__body .tabs__panel--grpc {
+  visibility: visible;
+}
+
+
+/* --- gRPC: prose on the left, the .proto contract on the right.
+       Must stay after the base .tabs__panel rule — same specificity,
+       so source order is what carries the display change. --- */
+
+.tabs__panel--grpc {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(16px, 2.4vw, 32px);
+  align-items: center;
+}
+
+.tabs__col { align-self: center; }
+.tabs__col > .tabs__lead:last-child { margin-bottom: 0; }
+
+
+/* --- REST's six principles: two columns of numbered entries --- */
+
+.principles {
+  list-style: none;
+  counter-reset: principle;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(10px, 1.4vw, 18px) clamp(16px, 2.2vw, 32px);
+}
+
+.principles li {
+  counter-increment: principle;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto;
+  column-gap: clamp(8px, 1vw, 12px);
+  row-gap: 2px;
+}
+
+.principles li::before {
+  content: counter(principle);
+  grid-row: 1 / 3;
+  align-self: start;
+  width: clamp(20px, 2vw, 26px);
+  height: clamp(20px, 2vw, 26px);
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--accent-bg);
+  color: var(--accent-fg);
+  font-family: var(--font-mono);
+  font-size: clamp(10px, 0.85vw, 12px);
+  font-weight: 700;
+}
+
+.principles__name {
+  font-size: clamp(12px, 1.05vw, 15px);
+  font-weight: 600;
+  color: var(--text);
+}
+
+.principles__name em { color: var(--text-tertiary); font-weight: 400; }
+
+.principles__def {
+  grid-column: 2;
+  font-size: clamp(11px, 0.95vw, 14px);
+  line-height: 1.45;
+  color: var(--text-secondary);
+}
+
+
+/* ============================================================
+   Bullet lists
+   ============================================================ */
 
 .points {
   list-style: none;
@@ -679,6 +1161,19 @@ kbd {
   .concept-grid--triangle > .concept-card--example { grid-column: 1; width: 100%; }
   .concept-card__cols { grid-template-columns: 1fr; }
   .concept-card--why { flex-direction: column; align-items: stretch; }
+  .split { grid-template-columns: 1fr; }
+  .split__rule { display: none; }
+  /* One column: drop the explicit placement and let the four children
+     stack in DOM order — heading, heading, pane, pane — reordered so
+     each heading keeps its own pane. */
+  .split--titled { grid-template-rows: none; }
+  .split__heading--left  { grid-area: auto; order: 1; }
+  .split__pane--left     { grid-area: auto; order: 2; }
+  .split__heading--right { grid-area: auto; order: 3; }
+  .split__pane--right    { grid-area: auto; order: 4; }
+  .tabs__bar { flex-wrap: wrap; }
+  .tabs__panel--grpc { grid-template-columns: 1fr; }
+  .principles { grid-template-columns: 1fr; }
 }
 
 
@@ -699,4 +1194,23 @@ kbd {
     break-after: page;
   }
   .slide__inner { animation: none; }
+  /* A handout cannot be flipped — unstack the card and print both sides. */
+  .flashcard__flip { display: none; }
+  .flashcard__faces { height: auto; min-height: 0; transform: none; }
+  .flashcard__face {
+    position: static;
+    margin-bottom: 12px;
+    overflow: visible;
+    transform: none;
+    backface-visibility: visible;
+  }
+  /* Nothing to click on paper either — unstack and print all three. */
+  .tabs__body { display: block; }
+  .tabs__panel { visibility: visible; }
+  .tabs__panel + .tabs__panel {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+  .code { overflow: visible; white-space: pre-wrap; }
 }
