@@ -266,6 +266,20 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
   margin: 0;
 }
 
+/* "API, Kesako?" keeps its title on the top line like every other slide,
+   but the card grid is short enough to float in the middle: the inner
+   fills the slide height and the grid's auto block margins centre it in
+   whatever space the title leaves. */
+.slide--concepts .slide__inner {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.slide--concepts .concept-grid {
+  margin-block: auto;
+}
+
 @keyframes rise {
   from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -637,6 +651,26 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
   border-radius: 4px;
   background: var(--surface-sunk);
   color: var(--text);
+}
+
+
+/* --- a supplied diagram. It takes the same slot as the placeholder
+       below, so it gets the same frame; the height cap keeps a wide
+       image from pushing the rest of the pane off a short screen. --- */
+
+.figure {
+  margin: 0;
+  width: fit-content;
+}
+
+.figure__img {
+  display: block;
+  max-width: 100%;
+  max-height: clamp(180px, 34vh, 380px);
+  object-fit: contain;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
 }
 
 
