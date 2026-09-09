@@ -34,12 +34,33 @@
   --next-bg: #ffe1ec;         /* deck extension: rose */
   --next-fg: #be123c;
 
+  /* Status yellow. A category, not a family — no [data-family] remap,
+     because no slide should ever take it as its accent. It exists so
+     Status stops sharing the contract green with Header in the
+     anatomy view, where the two sit side by side in one legend.
+     Same rule as the rest: pale solid fill, saturated dark text of
+     the same hue (5.8:1, AA at the mono sizes used). */
+  --status-bg: #fdf6c9;
+  --status-fg: #7a5b00;
+
   /* the active slide's family, remapped per-slide below */
   --accent-bg: var(--surface-sunk);
   --accent-fg: var(--text);
 
   --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   --font-mono: ui-monospace, "Cascadia Code", "SF Mono", Consolas, "Liberation Mono", monospace;
+
+  /* --- dark code cells. Deliberately outside the five-family system:
+         a syntax theme is not a category, so these hues never sit next
+         to a family fill. Solid values only, as everywhere else. --- */
+  --code-bg: #1b1d23;
+  --code-fg: #e4e4ea;
+  --code-kw: #c792ea;
+  --code-str: #a5d6a7;
+  --code-fn: #82aaff;
+  --term-bg: #000000;
+  --term-fg: #ffffff;
+  --term-dim: #9aa0a6;
 
   --sidebar-w: 300px;
   --sidebar-w-collapsed: 60px;
@@ -605,6 +626,18 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
 }
 
 .split__desc strong { color: var(--text); font-weight: 600; }
+.split__desc em { color: var(--text); font-style: italic; }
+
+/* Same chip as .points code — a bare <code> only inherits the mono
+   family from the reset, so without this it would sit unstyled next to
+   an identical snippet one bullet away. */
+.split__desc code {
+  font-size: 0.92em;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: var(--surface-sunk);
+  color: var(--text);
+}
 
 
 /* --- stand-in for a diagram that has not been supplied yet --- */
@@ -618,6 +651,12 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
   border: 1px dashed var(--border-strong);
   border-radius: 10px;
 }
+
+/* Stand-in prose. Capped to a readable measure so the placeholder
+   previews the line length the real copy will have — the box runs the
+   full width of a slide, and an uncapped paragraph in it would set one
+   very long line and misrepresent the space. */
+.figure--placeholder > .tabs__lead { max-width: 74ch; }
 
 .figure__hint {
   font-family: var(--font-mono);
@@ -744,6 +783,58 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
   row-gap: clamp(8px, 1.2vh, 16px);
 }
 
+/* --- centred variant: the inner runs the full height and the auto
+       margins split the slack above and below, which centres the pair
+       in the space left under the title. align-items then centres the
+       shorter pane against the taller one, so bullets and card share
+       a middle line. Overrides .split's own align-items: start — same
+       specificity, so this has to stay after it. --- */
+.slide__inner:has(> .split--centered) {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* zoom, not transform: scale() — zoom reflows, so the text rewraps and
+   stays crisp exactly as a browser zoom would, where a transform would
+   just magnify a layout still measured at 100%. It is applied to the
+   content block and not to .slide__inner, because the inner carries
+   min-height: 100% for the centring: zoomed, that would resolve to a
+   third more than the slide's own height and the slide would always
+   scroll. The title therefore keeps the size it has on every other
+   slide. Dial --content-zoom to taste. */
+.split--centered {
+  margin-block: auto;
+  align-items: center;
+  zoom: var(--content-zoom, 1.333);
+}
+
+/* Two bare lists, no rule between them.
+   - The columns are respecified because .split reserves a middle auto
+     track for the rule. With no rule element to fill it, the second
+     pane would land in that track and be sized to max-content — a
+     column as wide as its longest unbreakable line. Two explicit
+     minmax(0, 1fr) tracks also drop the gutter from two gaps to one.
+   - Same centring as the security slide, near enough no magnification:
+     that slide pairs two short lists with a single card and has room
+     to spare, this one pairs four lists with snippets, and at 133% the
+     pair runs off the bottom edge. Set through the variable rather
+     than zoom itself, so the two cannot fight.
+   Ties with .split on specificity, so it has to stay after it. */
+.split--dense {
+  --content-zoom: 1.08;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  /* Boxes side by side want equal height, which is grid's own default.
+     .split--centered turns that off one rule above, so it goes back on
+     here — the centring this variant is after is the vertical one it
+     gets from margin-block, not this. */
+  align-items: stretch;
+}
+
+/* A row of its own across both columns, for a heading or an intro that
+   introduces the pair rather than belonging to either. */
+.split__full { grid-column: 1 / -1; }
+
 .split__heading--left  { grid-area: 1 / 1; }
 .split__heading--right { grid-area: 1 / 3; }
 .split--titled > .split__rule { grid-area: 1 / 2 / 3 / 3; }
@@ -845,6 +936,94 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
 }
 
 
+/* --- 401 / 403 card: the same flip, but a click anywhere on the face
+       turns it, and each side carries a title, a one-line question and
+       an illustration instead of a table. --- */
+
+/* Taller than the JSON card — the illustration needs the room, and it
+   keeps the card in balance with the bullet column beside it. */
+.flashcard--auth .flashcard__faces { min-height: clamp(312px, 55.2vh, 576px); }
+
+/* The card is sized to the illustration rather than to the column, and
+   centred in whatever is left over. --auth-card-w is the illustration's
+   own width: it is the single value to change if the source images do.
+   min() keeps it from ever outgrowing a narrow column. */
+.flashcard--auth {
+  --auth-card-w: 620px;
+  width: 100%;
+  max-width: min(100%, var(--auth-card-w));
+  margin-inline: auto;
+}
+
+/* Both sides read as a caption sitting above a picture, so the text
+   centres. */
+.flashcard--auth .flashcard__face {
+  align-items: center;
+  text-align: center;
+}
+
+/* The chip shares the title's line rather than sitting above it: its
+   offset matches the face's own padding, so the two line boxes start
+   together. It stays absolute, so it takes no part in the column and
+   pushes nothing down. */
+.flashcard--auth .flashcard__flip { top: clamp(14px, 1.8vw, 22px); }
+
+
+/* Stretched over the whole face so the card itself is the button.
+   Sits under the flip chip (z-index 2), which stays as the visible
+   cue, and inherits pointer-events from its face — so the side turned
+   away is inert exactly like the rest of the card. */
+.flashcard__hit {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  cursor: pointer;
+}
+
+/* The chip sits on this same line, so the title is inset by the chip's
+   footprint on BOTH sides — a one-sided gap would shift the centred
+   text off the card's axis. */
+.flashcard__title {
+  margin: 0;
+  padding-inline: clamp(58px, 6.6vw, 92px);
+  font-size: clamp(15px, 1.6vw, 22px);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  color: var(--accent-fg);
+}
+
+.flashcard__def {
+  margin: 0;
+  font-size: clamp(13px, 1.1vw, 16px);
+  color: var(--text-secondary);
+}
+
+/* Fetched from http.cat, so this is the one asset in the deck that
+   needs a live connection. It shrinks to the space left under the
+   title (min-height: 0 lets flex do that) and keeps its own ratio, so
+   it never stretches. No fill behind it on purpose: a tinted panel
+   would show through wherever the picture's ratio does not match the
+   box, which reads as a grey border round the image. */
+.flashcard__img {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+/* Caption under the illustration. flex-shrink: 0 so it keeps its line
+   when the picture above it is the part being squeezed. */
+.flashcard__note {
+  flex: 0 0 auto;
+  margin: 0;
+  font-size: clamp(10px, 0.70vw, 12px);
+  font-style: italic;
+  line-height: 1.4;
+  color: var(--text-tertiary);
+}
+
+
 /* --- plain data table, front of the flashcard --- */
 
 .data {
@@ -888,6 +1067,323 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
 }
 
 .code__key { color: var(--accent-fg); font-weight: 700; }
+
+/* Dark variants. Same specificity as .code, so they must stay after it. */
+.code--dark { background: var(--code-bg); color: var(--code-fg); }
+.code--term { background: var(--term-bg); color: var(--term-fg); }
+
+.code--dark .tok-kw  { color: var(--code-kw); }
+.code--dark .tok-str { color: var(--code-str); }
+.code--dark .tok-fn  { color: var(--code-fn); }
+.code--term .tok-dim { color: var(--term-dim); }
+.code--term .tok-str { color: var(--term-fg); }
+
+
+/* ============================================================
+   Request / Response anatomy — the colour-coded two-panel view.
+
+   Two independent radio groups drive it: the method (GET/POST)
+   swaps both panels, the view (Request/Python/Javascript/cURL)
+   swaps only the left one. Both groups sit ahead of the content
+   as siblings, so a chained "~" can require one of each.
+   ============================================================ */
+
+/* This slide runs the full height so the legend can sit on the floor.
+   The inner fills the slide and becomes the column; .rr takes the
+   slack, and the legend's auto margin drops it to the bottom edge —
+   which is the slide's own 2.5vh bottom padding, so the legend lands
+   2.5% off the screen bottom like every other margin in the deck. */
+.slide__inner:has(> .rr) {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.rr {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(10px, 1.6vh, 20px);
+}
+
+.rr__radio {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* --- title row: the method switch rides the top-right corner,
+       align-items centring it against the title's own height. --- */
+
+.rr__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(12px, 2vw, 28px);
+}
+
+.rr__head .slide__title { margin-bottom: 0; }
+
+.rr__methods {
+  flex: 0 0 auto;
+  display: flex;
+  gap: clamp(4px, 0.5vw, 7px);
+  padding: clamp(3px, 0.4vw, 5px);
+  background: var(--surface-sunk);
+  border-radius: 999px;
+}
+
+.rr__method {
+  padding: clamp(5px, 0.7vw, 9px) clamp(16px, 2.2vw, 34px);
+  border-radius: 999px;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: clamp(11px, 1.05vw, 14px);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+/* The method is the purple category, so the control borrows that hue
+   rather than the slide's accent. */
+#rr-get:checked  ~ .rr__head .rr__method[for="rr-get"],
+#rr-post:checked ~ .rr__head .rr__method[for="rr-post"] {
+  background: var(--foundations-bg);
+  color: var(--foundations-fg);
+}
+
+/* --- the two panels --- */
+
+/* Auto margins top and bottom split the leftover height evenly, which
+   centres the pair between the title row and the legend and pins the
+   legend to the floor at the same time. */
+.rr__grid {
+  margin-block: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  /* Two named rows — head and body — so both panels can borrow them. */
+  grid-template-rows: auto auto;
+  gap: clamp(12px, 1.8vw, 22px);
+}
+
+/* Each panel spans both rows and adopts them as its own, so the two
+   heads share one row and end up the same height however tall the
+   Request's view chips make it. Nothing to keep in sync by hand.
+   Without subgrid support the declaration is dropped and the panel
+   falls back to two auto rows of its own — today's look. */
+.panel {
+  min-width: 0;
+  display: grid;
+  grid-row: span 2;
+  grid-template-rows: subgrid;
+  /* One pinned column, NOT the implicit auto one. An auto track is sized
+     to max-content, and overflow: auto on the code block only zeroes its
+     minimum contribution — its max-content is still the longest line it
+     holds. So a wide snippet grew the track past the card, the head
+     stretched to that track, and space-between threw the view chips out
+     past the clipping edge. minmax(0, 1fr) ties the column to the card's
+     own width whatever the payload is. */
+  grid-template-columns: minmax(0, 1fr);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.panel__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(8px, 1.2vw, 14px);
+  padding: clamp(8px, 1.1vw, 14px) clamp(12px, 1.5vw, 18px);
+  border-bottom: 1px solid var(--border);
+}
+
+.panel__title {
+  margin: 0;
+  font-size: clamp(10px, 0.85vw, 12px);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.panel__views { display: flex; gap: clamp(2px, 0.3vw, 4px); }
+
+.rr__view {
+  padding: clamp(3px, 0.4vw, 5px) clamp(7px, 0.9vw, 12px);
+  border-radius: 6px;
+  color: var(--text-tertiary);
+  font-size: clamp(10px, 0.9vw, 12px);
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.rr__view:hover { color: var(--text-secondary); }
+
+#rr-v-request:checked ~ .rr__grid .rr__view[for="rr-v-request"],
+#rr-v-python:checked  ~ .rr__grid .rr__view[for="rr-v-python"],
+#rr-v-js:checked      ~ .rr__grid .rr__view[for="rr-v-js"],
+#rr-v-curl:checked    ~ .rr__grid .rr__view[for="rr-v-curl"] {
+  background: var(--surface-sunk);
+  color: var(--text);
+}
+
+/* A fixed viewport for the content, so switching method or view never
+   resizes the card however long the payload is. min-width: 0 so a long
+   line inside scrolls in its own box instead of widening this one. */
+.panel__body {
+  min-width: 0;
+  height: clamp(359px, 60vh, 628px);
+}
+
+.rr-panel {
+  display: none;
+  height: 100%;
+  min-height: 0;
+}
+
+.rr-panel--fields {
+  flex-direction: column;
+  gap: clamp(8px, 1vw, 12px);
+  padding: clamp(10px, 1.4vw, 18px);
+  overflow-y: auto;
+}
+
+.rr-panel--code {
+  flex-direction: column;
+  padding: clamp(10px, 1.4vw, 18px);
+  overflow: hidden;
+}
+
+.rr-panel--code > .code {
+  min-height: 0;
+  overflow: auto;
+}
+
+/* --- visibility: method x view on the left, method alone on the right --- */
+
+#rr-get:checked  ~ #rr-v-request:checked ~ .rr__grid .rr-panel--get-request,
+#rr-get:checked  ~ #rr-v-python:checked  ~ .rr__grid .rr-panel--get-python,
+#rr-get:checked  ~ #rr-v-js:checked      ~ .rr__grid .rr-panel--get-js,
+#rr-get:checked  ~ #rr-v-curl:checked    ~ .rr__grid .rr-panel--get-curl,
+#rr-post:checked ~ #rr-v-request:checked ~ .rr__grid .rr-panel--post-request,
+#rr-post:checked ~ #rr-v-python:checked  ~ .rr__grid .rr-panel--post-python,
+#rr-post:checked ~ #rr-v-js:checked      ~ .rr__grid .rr-panel--post-js,
+#rr-post:checked ~ #rr-v-curl:checked    ~ .rr__grid .rr-panel--post-curl,
+#rr-get:checked  ~ .rr__grid .rr-panel--get-response,
+#rr-post:checked ~ .rr__grid .rr-panel--post-response {
+  display: flex;
+}
+
+/* --- the colour-coded fields. Each category keeps its own hue, so
+       these reference the family tokens directly instead of the
+       slide's single --accent pair. --- */
+
+.field-row { display: flex; gap: clamp(8px, 1vw, 12px); }
+
+.field { border-radius: 8px; padding: clamp(7px, 0.9vw, 11px) clamp(9px, 1.1vw, 14px); }
+
+.field-row .field--method { flex: 0 0 auto; display: flex; align-items: center; }
+.field-row .field--endpoint { flex: 1 1 auto; min-width: 0; }
+
+.field--method   { background: var(--foundations-bg); }
+.field--endpoint { background: var(--anatomy-bg); }
+.field--headers  { background: var(--contract-bg); }
+.field--status   { background: var(--status-bg); }
+.field--body     { background: var(--horizon-bg); }
+
+.field__value {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: clamp(10px, 0.9vw, 13px);
+  line-height: 1.7;
+  font-variant-numeric: tabular-nums;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.field--method   .field__value { color: var(--foundations-fg); font-weight: 600; }
+.field--endpoint .field__value { color: var(--anatomy-fg); }
+.field--headers  .field__value { color: var(--contract-fg); }
+.field--status   .field__value { color: var(--status-fg); font-weight: 600; }
+.field--body     .field__value { color: var(--horizon-fg); }
+
+/* Teaching notes pointing at a line of the payload. Deliberately NOT
+   written as // comments: JSON has none, and a slide is the last place
+   to show syntax that would not parse. The arrow and the grey italic
+   read as annotation rather than data. */
+.field__note {
+  color: var(--text-tertiary);
+  font-style: italic;
+  font-weight: 400;
+}
+
+/* The payload is the one part that can run long. */
+.field--body .field__value {
+  max-height: clamp(152px, 28vh, 304px);
+  overflow: auto;
+}
+
+/* --- legend. On permanently: the response panel keeps its colour
+       coding on every view, so the key is needed even while the left
+       side is showing code. Auto margin floors it, align-self centres
+       it in the column. --- */
+
+.legend {
+  align-self: center;
+  padding-top: clamp(8px, 1.2vh, 16px);
+}
+
+.legend__grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: clamp(5px, 0.7vw, 9px);
+}
+
+.legend__item {
+  display: flex;
+  align-items: center;
+  gap: clamp(5px, 0.7vw, 9px);
+  padding: clamp(4px, 0.6vw, 7px) clamp(8px, 1vw, 12px);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.legend__swatch {
+  flex-shrink: 0;
+  width: clamp(12px, 1.2vw, 16px);
+  height: clamp(12px, 1.2vw, 16px);
+  border-radius: 4px;
+}
+
+.legend__swatch--method   { background: var(--foundations-bg); box-shadow: inset 0 0 0 1px var(--foundations-fg); }
+.legend__swatch--endpoint { background: var(--anatomy-bg);     box-shadow: inset 0 0 0 1px var(--anatomy-fg); }
+.legend__swatch--header   { background: var(--contract-bg);    box-shadow: inset 0 0 0 1px var(--contract-fg); }
+.legend__swatch--status   { background: var(--status-bg);      box-shadow: inset 0 0 0 1px var(--status-fg); }
+.legend__swatch--body     { background: var(--horizon-bg);     box-shadow: inset 0 0 0 1px var(--horizon-fg); }
+
+.legend__text { display: flex; flex-direction: column; line-height: 1.25; }
+
+.legend__label {
+  font-size: clamp(10px, 0.9vw, 13px);
+  font-weight: 600;
+  color: var(--text);
+}
+
+.legend__desc {
+  font-size: clamp(9px, 0.8vw, 12px);
+  color: var(--text-secondary);
+}
 
 
 /* ============================================================
@@ -946,8 +1442,8 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
   border-radius: 0 10px 10px 10px;
 }
 
-/* All three panels share one grid cell and the unselected ones are
-   hidden rather than removed, so the card is always as tall as its
+/* Every panel in a group shares one grid cell and the unselected ones
+   are hidden rather than removed, so the card is always as tall as its
    longest side and nothing jumps when a tab changes. */
 .tabs__panel {
   grid-area: 1 / 1;
@@ -976,7 +1472,11 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
 
 #style-rest:checked    ~ .tabs__bar .tabs__tab[for="style-rest"],
 #style-graphql:checked ~ .tabs__bar .tabs__tab[for="style-graphql"],
-#style-grpc:checked    ~ .tabs__bar .tabs__tab[for="style-grpc"] {
+#style-grpc:checked    ~ .tabs__bar .tabs__tab[for="style-grpc"],
+#live-key:checked      ~ .tabs__bar .tabs__tab[for="live-key"],
+#live-token:checked    ~ .tabs__bar .tabs__tab[for="live-token"],
+#infra-cache:checked   ~ .tabs__bar .tabs__tab[for="infra-cache"],
+#infra-lb:checked      ~ .tabs__bar .tabs__tab[for="infra-lb"] {
   background: var(--surface);
   border-bottom-color: var(--surface);
   color: var(--accent-fg);
@@ -985,7 +1485,11 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
 
 #style-rest:checked    ~ .tabs__body .tabs__panel--rest,
 #style-graphql:checked ~ .tabs__body .tabs__panel--graphql,
-#style-grpc:checked    ~ .tabs__body .tabs__panel--grpc {
+#style-grpc:checked    ~ .tabs__body .tabs__panel--grpc,
+#live-key:checked      ~ .tabs__body .tabs__panel--live-key,
+#live-token:checked    ~ .tabs__body .tabs__panel--live-token,
+#infra-cache:checked   ~ .tabs__body .tabs__panel--infra-cache,
+#infra-lb:checked      ~ .tabs__body .tabs__panel--infra-lb {
   visibility: visible;
 }
 
@@ -1059,6 +1563,203 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
 
 
 /* ============================================================
+   Live call — slide 13, the only component wired to the network.
+
+   Behaviour is in js/live.js. The colours are borrowed rather than
+   invented: the endpoint keeps its blue and the status pill reuses
+   the traffic light from the status-code table, so a 401 here is
+   the same rose the audience already met.
+   ============================================================ */
+
+.live {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(10px, 1.4vw, 16px);
+}
+
+.live__form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: clamp(8px, 1vw, 14px);
+}
+
+.live__field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+/* The key box takes whatever the city box leaves. */
+.live__field--grow { flex: 1 1 clamp(180px, 22vw, 320px); }
+
+.live__label {
+  font-size: clamp(10px, 0.85vw, 12px);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.live__hint {
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--text-tertiary);
+}
+
+.live__input {
+  width: 100%;
+  padding: clamp(6px, 0.8vw, 9px) clamp(8px, 1vw, 12px);
+  background: var(--surface-sunk);
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: clamp(11px, 1vw, 14px);
+}
+
+.live__input:focus-visible {
+  outline: 2px solid var(--accent-fg);
+  outline-offset: 1px;
+}
+
+.live__send {
+  flex: 0 0 auto;
+  padding: clamp(7px, 0.9vw, 10px) clamp(14px, 1.8vw, 24px);
+  background: var(--accent-fg);
+  border: 0;
+  border-radius: 6px;
+  color: #fff;
+  font-family: inherit;
+  font-size: clamp(11px, 1vw, 14px);
+  font-weight: 700;
+  cursor: pointer;
+  transition: filter 0.15s ease;
+}
+
+.live__send:hover { filter: brightness(1.1); }
+
+/* Step 3 stays dead until step 2 has issued a token — the sequence
+   is the lesson, so the button enforces it. */
+.live__send:disabled {
+  background: var(--border-strong);
+  color: var(--surface);
+  cursor: not-allowed;
+}
+
+/* The endpoint blue from the legend: this line is the URL, and on
+   this slide the credential is part of it. */
+.live__url {
+  margin: 0;
+  padding: clamp(7px, 0.9vw, 11px) clamp(9px, 1.1vw, 14px);
+  background: var(--anatomy-bg);
+  border-radius: 8px;
+  color: var(--anatomy-fg);
+  font-family: var(--font-mono);
+  font-size: clamp(10px, 0.9vw, 13px);
+  line-height: 1.6;
+  word-break: break-all;
+}
+
+.live__url strong { font-weight: 700; }
+
+/* --- the three-step token sequence --- */
+
+.live__steps {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(8px, 1vw, 12px);
+}
+
+.live__step {
+  display: flex;
+  align-items: center;
+  gap: clamp(9px, 1.1vw, 14px);
+}
+
+.live__num {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: clamp(21px, 2vw, 27px);
+  height: clamp(21px, 2vw, 27px);
+  border-radius: 999px;
+  background: var(--accent-bg);
+  color: var(--accent-fg);
+  font-family: var(--font-mono);
+  font-size: clamp(10px, 0.9vw, 13px);
+  font-weight: 700;
+}
+
+.live__step-body {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: clamp(8px, 1vw, 12px);
+  min-width: 0;
+}
+
+.live__step-title {
+  margin: 0;
+  font-size: clamp(12px, 1vw, 15px);
+  color: var(--text-secondary);
+}
+
+.live__step-title strong { color: var(--text); font-weight: 700; }
+
+.live__step-title code {
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: var(--surface-sunk);
+  color: var(--text);
+  font-size: 0.92em;
+}
+
+/* --- what came back --- */
+
+.live__out {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.live__status {
+  align-self: flex-start;
+  padding: 2px clamp(8px, 1vw, 12px);
+  border-radius: 999px;
+  background: var(--surface-sunk);
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+  font-size: clamp(10px, 0.9vw, 13px);
+  font-weight: 700;
+}
+
+.live__status--wait  { color: var(--text-secondary); }
+.live__status--ok    { background: var(--status-bg); color: var(--status-fg); }
+.live__status--denied,
+.live__status--error { background: var(--next-bg); color: var(--next-fg); }
+
+/* Dark like the code cells, because that is what it is: a console.
+   Capped and scrollable — a weather payload is longer than a slide. */
+.live__body {
+  margin: 0;
+  max-height: clamp(110px, 20vh, 230px);
+  overflow: auto;
+  padding: clamp(9px, 1.1vw, 14px);
+  background: var(--code-bg);
+  border-radius: 8px;
+  color: var(--code-fg);
+  font-size: clamp(10px, 0.9vw, 13px);
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+
+/* ============================================================
    Bullet lists
    ============================================================ */
 
@@ -1101,6 +1802,45 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
   border-radius: 4px;
   background: var(--surface-sunk);
   color: var(--text);
+}
+
+
+/* --- a labelled cluster of points, so several groups can share one
+       column and each keep its own heading --- */
+
+.point-group {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(6px, 0.9vh, 10px);
+}
+
+.point-group__label {
+  margin: 0;
+  font-size: clamp(11px, 0.95vw, 13px);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-fg);
+}
+
+/* Two groups share a half-width pane on the security slide, so the
+   points run smaller there. Must stay after the .points rules above:
+   the selectors tie on specificity, so source order is what carries
+   these through. */
+.points--tight { gap: clamp(7px, 1vh, 11px); }
+.points--tight li { padding-left: 22px; font-size: clamp(12px, 1vw, 15px); }
+.points--tight li::before { top: 0.5em; width: 8px; height: 8px; }
+
+/* Two points reading across instead of down, under a heading that
+   introduces both. Grid rather than a row of flex items so the pair
+   stays even whatever the sentences weigh, and max-width goes because
+   the 88ch cap is meant for one column of prose, not two. Same
+   specificity as .points, so it stays after it. */
+.points--cols {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  column-gap: clamp(16px, 2.6vw, 36px);
+  max-width: none;
 }
 
 
@@ -1163,6 +1903,7 @@ kbd {
   .concept-card--why { flex-direction: column; align-items: stretch; }
   .split { grid-template-columns: 1fr; }
   .split__rule { display: none; }
+  .points--cols { grid-template-columns: 1fr; }
   /* One column: drop the explicit placement and let the four children
      stack in DOM order — heading, heading, pane, pane — reordered so
      each heading keeps its own pane. */
@@ -1174,6 +1915,8 @@ kbd {
   .tabs__bar { flex-wrap: wrap; }
   .tabs__panel--grpc { grid-template-columns: 1fr; }
   .principles { grid-template-columns: 1fr; }
+  .rr__grid { grid-template-columns: 1fr; }
+  .field-row { flex-direction: column; }
 }
 
 
@@ -1195,7 +1938,7 @@ kbd {
   }
   .slide__inner { animation: none; }
   /* A handout cannot be flipped — unstack the card and print both sides. */
-  .flashcard__flip { display: none; }
+  .flashcard__flip, .flashcard__hit { display: none; }
   .flashcard__faces { height: auto; min-height: 0; transform: none; }
   .flashcard__face {
     position: static;
@@ -1213,4 +1956,19 @@ kbd {
     border-top: 1px solid var(--border);
   }
   .code { overflow: visible; white-space: pre-wrap; }
+  /* On paper the card sizes to its content instead of scrolling. The
+     view selected on screen is the one that prints; the switches
+     themselves are dropped since paper cannot be clicked. */
+  .panel__body { height: auto; }
+  .rr-panel--fields { overflow: visible; }
+  .field--body .field__value { max-height: none; overflow: visible; }
+  .rr__methods, .panel__views { display: none; }
+  /* Paper cannot call an API. The request stays on the handout as a
+     worked example; the controls that would send it do not. */
+  .live__send, .live__form, .live__status { display: none; }
+  .live__body { max-height: none; overflow: visible; }
+  /* No viewport to fill on paper — let the slides close up. */
+  .slide__inner:has(> .rr),
+  .slide__inner:has(> .split--centered) { min-height: 0; }
+  .legend { margin-top: 24px; }
 }

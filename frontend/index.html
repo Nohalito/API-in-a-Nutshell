@@ -92,7 +92,7 @@
           <li class="toc__item" data-family="contract">
             <span class="toc__num">3</span>
             <span class="toc__body">
-              <span class="toc__label">API Advanced</span>
+              <span class="toc__label">API Security</span>
               <span class="toc__desc">The contract's clauses, then who you are and what you may do</span>
               
             </span>
@@ -359,7 +359,7 @@
           <li class="toc__item" data-family="contract">
             <span class="toc__num">3</span>
             <span class="toc__body">
-              <span class="toc__label">API Advanced</span>
+              <span class="toc__label">API Security</span>
               <span class="toc__desc">The contract's clauses, then who you are and what you may do</span>
             </span>
           </li>
@@ -460,15 +460,12 @@
   rpc GetProduct (ProductRequest) returns (Product);
 }
 
-<span class="code__key">message</span> ProductRequest {
-  int32 id = 1;
-}
+<span class="code__key">message</span> ProductRequest { int32 id = 1; }
 
 <span class="code__key">message</span> Product {
-  int32  id       = 1;
-  string name     = 2;
-  double price    = 3;
-  bool   in_stock = 4;
+  int32  id    = 1;
+  string name  = 2;
+  double price = 3;
 }</code></pre>
             </div>
           </div>
@@ -476,10 +473,285 @@
       </div>
     </section>
 
-    <!-- ---------- 9. Axis: API Advanced ---------- -->
+    <!-- ---------- 9. Request & Response ---------- -->
+    <section class="slide slide--anatomy" data-nav-group="overview" data-family="anatomy">
+      <div class="slide__inner">
+        <div class="rr">
+          <input class="rr__radio" type="radio" name="rr-method" id="rr-get" checked>
+          <input class="rr__radio" type="radio" name="rr-method" id="rr-post">
+          <input class="rr__radio" type="radio" name="rr-view" id="rr-v-request" checked>
+          <input class="rr__radio" type="radio" name="rr-view" id="rr-v-python">
+          <input class="rr__radio" type="radio" name="rr-view" id="rr-v-js">
+          <input class="rr__radio" type="radio" name="rr-view" id="rr-v-curl">
+
+          <!-- The title lives inside .rr so the method switch can share
+               its row; the radios must stay ahead of both. -->
+          <div class="rr__head">
+            <h2 class="slide__title">Request &amp; Response: 2-in-1 package</h2>
+            <div class="rr__methods">
+              <label class="rr__method" for="rr-get">GET</label>
+              <label class="rr__method" for="rr-post">POST</label>
+            </div>
+          </div>
+
+          <div class="rr__grid">
+            <!-- ----- left: the request ----- -->
+            <article class="panel">
+              <div class="panel__head">
+                <h3 class="panel__title">Request</h3>
+                <div class="panel__views">
+                  <label class="rr__view" for="rr-v-request">Request</label>
+                  <label class="rr__view" for="rr-v-python">Python</label>
+                  <label class="rr__view" for="rr-v-js">Javascript</label>
+                  <label class="rr__view" for="rr-v-curl">cURL</label>
+                </div>
+              </div>
+              <div class="panel__body">
+
+                <div class="rr-panel rr-panel--fields rr-panel--get-request">
+                  <div class="field-row">
+                    <div class="field field--method"><p class="field__value">GET</p></div>
+                    <div class="field field--endpoint"><p class="field__value">https://catfact.ninja/fact</p></div>
+                  </div>
+                  <div class="field field--headers">
+<pre class="field__value">Content-Type: application/json
+Accept: application/json</pre>
+                  </div>
+                  <div class="field field--body">
+<pre class="field__value">&mdash; none &mdash;
+a GET asks for data, it sends none</pre>
+                  </div>
+                </div>
+
+                <div class="rr-panel rr-panel--code rr-panel--get-python">
+<pre class="code code--dark"><code><span class="tok-kw">import</span> requests
+
+response = requests.<span class="tok-fn">get</span>(
+    <span class="tok-str">"https://catfact.ninja/fact"</span>,
+    headers={
+        <span class="tok-str">"Content-Type"</span>: <span class="tok-str">"application/json"</span>,
+        <span class="tok-str">"Accept"</span>: <span class="tok-str">"application/json"</span>,
+    },
+)
+
+<span class="tok-fn">print</span>(response.status_code)
+<span class="tok-fn">print</span>(response.<span class="tok-fn">json</span>()[<span class="tok-str">"fact"</span>])</code></pre>
+                </div>
+
+                <div class="rr-panel rr-panel--code rr-panel--get-js">
+<pre class="code code--dark"><code><span class="tok-kw">const</span> response = <span class="tok-kw">await</span> <span class="tok-fn">fetch</span>(<span class="tok-str">"https://catfact.ninja/fact"</span>, {
+  method: <span class="tok-str">"GET"</span>,
+  headers: {
+    <span class="tok-str">"Content-Type"</span>: <span class="tok-str">"application/json"</span>,
+    Accept: <span class="tok-str">"application/json"</span>,
+  },
+});
+
+<span class="tok-kw">const</span> data = <span class="tok-kw">await</span> response.<span class="tok-fn">json</span>();
+console.<span class="tok-fn">log</span>(response.status);
+console.<span class="tok-fn">log</span>(data.fact);</code></pre>
+                </div>
+
+                <div class="rr-panel rr-panel--code rr-panel--get-curl">
+<pre class="code code--term"><code><span class="tok-dim">$</span> curl -X GET <span class="tok-str">'https://catfact.ninja/fact'</span> \
+     -H <span class="tok-str">'Content-Type: application/json'</span> \
+     -H <span class="tok-str">'Accept: application/json'</span>
+
+<span class="tok-dim">{"fact":"A cat&rsquo;s hearing is better than a dog&rsquo;s. And a cat can hear high-frequency sounds up to two octaves higher than a human.","length":119}</span></code></pre>
+                </div>
+
+                <div class="rr-panel rr-panel--fields rr-panel--post-request">
+                  <div class="field-row">
+                    <div class="field field--method"><p class="field__value">POST</p></div>
+                    <div class="field field--endpoint"><p class="field__value">https://dummyjson.com/carts/add</p></div>
+                  </div>
+                  <div class="field field--headers">
+<pre class="field__value">Content-Type: application/json</pre>
+                  </div>
+                  <div class="field field--body">
+<pre class="field__value">{
+  "userId": 1,
+  "products": [
+    {
+      "id": 98,
+      "quantity": 4
+    },
+    {
+      "id": 144,
+      "quantity": 1
+    }
+  ]
+}</pre>
+                  </div>
+                </div>
+
+                <div class="rr-panel rr-panel--code rr-panel--post-python">
+<pre class="code code--dark"><code><span class="tok-kw">import</span> requests
+
+response = requests.<span class="tok-fn">post</span>(
+    <span class="tok-str">"https://dummyjson.com/carts/add"</span>,
+    headers={<span class="tok-str">"Content-Type"</span>: <span class="tok-str">"application/json"</span>},
+    json={
+        <span class="tok-str">"userId"</span>: 1,
+        <span class="tok-str">"products"</span>: [
+            {<span class="tok-str">"id"</span>: 98, <span class="tok-str">"quantity"</span>: 4},
+            {<span class="tok-str">"id"</span>: 144, <span class="tok-str">"quantity"</span>: 1},
+        ],
+    },
+)
+
+cart = response.<span class="tok-fn">json</span>()
+<span class="tok-fn">print</span>(response.status_code)
+<span class="tok-fn">print</span>(cart[<span class="tok-str">"id"</span>], cart[<span class="tok-str">"total"</span>])</code></pre>
+                </div>
+
+                <div class="rr-panel rr-panel--code rr-panel--post-js">
+<pre class="code code--dark"><code><span class="tok-fn">fetch</span>(<span class="tok-str">"https://dummyjson.com/carts/add"</span>, {
+  method: <span class="tok-str">"POST"</span>,
+  headers: { <span class="tok-str">"Content-Type"</span>: <span class="tok-str">"application/json"</span> },
+  body: JSON.<span class="tok-fn">stringify</span>({
+    userId: 1,
+    products: [
+      { id: 98, quantity: 4 },
+      { id: 144, quantity: 1 },
+    ],
+  }),
+})
+  .<span class="tok-fn">then</span>((res) =&gt; res.<span class="tok-fn">json</span>())
+  .<span class="tok-fn">then</span>(console.log);</code></pre>
+                </div>
+
+                <div class="rr-panel rr-panel--code rr-panel--post-curl">
+<pre class="code code--term"><code><span class="tok-dim">$</span> curl -X POST <span class="tok-str">'https://dummyjson.com/carts/add'</span> \
+     -H <span class="tok-str">'Content-Type: application/json'</span> \
+     -d <span class="tok-str">'{
+  "userId": 1,
+  "products": [
+    { "id": 98,  "quantity": 4 },
+    { "id": 144, "quantity": 1 }
+  ]
+}'</span>
+
+<span class="tok-dim">{"id":51,"products":[...],"total":56044.95,"discountedTotal":55581,
+ "userId":1,"totalProducts":2,"totalQuantity":5}</span></code></pre>
+                </div>
+
+              </div>
+            </article>
+
+            <!-- ----- right: the response ----- -->
+            <article class="panel">
+              <div class="panel__head">
+                <h3 class="panel__title">Response</h3>
+              </div>
+              <div class="panel__body">
+
+                <div class="rr-panel rr-panel--fields rr-panel--get-response">
+                  <div class="field field--status"><p class="field__value">HTTP/1.1 200 OK</p></div>
+                  <div class="field field--headers">
+<pre class="field__value">Content-Type: application/json
+Date: Wed, 09 Sep 2026 14:31:07 GMT</pre>
+                  </div>
+                  <div class="field field--body">
+<pre class="field__value">{
+  "fact": "A cat&rsquo;s hearing is better than a dog&rsquo;s. And a cat can hear high-frequency sounds up to two octaves higher than a human.",
+  "length": 119
+}</pre>
+                  </div>
+                </div>
+
+                <div class="rr-panel rr-panel--fields rr-panel--post-response">
+                  <div class="field field--status"><p class="field__value">HTTP/1.1 200 OK</p></div>
+                  <div class="field field--headers">
+<pre class="field__value">Content-Type: application/json
+X-Response-Time: 56ms
+Date: Wed, 09 Sep 2026 14:32:45 GMT</pre>
+                  </div>
+                  <div class="field field--body">
+<pre class="field__value">{
+  "id": 51,
+  "products": [            <span class="field__note">&larr; products were added by id</span>
+    {
+      "id": 98,
+      "title": "Rolex Submariner Watch",
+      "price": 13999.99,
+      "quantity": 4,
+      "total": 55999.96,
+      "discountPercentage": 0.82,
+      "discountedPrice": 55541,
+      "thumbnail": "https://cdn.dummyjson.com/products/images/mens-watches/Rolex%20Submariner%20Watch/thumbnail.png"
+    },
+    {
+      "id": 144,
+      "title": "Cricket Helmet",
+      "price": 44.99,
+      "quantity": 1,
+      "total": 44.99,
+      "discountPercentage": 10.75,
+      "discountedPrice": 40,
+      "thumbnail": "https://cdn.dummyjson.com/products/images/sports-accessories/Cricket%20Helmet/thumbnail.png"
+    }
+  ],
+  "total": 56044.95,       <span class="field__note">&larr; total was calculated with quantity</span>
+  "discountedTotal": 55581,
+  "userId": 1,             <span class="field__note">&larr; user id is 1</span>
+  "totalProducts": 2,
+  "totalQuantity": 5       <span class="field__note">&larr; total quantity of items</span>
+}</pre>
+                  </div>
+                </div>
+
+              </div>
+            </article>
+          </div>
+
+          <div class="legend">
+            <div class="legend__grid">
+              <div class="legend__item">
+                <span class="legend__swatch legend__swatch--method"></span>
+                <span class="legend__text">
+                  <span class="legend__label">Method</span>
+                  <span class="legend__desc">HTTP verb</span>
+                </span>
+              </div>
+              <div class="legend__item">
+                <span class="legend__swatch legend__swatch--endpoint"></span>
+                <span class="legend__text">
+                  <span class="legend__label">Endpoint</span>
+                  <span class="legend__desc">Resource URL</span>
+                </span>
+              </div>
+              <div class="legend__item">
+                <span class="legend__swatch legend__swatch--header"></span>
+                <span class="legend__text">
+                  <span class="legend__label">Header</span>
+                  <span class="legend__desc">Request / response headers</span>
+                </span>
+              </div>
+              <div class="legend__item">
+                <span class="legend__swatch legend__swatch--status"></span>
+                <span class="legend__text">
+                  <span class="legend__label">Status</span>
+                  <span class="legend__desc">Response status line</span>
+                </span>
+              </div>
+              <div class="legend__item">
+                <span class="legend__swatch legend__swatch--body"></span>
+                <span class="legend__text">
+                  <span class="legend__label">Body</span>
+                  <span class="legend__desc">JSON payload</span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- 10. Axis: API Security ---------- -->
     <section class="slide slide--toc" data-nav-group="overview" data-family="contract">
       <div class="slide__inner">
-        <h2 class="slide__title">API Advanced</h2>
+        <h2 class="slide__title">API Security</h2>
 
         <ol class="toc">
           <li class="toc__item" data-family="foundations">
@@ -499,7 +771,7 @@
           <li class="toc__item toc__item--current" data-family="contract">
             <span class="toc__num">3</span>
             <span class="toc__body">
-              <span class="toc__label">API Advanced</span>
+              <span class="toc__label">API Security</span>
               <span class="toc__desc">The contract's clauses, then who you are and what you may do</span>
             </span>
           </li>
@@ -521,7 +793,272 @@
       </div>
     </section>
 
-    <!-- ---------- 10. Axis: API at Scale ---------- -->
+    <!-- ---------- 11. What about security? ---------- -->
+    <section class="slide slide--split" data-nav-group="overview" data-family="contract">
+      <div class="slide__inner">
+        <h2 class="slide__title">What about security ?</h2>
+
+        <div class="split split--centered">
+          <div class="split__pane">
+            <div class="point-group">
+              <h3 class="point-group__label">Context</h3>
+              <ul class="points points--tight">
+                <li>An API is a <strong>door onto your data</strong>, and its address is public. Anyone who knows the URL can knock.</li>
+                <li>Nothing in an HTTP call proves who sent it &mdash; the request we just built would run exactly the same from any laptop on earth.</li>
+                <li>So before an API answers your question, it answers <strong>two of its own</strong>.</li>
+              </ul>
+            </div>
+
+            <div class="point-group">
+              <h3 class="point-group__label">Stakes</h3>
+              <ul class="points points--tight">
+                <li><strong>The data.</strong> One unguarded endpoint can hand over the whole customer table in a single call.</li>
+                <li><strong>The bill.</strong> Calls are metered, and one key names the payer. A leaked key spends someone else&rsquo;s budget, and the someone else is you.</li>
+                <li><strong>The trust.</strong> A breach stops being a technical problem and becomes a legal one.</li>
+              </ul>
+            </div>
+          </div>
+
+          <span class="split__rule" aria-hidden="true"></span>
+
+          <div class="split__pane">
+            <div class="flashcard flashcard--auth">
+              <input class="flashcard__toggle" type="checkbox" id="auth-flip">
+              <label class="flashcard__flip" for="auth-flip">&#10227;&nbsp; Flip</label>
+
+              <div class="flashcard__faces">
+                <div class="flashcard__face flashcard__face--front">
+                  <label class="flashcard__hit" for="auth-flip" aria-label="Flip to 403, Authorization"></label>
+                  <h3 class="flashcard__title">Authentication</h3>
+                  <p class="flashcard__def">&ldquo;Who are you ?&rdquo;</p>
+                  <img class="flashcard__img" src="https://http.cat/401" alt="HTTP 401 Unauthorized, illustrated" referrerpolicy="no-referrer">
+                  <p class="flashcard__note">https://http.cat/401</p>
+                </div>
+
+                <div class="flashcard__face flashcard__face--back">
+                  <label class="flashcard__hit" for="auth-flip" aria-label="Flip back to 401, Authentication"></label>
+                  <h3 class="flashcard__title">Authorization</h3>
+                  <p class="flashcard__def">&ldquo;What may you do ?&rdquo;</p>
+                  <img class="flashcard__img" src="https://http.cat/403" alt="HTTP 403 Forbidden, illustrated" referrerpolicy="no-referrer">
+                  <p class="flashcard__note">https://http.cat/403</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- 12. Methods and Framework ---------- -->
+    <section class="slide slide--split" data-nav-group="overview" data-family="contract">
+      <div class="slide__inner">
+        <h2 class="slide__title">Methods and Framework</h2>
+        <p class="slide__lede slide__lede--wide">
+          The previous slide asked two questions. Each one has its own toolbox &mdash; and both toolboxes ship their answer in the same place: an HTTP header.
+        </p>
+
+        <div class="split split--titled">
+          <h3 class="split__heading split__heading--left">Authentication</h3>
+          <h3 class="split__heading split__heading--right">Authorization</h3>
+
+          <span class="split__rule" aria-hidden="true"></span>
+
+          <!-- ----- left: who are you ----- -->
+          <div class="split__pane split__pane--left">
+            <p class="split__desc">
+              Two ways to prove <strong>who is calling</strong>. Both are just a string in a header. What differs is whether the string <em>means</em> anything and how long it lives.
+            </p>
+
+            <div class="split__box">
+              <h4 class="split__title">API Key</h4>
+              <p class="split__desc">
+                A long random string the provider hands you once. The server keeps its own copy and compares the two.
+              </p>
+              <div class="field field--headers">
+<pre class="field__value">X-API-Key: 3f9a1c7e-84d2-4b6a-9e2f-7c1a5d9b0e42</pre>
+              </div>
+              <ul class="points points--tight">
+                <li><strong>Carries nothing.</strong> The string says nothing on its own &mdash; the server has to look it up to learn who you are.</li>
+                <li><strong>Never expires</strong> until somebody revokes it, which is exactly why a leaked key stays useful for years.</li>
+              </ul>
+            </div>
+
+            <div class="split__box">
+              <h4 class="split__title">JWT &mdash; JSON Web Token</h4>
+              <p class="split__desc">
+                Three chunks separated by dots: header, payload, signature. The payload is <strong>readable by anyone</strong>; the signature is what proves the server issued it.
+              </p>
+              <div class="field field--headers">
+<pre class="field__value">Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI0MiIsInJvbGUiOiJlZGl0b3IifQ.Kx8h&hellip;</pre>
+              </div>
+<pre class="code"><code><span class="code__key">payload</span>, decoded &mdash; no secret needed
+{ "sub": "42", "role": "editor", "exp": 1789243200 }</code></pre>
+              <ul class="points points--tight">
+                <li><strong>Carries its claims.</strong> Who you are, what role you hold, when it dies &mdash; all in the token, so no lookup.</li>
+                <li><strong>Expires on its own</strong>, often within the hour. A stolen token has a short life.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- ----- right: what may you do ----- -->
+          <div class="split__pane split__pane--right">
+            <p class="split__desc">
+              The API now knows who you are and decides <strong>what you may touch</strong>. RBAC is the model that answers it; OAuth is how the token carrying that answer gets issued.
+            </p>
+
+            <div class="split__box">
+              <h4 class="split__title">RBAC &mdash; Role-Based Access Control</h4>
+              <p class="split__desc">
+                Permissions are never granted to people. They are granted to <strong>roles</strong>, and people are handed a role &mdash; so a new joiner is one assignment, not twenty.
+              </p>
+              <ul class="method-list">
+                <li class="method">
+                  <span class="method__name">viewer</span>
+                  <span class="method__def"><strong>GET</strong> &mdash; may read the cart</span>
+                </li>
+                <li class="method">
+                  <span class="method__name">editor</span>
+                  <span class="method__def"><strong>GET, POST, PATCH</strong> &mdash; may add and change items</span>
+                </li>
+                <li class="method">
+                  <span class="method__name">admin</span>
+                  <span class="method__def">everything, <strong>DELETE</strong> included</span>
+                </li>
+              </ul>
+              <p class="split__desc">
+                The token above says <code>"role": "editor"</code>. So a <code>DELETE</code> comes back <strong>403</strong>, not 401 &mdash; authenticated, simply not authorized.
+              </p>
+            </div>
+
+            <div class="split__box">
+              <h4 class="split__title">OAuth 2.0 &mdash; the valet key</h4>
+              <p class="split__desc">
+                The one everybody has already used: every &ldquo;Sign in with Google&rdquo; button is OAuth. Its job is <strong>delegation</strong> &mdash; letting an app act for you without ever seeing your password.
+              </p>
+              <ul class="points points--tight">
+                <li>The app sends you to the provider. <strong>You</strong> log in there &mdash; never inside the app.</li>
+                <li>You approve a <strong>scope</strong>: <code>calendar.read</code>, not &ldquo;my whole account&rdquo;.</li>
+                <li>The app gets a short-lived token &mdash; usually a JWT &mdash; and calls the API with it. Revoke it any time, without changing your password.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- 13. Custom call, with security ----------
+         The only slide in the deck that touches the network. Its
+         behaviour lives in js/live.js, deliberately not in main.js,
+         so the deck controller stays what its header claims to be.
+
+         No credential is stored in this file. The appid box starts
+         empty, is filled at demo time, and its value never leaves the
+         browser — which is also the honest way to show a key on a
+         projector. -->
+    <section class="slide slide--live" data-nav-group="overview" data-family="contract">
+      <div class="slide__inner">
+        <h2 class="slide__title">Custom call, with security</h2>
+        <p class="slide__lede slide__lede--wide">
+          Two real calls against two real APIs, live. Same lesson twice: without the credential the door stays shut, with it you get your data. Nothing on this slide is a mock-up.
+        </p>
+
+        <div class="tabs">
+          <input class="tabs__radio" type="radio" name="live-view" id="live-key" checked>
+          <input class="tabs__radio" type="radio" name="live-view" id="live-token">
+
+          <div class="tabs__bar">
+            <label class="tabs__tab" for="live-key">API Key</label>
+            <label class="tabs__tab" for="live-token">Token &mdash; JWT</label>
+          </div>
+
+          <div class="tabs__body">
+
+            <!-- ----- bookmark 1: the key rides in the URL ----- -->
+            <div class="tabs__panel tabs__panel--live-key">
+              <p class="tabs__lead">
+                OpenWeatherMap wants its key <strong>in the URL</strong>, as <code>appid</code>. Convenient &mdash; and the reason the pattern is fading: the key lands in browser history, in server logs, and in every screenshot of this slide.
+              </p>
+
+              <div class="live" data-live="weather">
+                <div class="live__form">
+                  <label class="live__field">
+                    <span class="live__label">City</span>
+                    <input class="live__input" type="text" name="city" value="Delhi" size="12" autocomplete="off" spellcheck="false">
+                  </label>
+                  <label class="live__field live__field--grow">
+                    <span class="live__label">appid <span class="live__hint">never committed &mdash; paste it at demo time</span></span>
+                    <input class="live__input" type="password" name="key" placeholder="paste your OpenWeatherMap key" autocomplete="off" spellcheck="false">
+                  </label>
+                  <button class="live__send" type="button" data-action="weather">Send</button>
+                </div>
+
+                <p class="live__url"><strong>GET</strong> <span data-out="url">https://api.openweathermap.org/data/2.5/weather?q=Delhi&amp;appid=</span></p>
+
+                <div class="live__out" aria-live="polite">
+                  <span class="live__status" data-out="status">idle</span>
+                  <pre class="live__body" data-out="body">Send it once with the key box empty. That 401 is the previous slide, live.
+
+Then paste the key and send it again.</pre>
+                </div>
+              </div>
+            </div>
+
+            <!-- ----- bookmark 2: the token is issued, then presented ----- -->
+            <div class="tabs__panel tabs__panel--live-token">
+              <p class="tabs__lead">
+                dummyjson hands out a genuine JWT. Three calls, in this order: ask with nothing, log in, then ask again with what the login gave you. The credentials below are dummyjson&rsquo;s own public demo account.
+              </p>
+
+              <div class="live" data-live="token">
+                <div class="live__steps">
+                  <div class="live__step">
+                    <span class="live__num">1</span>
+                    <div class="live__step-body">
+                      <p class="live__step-title"><strong>GET</strong> <code>/auth/me</code> &mdash; carrying nothing</p>
+                      <button class="live__send" type="button" data-action="me-anon">Call it</button>
+                    </div>
+                  </div>
+
+                  <div class="live__step">
+                    <span class="live__num">2</span>
+                    <div class="live__step-body">
+                      <p class="live__step-title"><strong>POST</strong> <code>/auth/login</code></p>
+                      <label class="live__field">
+                        <input class="live__input" type="text" name="username" value="emilys" size="10" autocomplete="off" spellcheck="false" aria-label="username">
+                      </label>
+                      <label class="live__field">
+                        <input class="live__input" type="text" name="password" value="emilyspass" size="12" autocomplete="off" spellcheck="false" aria-label="password">
+                      </label>
+                      <button class="live__send" type="button" data-action="login">Log in</button>
+                    </div>
+                  </div>
+
+                  <div class="live__step">
+                    <span class="live__num">3</span>
+                    <div class="live__step-body">
+                      <p class="live__step-title"><strong>GET</strong> <code>/auth/me</code> &mdash; carrying the token</p>
+                      <button class="live__send" type="button" data-action="me-auth" disabled>Call it again</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="field field--headers">
+<pre class="field__value" data-out="token">Authorization: Bearer &mdash; nothing yet, step 2 issues it</pre>
+                </div>
+
+                <div class="live__out" aria-live="polite">
+                  <span class="live__status" data-out="status">idle</span>
+                  <pre class="live__body" data-out="body">Step 1 is the 401. Step 3 is the same call, same endpoint, one header heavier.</pre>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- 14. Axis: API at Scale ---------- -->
     <section class="slide slide--toc" data-nav-group="overview" data-family="horizon">
       <div class="slide__inner">
         <h2 class="slide__title">API at Scale</h2>
@@ -544,7 +1081,7 @@
           <li class="toc__item" data-family="contract">
             <span class="toc__num">3</span>
             <span class="toc__body">
-              <span class="toc__label">API Advanced</span>
+              <span class="toc__label">API Security</span>
               <span class="toc__desc">The contract's clauses, then who you are and what you may do</span>
             </span>
           </li>
@@ -566,7 +1103,103 @@
       </div>
     </section>
 
-    <!-- ---------- 11. Axis: Where to go next ---------- -->
+    <!-- ---------- 15. And for performance? ---------- -->
+    <section class="slide slide--split" data-nav-group="overview" data-family="horizon">
+      <div class="slide__inner">
+        <h2 class="slide__title">And for performance ?</h2>
+
+        <!-- One grid, three children. Context spans the pair and its two
+             bullets sit side by side under the label; the two contract
+             clauses take a column each below it. No rule and no panes —
+             .split--dense drops the third grid column the rule used to
+             occupy. -->
+        <div class="split split--centered split--dense">
+          <div class="point-group split__full">
+            <h3 class="point-group__label">Context</h3>
+            <ul class="points points--tight points--cols">
+              <li>One call is cheap. <strong>A thousand a second is not</strong> &mdash; and nothing in the request tells the server apart an eager client from a broken one.</li>
+              <li>So scale is answered at <strong>two levels</strong>: the <em>contract</em> fixes what a caller is allowed to ask for, and the <em>infrastructure</em> absorbs what is actually asked.</li>
+            </ul>
+          </div>
+
+          <div class="split__box">
+            <h3 class="point-group__label">Rate limiting</h3>
+            <p class="split__desc">
+              A ceiling on <strong>how many</strong> calls one caller may make per window. The API answers, and tells you where you stand.
+            </p>
+            <div class="field field--headers">
+<pre class="field__value">X-RateLimit-Limit: 1000
+X-RateLimit-Remaining: 0
+Retry-After: 37</pre>
+            </div>
+            <ul class="points points--tight">
+              <li>Every response carries your remaining budget, so a well-written client <strong>slows itself down</strong> before it gets stopped.</li>
+              <li>Cross the line and it is <strong>429 Too Many Requests</strong> &mdash; a refusal, not a failure. Wait <code>Retry-After</code> seconds and the same call works.</li>
+            </ul>
+          </div>
+
+          <div class="split__box">
+            <h3 class="point-group__label">Pagination</h3>
+            <p class="split__desc">
+              A ceiling on <strong>how much</strong> one call may return. The collection comes back in slices, and the response says how to walk them.
+            </p>
+<pre class="code"><code>GET /products?<span class="code__key">limit</span>=20&amp;<span class="code__key">skip</span>=40
+
+{ "products": [ &hellip;20 items&hellip; ],
+  "total": 194, "skip": 40, "limit": 20 }</code></pre>
+            <ul class="points points--tight">
+              <li><code>total</code> is the whole collection; <code>limit</code> and <code>skip</code> are your window onto it. Page 3 is simply <code>skip = 2 &times; limit</code>.</li>
+              <li>Never assume the first page is the answer. Reading 20 rows while <code>total</code> says 194 is the most common bug in a first integration.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- 16. Infrastructure Best Practices ----------
+         Placeholder content. Each page carries one lorem paragraph in a
+         dashed box until the real material lands — the tabs, the titles
+         and the wiring are final, only the prose is a stand-in. -->
+    <section class="slide slide--infra" data-nav-group="overview" data-family="horizon">
+      <div class="slide__inner">
+        <h2 class="slide__title">Infrastructure Best Practices</h2>
+        <p class="slide__lede slide__lede--wide">
+          The previous slide was the <strong>contract</strong> level &mdash; what a caller is allowed to ask for. This is the other one: what stands behind the API so that the calls it does allow stay fast, whatever the load.
+        </p>
+
+        <div class="tabs">
+          <input class="tabs__radio" type="radio" name="infra-practice" id="infra-cache" checked>
+          <input class="tabs__radio" type="radio" name="infra-practice" id="infra-lb">
+
+          <div class="tabs__bar">
+            <label class="tabs__tab" for="infra-cache">Caching</label>
+            <label class="tabs__tab" for="infra-lb">Load balancing</label>
+          </div>
+
+          <div class="tabs__body">
+            <div class="tabs__panel tabs__panel--infra-cache">
+              <div class="figure figure--placeholder">
+                <p class="tabs__lead">
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                </p>
+                <p class="figure__hint">placeholder &mdash; caching</p>
+              </div>
+            </div>
+
+            <div class="tabs__panel tabs__panel--infra-lb">
+              <div class="figure figure--placeholder">
+                <p class="tabs__lead">
+                  Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                </p>
+                <p class="figure__hint">placeholder &mdash; load balancing</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- 17. Axis: Where to go next ---------- -->
     <section class="slide slide--toc" data-nav-group="overview" data-family="next">
       <div class="slide__inner">
         <h2 class="slide__title">Where to go next</h2>
@@ -589,7 +1222,7 @@
           <li class="toc__item" data-family="contract">
             <span class="toc__num">3</span>
             <span class="toc__body">
-              <span class="toc__label">API Advanced</span>
+              <span class="toc__label">API Security</span>
               <span class="toc__desc">The contract's clauses, then who you are and what you may do</span>
             </span>
           </li>
@@ -619,5 +1252,8 @@
   <div class="hud__bar"><div class="hud__fill" id="hud-fill"></div></div>
 
   <script src="js/main.js"></script>
+  <!-- Slide 13 only. Loaded second so the deck is already built and
+       rendered before anything can reach for the network. -->
+  <script src="js/live.js"></script>
 </body>
 </html>

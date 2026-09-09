@@ -182,6 +182,15 @@
     /* Leave browser and OS shortcuts alone. */
     if (event.ctrlKey || event.metaKey || event.altKey) return;
 
+    /* Slide 13 has real text boxes, and Space, Enter and the arrows
+       belong to whoever is typing in one — not to the deck. Scoped to
+       .live rather than to input elements in general, because every
+       other interactive part of the deck is a hidden radio or
+       checkbox: clicking one of those labels leaves focus on the
+       input, and a blanket check would quietly hand the arrow keys to
+       the tab strip instead of advancing the slide. */
+    if (event.target.closest && event.target.closest('.live')) return;
+
     var key = event.key;
 
     if (NEXT.indexOf(key) !== -1) {
