@@ -4,7 +4,8 @@
    Responsibilities:
    1. Build the sidebar table of contents from the slides in the DOM,
       so the deck markup stays the single source of truth.
-   2. Keyboard-only navigation. No click handlers anywhere — by design.
+   2. Keyboard-only navigation, including build steps within a slide.
+      No click handlers anywhere — by design.
    3. Keep the progress bar and the URL hash in sync.
    ============================================================ */
 
@@ -21,6 +22,7 @@
   if (!slides.length) return;
 
   var index = 0;
+  var step = 0;
 
   /* ----------------------------------------------------------
      Sidebar: one "Overview" entry for the cover + TOC slides,
@@ -126,10 +128,40 @@
     }
   }
 
+  /* ----------------------------------------------------------
+     Build steps — a slide that reveals itself in stages.
+
+     data-steps="n" on the section declares how many times the deck
+     pauses on it before moving on; the controller mirrors how far it
+     has got in data-step on the same element, and the stylesheet does
+     the rest. Nothing here knows what a step shows.
+
+     The count is not in the URL: the hash addresses slides, and a
+     reload should land on the whole slide rather than half of one.
+     ---------------------------------------------------------- */
+
+  function stepsOn(slide) {
+    return parseInt(slide.dataset.steps, 10) || 0;
+  }
+
+  function setStep(value) {
+    var slide = slides[index];
+    step = Math.max(0, Math.min(stepsOn(slide), value));
+    if (step) {
+      slide.dataset.step = step;
+    } else {
+      slide.removeAttribute('data-step');
+    }
+  }
+
   function goTo(next) {
     var clamped = Math.max(0, Math.min(slides.length - 1, next));
     if (clamped === index) return;
+    /* Arriving backwards lands on the slide as it was left — fully
+       built. Arriving forwards starts it from the beginning. */
+    var backwards = clamped < index;
     index = clamped;
+    setStep(backwards ? stepsOn(slides[index]) : 0);
     render();
   }
 
@@ -193,14 +225,24 @@
 
     var key = event.key;
 
+    /* A slide with steps left to build spends one before the deck
+       moves on, and winds one back before it goes back. */
     if (NEXT.indexOf(key) !== -1) {
       event.preventDefault();
+      if (step < stepsOn(slides[index])) {
+        setStep(step + 1);
+        return;
+      }
       goTo(index + 1);
       return;
     }
 
     if (PREV.indexOf(key) !== -1) {
       event.preventDefault();
+      if (step > 0) {
+        setStep(step - 1);
+        return;
+      }
       goTo(index - 1);
       return;
     }
@@ -246,6 +288,7 @@
   buildSidebar();
   restoreCollapsed();
   index = indexFromHash();
+  setStep(0);
   deck.classList.add('is-ready');
   render();
 })();

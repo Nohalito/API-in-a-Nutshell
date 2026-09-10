@@ -65,6 +65,12 @@
   --sidebar-w: 300px;
   --sidebar-w-collapsed: 60px;
   --progress-h: 3px;
+
+  /* A token rather than a literal in .slide__title, because anything
+     set beside a title has to be measured against it — see
+     .slide__title-art, which is sized off this and so tracks the
+     heading across every screen width. */
+  --title-size: clamp(30px, 3.6vw, 46px);
 }
 
 /* Family remap. Any element carrying data-family exposes that hue
@@ -289,6 +295,7 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
   .slide__inner { animation: none; }
   body { transition: none; }
   .flashcard__faces { transition: none; }
+  .figure--swap > .figure__img { transition: none; }
 }
 
 .eyebrow {
@@ -302,10 +309,38 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
 
 .slide__title {
   margin: 0 0 12px;
-  font-size: clamp(30px, 3.6vw, 46px);
+  font-size: var(--title-size);
   line-height: 1.1;
   letter-spacing: -0.015em;
   text-wrap: balance;
+}
+
+/* --- a title with an illustration beside it. The heading is a flex
+       item, so it shrinks to its own text instead of running the full
+       width, and the image sits directly against the end of it rather
+       than out at the far margin. The row carries the title's bottom
+       margin and the title gives it up, so the gap under the pair is
+       the one every other slide has. --- */
+
+.slide__titlerow {
+  display: flex;
+  align-items: center;
+  gap: clamp(10px, 1.4vw, 18px);
+  margin-bottom: 12px;
+}
+
+.slide__titlerow > .slide__title { margin-bottom: 0; }
+
+/* Measured off the heading's own size, so the row is no taller than a
+   title alone would be and nothing below it moves — 1.25 against a
+   line box of 1.1 lets the art overhang the text slightly, which is
+   what stops it reading as a full stop at the end of the sentence.
+   alt="" in the markup: it illustrates a point the slide already
+   makes, so a screen reader should skip it. */
+.slide__title-art {
+  flex: 0 0 auto;
+  width: auto;
+  height: calc(var(--title-size) * 1.25);
 }
 
 
@@ -674,6 +709,78 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
 }
 
 
+/* Same centring as the TCP/IP diagram below, and for the same reason:
+   .figure is width: fit-content, so a diagram narrower than its
+   container hugs the start edge while the prose around it runs the full
+   width, and the block reads lopsided. Two properties because the
+   containers differ — a flex column on the HTTP slide, a grid cell in
+   the infrastructure tabs. */
+.figure--centered {
+  align-self: center;
+  margin-inline: auto;
+}
+
+/* --- two states of one diagram, shown together. Wide enough that the
+       labels inside them survive a projector only because the panel
+       runs the full width of the slide; justify-items keeps the pair
+       against the middle when the height cap makes an image narrower
+       than its column. --- */
+
+.figure-pair {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(16px, 2.4vw, 32px);
+  align-items: start;
+  justify-items: center;
+}
+
+/* Same treatment as .point-group__label — a small caps label in the
+   slide's own hue, which on the infrastructure slide is the orange the
+   diagrams are drawn in. */
+.figure__caption {
+  margin-top: clamp(6px, 0.8vw, 10px);
+  font-size: clamp(11px, 0.95vw, 13px);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--accent-fg);
+}
+
+
+/* The TCP/IP diagram: centred across its column rather than flush left
+   — .figure is width: fit-content, so without this it hugs the start
+   edge of the pane. zoom rather than a taller max-height for the 15%,
+   because the source is 498x332 and on a tall screen it already renders
+   under the cap, where raising the cap would change nothing; zoom scales
+   the figure as laid out, whichever of the two is binding, and reflows
+   the pane around it. */
+.figure--tcpip {
+  align-self: center;
+  zoom: 1.15;
+}
+
+
+/* --- two states of one diagram, cross-faded in place. Both images sit
+       in the same grid cell, so the figure is sized by them rather than
+       by the visible one, and nothing around it moves on the swap. The
+       two files are the same 498x332, which is what makes the second
+       land exactly on the first. Driven by data-step on the slide,
+       which js/main.js advances on the right arrow. --- */
+
+.figure--swap { display: grid; }
+
+.figure--swap > .figure__img {
+  grid-area: 1 / 1;
+  transition: opacity 0.45s ease;
+}
+
+.figure--swap > .figure__img--after { opacity: 0; }
+
+.slide[data-step="1"] .figure--swap > .figure__img       { opacity: 0; }
+.slide[data-step="1"] .figure--swap > .figure__img--after { opacity: 1; }
+
+
 /* --- stand-in for a diagram that has not been supplied yet --- */
 
 .figure--placeholder {
@@ -823,7 +930,8 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
        shorter pane against the taller one, so bullets and card share
        a middle line. Overrides .split's own align-items: start — same
        specificity, so this has to stay after it. --- */
-.slide__inner:has(> .split--centered) {
+.slide__inner:has(> .split--centered),
+.slide__inner:has(> .split--vcenter) {
   min-height: 100%;
   display: flex;
   flex-direction: column;
@@ -842,6 +950,14 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
   align-items: center;
   zoom: var(--content-zoom, 1.333);
 }
+
+/* The centring half of the variant above and nothing else: no zoom, and
+   no align-items, so a block that already sizes itself — .split--titled,
+   whose headings have to stay on one line with each other, or a plain
+   .split whose two boxes should keep their own heights — keeps its own
+   layout and simply sits in the middle of the space left under the
+   title instead of hanging from it. */
+.split--vcenter { margin-block: auto; }
 
 /* Two bare lists, no rule between them.
    - The columns are respecified because .split reserves a middle auto
@@ -968,6 +1084,31 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
   font-size: clamp(11px, 0.95vw, 13px);
   color: var(--text-tertiary);
 }
+
+
+/* --- JSON card: sized to its own content instead of to the column.
+       The base card is flex: 1 1 auto, so it stretches to the grid row,
+       which the TCP/IP diagram beside it sets — that left a box far
+       taller than the snippet in it. Fixed here, and the auto margins
+       centre what is now a shorter card against that column. --- */
+
+.flashcard--json {
+  flex: 0 0 auto;
+  margin-block: auto;
+}
+
+/* The faces are absolutely positioned and cannot push the card taller
+   themselves, so this floor is what the card measures. It is read off
+   the back face: fifteen lines of code at clamp(11px, 1vw, 14px) plus
+   the caption and two sets of padding, which is why it tracks vw and
+   not vh. Cut lines from the snippet and this comes down with them. */
+.flashcard--json .flashcard__faces { min-height: clamp(300px, 29.3vw, 440px); }
+
+/* The table is far shorter than a card sized for the JSON, so it sits in
+   the middle of what is left under the caption rather than clinging to
+   it. Auto margins on a flex item: the free space splits above and
+   below. */
+.flashcard--json .flashcard__face--front .data { margin-block: auto; }
 
 
 /* --- 401 / 403 card: the same flip, but a click anywhere on the face
@@ -1948,6 +2089,7 @@ kbd {
   .split__pane--right    { grid-area: auto; order: 4; }
   .tabs__bar { flex-wrap: wrap; }
   .tabs__panel--grpc { grid-template-columns: 1fr; }
+  .figure-pair { grid-template-columns: 1fr; }
   .principles { grid-template-columns: 1fr; }
   .rr__grid { grid-template-columns: 1fr; }
   .field-row { flex-direction: column; }
@@ -1981,6 +2123,9 @@ kbd {
     transform: none;
     backface-visibility: visible;
   }
+  /* No arrow key on paper — unstack the two states and print both. */
+  .figure--swap { display: flex; gap: 12px; }
+  .figure--swap > .figure__img { opacity: 1 !important; }
   /* Nothing to click on paper either — unstack and print all three. */
   .tabs__body { display: block; }
   .tabs__panel { visibility: visible; }

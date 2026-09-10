@@ -162,16 +162,16 @@
           HTTP is the protocol the web talks over: a client sends a <strong>request</strong>, a server sends back a <strong>response</strong>, and the exchange ends there — every call is a fresh one, and nothing is remembered in between.
         </p>
 
-        <div class="split">
+        <div class="split split--vcenter">
           <div class="split__box">
             <h3 class="split__title">CRUD &amp; the request/response format</h3>
             <p class="split__desc">
               Four operations cover nearly everything you will ever do to a resource — create it, read it, update it, delete it. HTTP gives each one a verb.
             </p>
 
-            <div class="figure figure--placeholder">
-              <span class="figure__hint">Request / response format — image to come</span>
-            </div>
+            <figure class="figure figure--centered">
+              <img class="figure__img" src="assets/http-request2.png" alt="A browser on the left and a web server on the right. An arrow from the browser to the server is labelled HTTP request; an arrow back from the server to the browser is labelled HTML response.">
+            </figure>
 
             <ul class="method-list">
               <li class="method">
@@ -246,24 +246,28 @@
       </div>
     </section>
 
-    <!-- ---------- 6. Prerequisites: JSON & TCP/IP ---------- -->
-    <section class="slide slide--split" data-nav-group="overview" data-family="foundations">
+    <!-- ---------- 6. Prerequisites: JSON & TCP/IP ----------
+         data-steps: the right arrow spends a step here before it moves
+         on. The one step swaps the TCP/IP diagram for the portal one —
+         the layers vanish and the two Application boxes talk straight
+         through, which is the "trusts the layers below" line beside it. -->
+    <section class="slide slide--split" data-nav-group="overview" data-family="foundations" data-steps="1">
       <div class="slide__inner">
         <h2 class="slide__title">Prerequisites: JSON &amp; TCP/IP</h2>
 
-        <div class="split split--titled">
+        <div class="split split--titled split--vcenter">
           <h3 class="split__heading split__heading--left">JSON</h3>
           <h3 class="split__heading split__heading--right">TCP/IP</h3>
           <span class="split__rule" aria-hidden="true"></span>
 
           <div class="split__pane split__pane--left">
-            <div class="flashcard">
+            <div class="flashcard flashcard--json">
               <input class="flashcard__toggle" type="checkbox" id="json-flip">
               <label class="flashcard__flip" for="json-flip">&#10227;&nbsp; Flip</label>
 
               <div class="flashcard__faces">
                 <div class="flashcard__face flashcard__face--front">
-                  <p class="flashcard__caption">Three rows, the way a spreadsheet would hold them</p>
+                  <p class="flashcard__caption">Two rows, the way a spreadsheet would hold them</p>
                   <table class="data">
                     <thead>
                       <tr>
@@ -286,12 +290,6 @@
                         <td>219.00</td>
                         <td>false</td>
                       </tr>
-                      <tr>
-                        <td>3</td>
-                        <td>Webcam</td>
-                        <td>74.50</td>
-                        <td>true</td>
-                      </tr>
                     </tbody>
                   </table>
                 </div>
@@ -310,12 +308,6 @@
     <span class="code__key">"product"</span>: "Monitor",
     <span class="code__key">"price"</span>: 219.00,
     <span class="code__key">"in_stock"</span>: false
-  },
-  {
-    <span class="code__key">"id"</span>: 3,
-    <span class="code__key">"product"</span>: "Webcam",
-    <span class="code__key">"price"</span>: 74.50,
-    <span class="code__key">"in_stock"</span>: true
   }
 ]</code></pre>
                 </div>
@@ -328,8 +320,9 @@
               TCP/IP is the four-layer stack every internet exchange rides on. It cuts a message into packets, routes them across whatever networks sit in between, and puts them back in order at the far end. HTTP lives on the top layer and simply <strong>trusts the layers below</strong> to deliver — which is why an API call never has to think about cables, Wi-Fi or undersea fibre.
             </p>
 
-            <figure class="figure">
+            <figure class="figure figure--tcpip figure--swap">
               <img class="figure__img" src="assets/TCP-IP.png" alt="Two servers, each stacking the four TCP/IP layers — Application, Transport, Internet, Network Access. The message goes down the sender's stack, across the internet, and back up the receiver's.">
+              <img class="figure__img figure__img--after" src="assets/portal-tcp-ip.png" alt="The same two servers with the three lower layers gone: each Application box now opens straight onto a portal, orange on one side, blue on the other.">
             </figure>
           </div>
         </div>
@@ -1106,7 +1099,11 @@ Then paste the key and send it again.</pre>
     <!-- ---------- 15. And for performance? ---------- -->
     <section class="slide slide--split" data-nav-group="overview" data-family="horizon">
       <div class="slide__inner">
-        <h2 class="slide__title">And for performance ?</h2>
+        <div class="slide__titlerow">
+          <h2 class="slide__title">And for performance ?</h2>
+          <!-- Decorative: the answer the slide is about to give. -->
+          <img class="slide__title-art" src="assets/server-overload.png" alt="">
+        </div>
 
         <!-- One grid, three children. Context spans the pair and its two
              bullets sit side by side under the label; the two contract
@@ -1157,9 +1154,9 @@ Retry-After: 37</pre>
     </section>
 
     <!-- ---------- 16. Infrastructure Best Practices ----------
-         Placeholder content. Each page carries one lorem paragraph in a
-         dashed box until the real material lands — the tabs, the titles
-         and the wiring are final, only the prose is a stand-in. -->
+         Each tab is a diagram and nothing else — the two panels share one
+         grid cell, so they want to be about the same height, and the
+         load-balancing pair is sized to land near the caching one. -->
     <section class="slide slide--infra" data-nav-group="overview" data-family="horizon">
       <div class="slide__inner">
         <h2 class="slide__title">Infrastructure Best Practices</h2>
@@ -1178,20 +1175,24 @@ Retry-After: 37</pre>
 
           <div class="tabs__body">
             <div class="tabs__panel tabs__panel--infra-cache">
-              <div class="figure figure--placeholder">
-                <p class="tabs__lead">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                </p>
-                <p class="figure__hint">placeholder &mdash; caching</p>
-              </div>
+              <figure class="figure figure--centered">
+                <img class="figure__img" src="assets/caching.png" alt="A browser and a web server exchanging a request and a response. A second pair of arrows runs from the browser down to two stores — a local cache and a server cache — labelled store for later use.">
+              </figure>
             </div>
 
+            <!-- The same diagram twice, at the two layers a balancer can
+                 work on. Side by side rather than one after the other:
+                 the whole point is what changes between them. -->
             <div class="tabs__panel tabs__panel--infra-lb">
-              <div class="figure figure--placeholder">
-                <p class="tabs__lead">
-                  Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                </p>
-                <p class="figure__hint">placeholder &mdash; load balancing</p>
+              <div class="figure-pair">
+                <figure class="figure">
+                  <img class="figure__img" src="assets/load-balancer-application-layer.png" alt="A browser sends a mixed stream of requests to a load balancer working at the application layer. It reads each URL and sends /users, /products and /images each to a server dedicated to that path.">
+                  <figcaption class="figure__caption">Application layer</figcaption>
+                </figure>
+                <figure class="figure">
+                  <img class="figure__img" src="assets/load-balancer-transport-layer.png" alt="The same browser and balancer at the transport layer. The URLs are not visible to it, so the same mix of GET, POST and DELETE calls is spread across three interchangeable servers.">
+                  <figcaption class="figure__caption">Transport layer</figcaption>
+                </figure>
               </div>
             </div>
           </div>

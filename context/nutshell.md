@@ -124,8 +124,8 @@ Application Programming Interface (API): A connection between computers or compu
 
 - Features
     - Rate limiting
-    - Pagination
-    - URL & Query parameters
+    - Sorting, pagination, filtering
+    - URL & Query parameters    
     - Idempotency
     - Versionning
 
@@ -164,3 +164,5 @@ Application Programming Interface (API): A connection between computers or compu
     - enable compression
 
 > Highlight said performance feature with illustration/diagram.
+
+## 5°/ What's next ?
