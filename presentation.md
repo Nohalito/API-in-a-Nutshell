@@ -205,20 +205,44 @@ fetch('https://dummyjson.com/carts/add', {
 
 - Title
 
-""
+"Live call"
 
 - Main frame 
 
-Same display as call and request.  
-Remove python, js & curl, only request display  
-Add a make API call button.
-The API call shall be a 2 in 1:  
-First :
-API call to https://catfact.ninja/fact
-Only keep the brief minimum in the header
+Same display as call and request (index.html line 469 to 742), but with some changes:
+```
+Remove the panel view buttons, the base display should the one of the "request" view.
+Remove the legend.
+Make the endpoint part editable while keeping the same blueish display.
+Same for the body part
+At the top right of the request box, make a button of the axis color (blue). Said button should make an API call based on the input. 
+
+For the response, make all content responsive to the API call response.
+For the header response, content-type will remain fixed, but date will change. Add the timing (delay between call and response).
+Make the orange body box adapt it size to the json output.
+Same for the response box, if the json too big, it's the page that will became scrollable.
+
+For the GET display, make the default endpoint to https://catfact.ninja/fact
+For the POST display, make the default endpoint and body using this cURL request:
+curl -X POST https://api.mcp-for-no.com/v1/tools/call \
+  -H "Content-Type: application/json" \
+  -d '{"method":"getRandomNo","params":{"category":"humorous"}}'
+
+# category: // optional: polite, humorous, professional, creative
+
+https://github.com/Koneisto/no-as-a-service
+```
 
 ### 2.4°/ Features
 
+- Title
+
+"Features"
+
+- Main frame: feature title, quick explanation and image in a carousel
+
+In a global carousel, each "image" should be a card containing a feature name, a short & quick description in a quote, and the associated image.
+The feature are in idempotency.png, rate-limiting.png, url-and-query-parameters.png, and versionning.png in the assets/ folder.
 
 
 ## 3°/ API Security
@@ -265,6 +289,10 @@ Define RBAC as a whole.
 Introduce most used method: OAuth
 
 ### 3.3°/ Special => Custom call with security
+
+- Title
+
+"Thou shall not pass"
 
 - API Key
 
@@ -337,6 +365,24 @@ fetch('https://dummyjson.com/auth/refresh', {
 })
 .then(res => res.json())
 .then(console.log);
+
+---
+
+- Rework page 16 index.html line 1132 to 1242
+
+First, drop the current template while keeping the page actual content. Use the template of the live call page (index.html, line 744 to 847) instead.
+2 pages will be made, one for the API key example, one for the Token - JWT case.
+Change the send button blue color to the current axis Green color.
+Adapt the GET/POST top right button color to the green combo of the axis.
+
+API key:
+  - Remove the GET/POST top right button of it.
+  - highlight the "?=city" and "appid=" part. Only make these editable.
+
+Token - JWT:
+  - Change the GET/POST top right button of it to have 3 values: 1st Call, Login, 2nd Call.  
+  - Using the live call template, make 3 request/response pair according to the previous example using dummyjson.
+
 
 ## 4°/ API at scale
 ### 4.1°/ Context & Utility of scale + Contract

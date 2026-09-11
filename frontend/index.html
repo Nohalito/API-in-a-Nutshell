@@ -120,37 +120,13 @@
     <section class="slide slide--concepts" data-nav-group="overview" data-family="foundations">
       <div class="slide__inner">
         <h2 class="slide__title">API, Kesako?</h2>
-        <ul class="concept-grid concept-grid--triangle">
-          <li class="concept-card">
-            <div class="concept-card__cols">
-              <p class="concept-card__desc"><strong>Application Programming Interface (API)</strong>: a connection between computers or computer programs.</p>
-              <span class="concept-card__arrow" aria-hidden="true">&rarr;</span>
-              <div class="concept-card__col">
-                <span class="concept-card__icon"><img src="assets/cable.svg" alt=""></span>
-                <p class="concept-card__desc">Metal conducts electricity, but only a cable does it safely and consistently — an API is that same framework, connecting two programs the way a cable connects two outlets.</p>
-              </div>
-            </div>
-          </li>
-          <li class="concept-card concept-card--why">
-            <span class="concept-card__title">Why?</span>
-            <div class="concept-card__branches">
-              <div class="concept-card__row">
-                <span class="concept-card__arrow concept-card__arrow--up" aria-hidden="true">&#8599;</span>
-                <span class="concept-card__icon"><img src="assets/library.svg" alt=""></span>
-                <span class="concept-card__row-label">Borrow data</span>
-              </div>
-              <div class="concept-card__row">
-                <span class="concept-card__arrow concept-card__arrow--down" aria-hidden="true">&#8600;</span>
-                <span class="concept-card__icon"><img src="assets/server-borrow_logic.svg" alt=""></span>
-                <span class="concept-card__row-label">Borrow logic</span>
-              </div>
-            </div>
-          </li>
-          <li class="concept-card concept-card--example">
-            <span class="concept-card__icon"><img src="assets/google-map-icon.svg" alt=""></span>
-            <span class="concept-card__title">Google Maps</span>
-          </li>
-        </ul>
+        <!-- The cards this slide used to build in markup, supplied as one
+             drawing instead: the layout wanted arrows and branch lines that
+             HTML makes expensive and a drawing makes free. Title still lives
+             here, so the sidebar and the print sheet see a normal slide. -->
+        <figure class="figure figure--centered">
+          <img class="figure__img" src="assets/kesako.png" alt="Two cards side by side. The first reads &quot;API — Application Programming Interface: a connection between computers or computer programs.&quot; The second, under a cable icon: metal conducts electricity, but only a cable does it safely and consistently — an API is that same framework, connecting two programs the way a cable connects two outlets. To their right, &quot;Why?&quot; branches into two arrows: up to a server, Borrow logic; down to a stack of books, Borrow knowledge. Underneath, a Google Maps pin: developers can use Google APIs to implement a map feature in their applications.">
+        </figure>
       </div>
     </section>
 
@@ -741,7 +717,187 @@ Date: Wed, 09 Sep 2026 14:32:45 GMT</pre>
       </div>
     </section>
 
-    <!-- ---------- 10. Axis: API Security ---------- -->
+    <!-- ---------- 10. Live call ----------
+         Slide 9 with the paper taken off it: the same .rr shell and the
+         same colour-coded fields, but the endpoint and the body are
+         boxes you can type in, and the right-hand panel is filled by a
+         real response instead of a printed one.
+
+         Gone with the diagram: the view chips — Python, JS and cURL have
+         nothing to show for a call that has not happened yet — and the
+         legend, since the colours were named one slide ago and have not
+         moved since. The panels lose their fixed height too: the payload
+         is whatever the API sends back, so they grow with it and the
+         slide scrolls.
+
+         First of the deck's three network slides; 16 and 17 repeat this
+         same shell with a credential in it. js/live.js drives all three,
+         and they are the only places where a click does anything.
+
+         Two sets of attributes, two audiences. The classes are what the
+         stylesheet switches on; data-req / data-res / data-method /
+         data-role are what live.js reads, so neither side has to guess at
+         the other's names. -->
+
+    <section class="slide slide--anatomy" data-nav-group="overview" data-family="anatomy">
+      <div class="slide__inner">
+        <div class="rr rr--call">
+          <input class="rr__radio" type="radio" name="call-method" id="call-get" value="get" checked>
+          <input class="rr__radio" type="radio" name="call-method" id="call-post" value="post">
+
+          <div class="rr__head">
+            <h2 class="slide__title">Live call</h2>
+            <div class="rr__methods">
+              <label class="rr__method" for="call-get">GET</label>
+              <label class="rr__method" for="call-post">POST</label>
+            </div>
+          </div>
+
+          <div class="rr__grid">
+            <!-- ----- left: the request, as typed ----- -->
+            <article class="panel">
+              <div class="panel__head">
+                <h3 class="panel__title">Request</h3>
+                <button class="call__send" type="button" data-action="send">Send</button>
+              </div>
+              <div class="panel__body">
+
+                <div class="rr-panel rr-panel--fields rr-panel--call-get" data-req="get" data-method="GET">
+                  <div class="field-row">
+                    <div class="field field--method"><p class="field__value">GET</p></div>
+                    <div class="field field--endpoint">
+                      <input class="field__value call__input" type="text" name="get-endpoint" value="https://catfact.ninja/fact" spellcheck="false" autocomplete="off" aria-label="GET endpoint">
+                    </div>
+                  </div>
+                  <!-- The one header the fetch actually carries. A box that
+                       lists headers the request is not sending is the one
+                       kind of lie a live slide cannot afford. -->
+                  <div class="field field--headers">
+<pre class="field__value">Accept: application/json</pre>
+                  </div>
+                  <div class="field field--body">
+<pre class="field__value">&mdash; none &mdash;
+a GET asks for data, it sends none</pre>
+                  </div>
+                </div>
+
+                <div class="rr-panel rr-panel--fields rr-panel--call-post" data-req="post" data-method="POST">
+                  <div class="field-row">
+                    <div class="field field--method"><p class="field__value">POST</p></div>
+                    <div class="field field--endpoint">
+                      <input class="field__value call__input" type="text" name="post-endpoint" value="https://api.mcp-for-no.com/v1/tools/call" spellcheck="false" autocomplete="off" aria-label="POST endpoint">
+                    </div>
+                  </div>
+                  <div class="field field--headers">
+<pre class="field__value">Content-Type: application/json</pre>
+                  </div>
+                  <div class="field field--body">
+<textarea class="field__value call__input" name="post-body" data-role="body" spellcheck="false" aria-label="POST body">{
+  "method": "getRandomNo",
+  "params": { "category": "humorous" }
+}</textarea>
+                  </div>
+                  <p class="call__hint">
+                    <code>category</code> is optional &mdash; polite, humorous, professional, creative.
+                  </p>
+                </div>
+
+              </div>
+            </article>
+
+            <!-- ----- right: whatever came back ----- -->
+            <article class="panel">
+              <div class="panel__head">
+                <h3 class="panel__title">Response</h3>
+              </div>
+              <div class="panel__body">
+
+                <div class="rr-panel rr-panel--fields rr-panel--call-response" data-res>
+                  <div class="field field--status"><p class="field__value" data-out="status">&mdash; nothing called yet &mdash;</p></div>
+                  <div class="field field--headers">
+<pre class="field__value" data-out="headers">Content-Type: application/json</pre>
+                  </div>
+                  <div class="field field--body">
+<pre class="field__value" data-out="body">Press Send. Whatever the endpoint on the left answers lands here &mdash; status, headers and payload.</pre>
+                  </div>
+                </div>
+
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- 11. Features ----------
+         A carousel the deck already knows how to drive: four cards in one
+         grid cell, data-steps="3" so the right arrow walks them before it
+         leaves the slide. Ordered as the plan lists the files. -->
+    <section class="slide slide--features" data-nav-group="overview" data-family="anatomy" data-steps="3">
+      <div class="slide__inner">
+        <h2 class="slide__title">Features</h2>
+        <p class="slide__lede slide__lede--wide">
+          Past the anatomy: four features that decide whether an API is pleasant to live with &mdash; each one a promise made to whoever is calling it.
+        </p>
+
+        <div class="carousel">
+          <div class="carousel__track">
+
+            <article class="carousel__card carousel__card--1">
+              <div class="carousel__text">
+                <h3 class="carousel__name">Idempotency</h3>
+                <blockquote class="carousel__quote">Ask twice, get the same answer &mdash; and leave the world in the same state.</blockquote>
+              </div>
+              <figure class="figure figure--centered">
+                <img class="figure__img" src="assets/idempotency.png" alt="A client and a server on a sequence diagram. The client sends GET /users=123 and the server returns the object; the client repeats the very same request and the server still returns the same user 123.">
+              </figure>
+            </article>
+
+            <article class="carousel__card carousel__card--2">
+              <div class="carousel__text">
+                <h3 class="carousel__name">Rate limiting</h3>
+                <blockquote class="carousel__quote">Everyone gets in &mdash; just not all at once.</blockquote>
+              </div>
+              <figure class="figure figure--centered">
+                <img class="figure__img" src="assets/rate-limiting.png" alt="A crowd of callers firing a stream of GET, POST and DELETE requests. A worker holds up a hand in front of the server, whose gauge has swung into the red.">
+              </figure>
+            </article>
+
+            <article class="carousel__card carousel__card--3">
+              <div class="carousel__text">
+                <h3 class="carousel__name">URL &amp; query parameters</h3>
+                <blockquote class="carousel__quote">One endpoint, a narrower question: the caller asks for the slice it actually wants.</blockquote>
+              </div>
+              <figure class="figure figure--centered">
+                <img class="figure__img" src="assets/url-and-query-parameters.png" alt="A GET to https://app.example.com/pages?pages=2. A screen shows page 2 while pages 1, 3 and 4 wait outside it in dashed boxes, with a scrollbar running underneath.">
+              </figure>
+            </article>
+
+            <article class="carousel__card carousel__card--4">
+              <div class="carousel__text">
+                <h3 class="carousel__name">Versioning</h3>
+                <blockquote class="carousel__quote">v1 keeps working while v2 moves on &mdash; nobody&rsquo;s code breaks on your release day.</blockquote>
+              </div>
+              <figure class="figure figure--centered">
+                <img class="figure__img" src="assets/versionning.png" alt="The API's URL moving from /api/v1 to /api/v2 and on to /api/v3 around a connector, with a note that a field changed from 123 to abc.">
+              </figure>
+            </article>
+
+          </div>
+
+          <!-- Position, not a control: the deck has no click handlers and
+               the arrow keys are what move the carousel. -->
+          <ol class="carousel__dots" aria-hidden="true">
+            <li class="carousel__dot carousel__dot--1"></li>
+            <li class="carousel__dot carousel__dot--2"></li>
+            <li class="carousel__dot carousel__dot--3"></li>
+            <li class="carousel__dot carousel__dot--4"></li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- 12. Axis: API Security ---------- -->
     <section class="slide slide--toc" data-nav-group="overview" data-family="contract">
       <div class="slide__inner">
         <h2 class="slide__title">API Security</h2>
@@ -786,7 +942,7 @@ Date: Wed, 09 Sep 2026 14:32:45 GMT</pre>
       </div>
     </section>
 
-    <!-- ---------- 11. What about security? ---------- -->
+    <!-- ---------- 13. What about security? ---------- -->
     <section class="slide slide--split" data-nav-group="overview" data-family="contract">
       <div class="slide__inner">
         <h2 class="slide__title">What about security ?</h2>
@@ -842,216 +998,360 @@ Date: Wed, 09 Sep 2026 14:32:45 GMT</pre>
       </div>
     </section>
 
-    <!-- ---------- 12. Methods and Framework ---------- -->
+    <!-- ---------- 14. Methods and Framework (1/2) ----------
+         One slide's worth of content split across two, a question each.
+         The pair is held together by the shared title and the counter
+         beside it; .split--dense drops the rule column so the two boxes
+         of a page sit side by side, and .split__full carries the heading
+         that used to be a column heading across both of them. -->
     <section class="slide slide--split" data-nav-group="overview" data-family="contract">
       <div class="slide__inner">
-        <h2 class="slide__title">Methods and Framework</h2>
+        <div class="slide__titlerow">
+          <h2 class="slide__title">Methods and Framework</h2>
+          <span class="slide__count">1/2</span>
+        </div>
         <p class="slide__lede slide__lede--wide">
           The previous slide asked two questions. Each one has its own toolbox &mdash; and both toolboxes ship their answer in the same place: an HTTP header.
         </p>
 
-        <div class="split split--titled">
-          <h3 class="split__heading split__heading--left">Authentication</h3>
-          <h3 class="split__heading split__heading--right">Authorization</h3>
-
-          <span class="split__rule" aria-hidden="true"></span>
-
-          <!-- ----- left: who are you ----- -->
-          <div class="split__pane split__pane--left">
+        <div class="split split--dense split--vcenter">
+          <div class="point-group split__full">
+            <h3 class="split__heading">Authentication</h3>
             <p class="split__desc">
               Two ways to prove <strong>who is calling</strong>. Both are just a string in a header. What differs is whether the string <em>means</em> anything and how long it lives.
             </p>
-
-            <div class="split__box">
-              <h4 class="split__title">API Key</h4>
-              <p class="split__desc">
-                A long random string the provider hands you once. The server keeps its own copy and compares the two.
-              </p>
-              <div class="field field--headers">
-<pre class="field__value">X-API-Key: 3f9a1c7e-84d2-4b6a-9e2f-7c1a5d9b0e42</pre>
-              </div>
-              <ul class="points points--tight">
-                <li><strong>Carries nothing.</strong> The string says nothing on its own &mdash; the server has to look it up to learn who you are.</li>
-                <li><strong>Never expires</strong> until somebody revokes it, which is exactly why a leaked key stays useful for years.</li>
-              </ul>
-            </div>
-
-            <div class="split__box">
-              <h4 class="split__title">JWT &mdash; JSON Web Token</h4>
-              <p class="split__desc">
-                Three chunks separated by dots: header, payload, signature. The payload is <strong>readable by anyone</strong>; the signature is what proves the server issued it.
-              </p>
-              <div class="field field--headers">
-<pre class="field__value">Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI0MiIsInJvbGUiOiJlZGl0b3IifQ.Kx8h&hellip;</pre>
-              </div>
-<pre class="code"><code><span class="code__key">payload</span>, decoded &mdash; no secret needed
-{ "sub": "42", "role": "editor", "exp": 1789243200 }</code></pre>
-              <ul class="points points--tight">
-                <li><strong>Carries its claims.</strong> Who you are, what role you hold, when it dies &mdash; all in the token, so no lookup.</li>
-                <li><strong>Expires on its own</strong>, often within the hour. A stolen token has a short life.</li>
-              </ul>
-            </div>
           </div>
 
-          <!-- ----- right: what may you do ----- -->
-          <div class="split__pane split__pane--right">
+          <div class="split__box">
+            <h4 class="split__title">API Key</h4>
+            <p class="split__desc">
+              A long random string the provider hands you once. The server keeps its own copy and compares the two.
+            </p>
+            <div class="field field--headers">
+<pre class="field__value">X-API-Key: 3f9a1c7e-84d2-4b6a-9e2f-7c1a5d9b0e42</pre>
+            </div>
+            <ul class="points points--tight">
+              <li><strong>Carries nothing.</strong> The string says nothing on its own &mdash; the server has to look it up to learn who you are.</li>
+              <li><strong>Never expires</strong> until somebody revokes it, which is exactly why a leaked key stays useful for years.</li>
+            </ul>
+          </div>
+
+          <div class="split__box">
+            <h4 class="split__title">JWT &mdash; JSON Web Token</h4>
+            <p class="split__desc">
+              Three chunks separated by dots: header, payload, signature. The payload is <strong>readable by anyone</strong>; the signature is what proves the server issued it.
+            </p>
+            <div class="field field--headers">
+<pre class="field__value">Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI0MiIsInJvbGUiOiJlZGl0b3IifQ.Kx8h&hellip;</pre>
+            </div>
+<pre class="code"><code><span class="code__key">payload</span>, decoded &mdash; no secret needed
+{ "sub": "42", "role": "editor", "exp": 1789243200 }</code></pre>
+            <ul class="points points--tight">
+              <li><strong>Carries its claims.</strong> Who you are, what role you hold, when it dies &mdash; all in the token, so no lookup.</li>
+              <li><strong>Expires on its own</strong>, often within the hour. A stolen token has a short life.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- 15. Methods and Framework (2/2) ----------
+         No lede: the framing was made on the page before, and this one
+         opens straight on its own question. -->
+    <section class="slide slide--split" data-nav-group="overview" data-family="contract">
+      <div class="slide__inner">
+        <div class="slide__titlerow">
+          <h2 class="slide__title">Methods and Framework</h2>
+          <span class="slide__count">2/2</span>
+        </div>
+
+        <div class="split split--dense split--vcenter">
+          <div class="point-group split__full">
+            <h3 class="split__heading">Authorization</h3>
             <p class="split__desc">
               The API now knows who you are and decides <strong>what you may touch</strong>. RBAC is the model that answers it; OAuth is how the token carrying that answer gets issued.
             </p>
+          </div>
 
-            <div class="split__box">
-              <h4 class="split__title">RBAC &mdash; Role-Based Access Control</h4>
-              <p class="split__desc">
-                Permissions are never granted to people. They are granted to <strong>roles</strong>, and people are handed a role &mdash; so a new joiner is one assignment, not twenty.
-              </p>
-              <ul class="method-list">
-                <li class="method">
-                  <span class="method__name">viewer</span>
-                  <span class="method__def"><strong>GET</strong> &mdash; may read the cart</span>
-                </li>
-                <li class="method">
-                  <span class="method__name">editor</span>
-                  <span class="method__def"><strong>GET, POST, PATCH</strong> &mdash; may add and change items</span>
-                </li>
-                <li class="method">
-                  <span class="method__name">admin</span>
-                  <span class="method__def">everything, <strong>DELETE</strong> included</span>
-                </li>
-              </ul>
-              <p class="split__desc">
-                The token above says <code>"role": "editor"</code>. So a <code>DELETE</code> comes back <strong>403</strong>, not 401 &mdash; authenticated, simply not authorized.
-              </p>
-            </div>
+          <div class="split__box">
+            <h4 class="split__title">RBAC &mdash; Role-Based Access Control</h4>
+            <p class="split__desc">
+              Permissions are never granted to people. They are granted to <strong>roles</strong>, and people are handed a role &mdash; so a new joiner is one assignment, not twenty.
+            </p>
+            <ul class="method-list">
+              <li class="method">
+                <span class="method__name">viewer</span>
+                <span class="method__def"><strong>GET</strong> &mdash; may read the cart</span>
+              </li>
+              <li class="method">
+                <span class="method__name">editor</span>
+                <span class="method__def"><strong>GET, POST, PATCH</strong> &mdash; may add and change items</span>
+              </li>
+              <li class="method">
+                <span class="method__name">admin</span>
+                <span class="method__def">everything, <strong>DELETE</strong> included</span>
+              </li>
+            </ul>
+            <p class="split__desc">
+              The JWT on the previous page says <code>"role": "editor"</code>. So a <code>DELETE</code> comes back <strong>403</strong>, not 401 &mdash; authenticated, simply not authorized.
+            </p>
+          </div>
 
-            <div class="split__box">
-              <h4 class="split__title">OAuth 2.0 &mdash; the valet key</h4>
-              <p class="split__desc">
-                The one everybody has already used: every &ldquo;Sign in with Google&rdquo; button is OAuth. Its job is <strong>delegation</strong> &mdash; letting an app act for you without ever seeing your password.
-              </p>
-              <ul class="points points--tight">
-                <li>The app sends you to the provider. <strong>You</strong> log in there &mdash; never inside the app.</li>
-                <li>You approve a <strong>scope</strong>: <code>calendar.read</code>, not &ldquo;my whole account&rdquo;.</li>
-                <li>The app gets a short-lived token &mdash; usually a JWT &mdash; and calls the API with it. Revoke it any time, without changing your password.</li>
-              </ul>
-            </div>
+          <div class="split__box">
+            <h4 class="split__title">OAuth 2.0 &mdash; the valet key</h4>
+            <p class="split__desc">
+              The one everybody has already used: every &ldquo;Sign in with Google&rdquo; button is OAuth. Its job is <strong>delegation</strong> &mdash; letting an app act for you without ever seeing your password.
+            </p>
+            <ul class="points points--tight">
+              <li>The app sends you to the provider. <strong>You</strong> log in there &mdash; never inside the app.</li>
+              <li>You approve a <strong>scope</strong>: <code>calendar.read</code>, not &ldquo;my whole account&rdquo;.</li>
+              <li>The app gets a short-lived token &mdash; usually a JWT &mdash; and calls the API with it. Revoke it any time, without changing your password.</li>
+            </ul>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ---------- 13. Custom call, with security ----------
-         The only slide in the deck that touches the network. Its
-         behaviour lives in js/live.js, deliberately not in main.js,
-         so the deck controller stays what its header claims to be.
+    <!-- ---------- 16. Custom call: API Key ----------
+         Slide 10's shell with a credential threaded through it: the same
+         .rr--call block, the same colour-coded boxes, the same engine in
+         js/live.js. What changes is that the URL is almost entirely
+         fixed — only the two boxed parts can be typed, which is the
+         pattern itself, drawn.
 
-         No credential is stored in this file. The appid box starts
-         empty, is filled at demo time, and its value never leaves the
-         browser — which is also the honest way to show a key on a
-         projector. -->
+         No method switch: there is one call to make here.
+
+         No credential is stored in this file. The appid box starts empty
+         and is a password field, so a projector shows bullets; the value
+         is read at the moment of the call and written nowhere else. -->
     <section class="slide slide--live" data-nav-group="overview" data-family="contract">
       <div class="slide__inner">
-        <h2 class="slide__title">Custom call, with security</h2>
-        <p class="slide__lede slide__lede--wide">
-          Two real calls against two real APIs, live. Same lesson twice: without the credential the door stays shut, with it you get your data. Nothing on this slide is a mock-up.
-        </p>
+        <div class="rr rr--call rr--key">
 
-        <div class="tabs">
-          <input class="tabs__radio" type="radio" name="live-view" id="live-key" checked>
-          <input class="tabs__radio" type="radio" name="live-view" id="live-token">
-
-          <div class="tabs__bar">
-            <label class="tabs__tab" for="live-key">API Key</label>
-            <label class="tabs__tab" for="live-token">Token &mdash; JWT</label>
+          <div class="rr__head">
+            <h2 class="slide__title">Custom call &mdash; API Key</h2>
           </div>
 
-          <div class="tabs__body">
+          <p class="slide__lede slide__lede--wide">
+            OpenWeatherMap wants its key <strong>in the URL</strong>, as <code>appid</code>. Convenient &mdash; and the reason the pattern is fading: the key lands in browser history, in server logs, and in every screenshot of this slide.
+          </p>
 
-            <!-- ----- bookmark 1: the key rides in the URL ----- -->
-            <div class="tabs__panel tabs__panel--live-key">
-              <p class="tabs__lead">
-                OpenWeatherMap wants its key <strong>in the URL</strong>, as <code>appid</code>. Convenient &mdash; and the reason the pattern is fading: the key lands in browser history, in server logs, and in every screenshot of this slide.
-              </p>
+          <div class="rr__grid">
+            <!-- ----- left: one call, two typable holes ----- -->
+            <article class="panel">
+              <div class="panel__head">
+                <h3 class="panel__title">Request</h3>
+                <button class="call__send" type="button" data-action="send">Send</button>
+              </div>
+              <div class="panel__body">
 
-              <div class="live" data-live="weather">
-                <div class="live__form">
-                  <label class="live__field">
-                    <span class="live__label">City</span>
-                    <input class="live__input" type="text" name="city" value="Delhi" size="12" autocomplete="off" spellcheck="false">
-                  </label>
-                  <label class="live__field live__field--grow">
-                    <span class="live__label">appid <span class="live__hint">never committed &mdash; paste it at demo time</span></span>
-                    <input class="live__input" type="password" name="key" placeholder="paste your OpenWeatherMap key" autocomplete="off" spellcheck="false">
-                  </label>
-                  <button class="live__send" type="button" data-action="weather">Send</button>
+                <div class="rr-panel rr-panel--fields" data-req="key" data-method="GET">
+                  <div class="field-row">
+                    <div class="field field--method"><p class="field__value">GET</p></div>
+                    <!-- One line, deliberately: .field__value is pre-wrap, so a
+                         newline in the source would be a space on the screen and
+                         a space in the URL live.js reads back off it. -->
+                    <div class="field field--endpoint">
+<p class="field__value">https://api.openweathermap.org/data/2.5/weather<span class="call__slot">?q=<input class="field__value call__input call__input--slot" type="text" name="city" value="Delhi" size="9" data-encode spellcheck="false" autocomplete="off" aria-label="city"></span>&amp;<span class="call__slot">appid=<input class="field__value call__input call__input--slot" type="password" name="key" size="24" data-encode spellcheck="false" autocomplete="off" placeholder="paste it at demo time" aria-label="appid"></span>&amp;units=metric</p>
+                    </div>
+                  </div>
+                  <p class="call__hint">
+                    Only the two boxed parts are editable. The key is a password field &mdash; the room sees bullets, the call sends the value.
+                  </p>
+                  <div class="field field--headers">
+<pre class="field__value">Accept: application/json</pre>
+                  </div>
+                  <div class="field field--body">
+<pre class="field__value">&mdash; none &mdash;
+the credential rides in the URL, not in the body</pre>
+                  </div>
                 </div>
 
-                <p class="live__url"><strong>GET</strong> <span data-out="url">https://api.openweathermap.org/data/2.5/weather?q=Delhi&amp;appid=</span></p>
+              </div>
+            </article>
 
-                <div class="live__out" aria-live="polite">
-                  <span class="live__status" data-out="status">idle</span>
-                  <pre class="live__body" data-out="body">Send it once with the key box empty. That 401 is the previous slide, live.
+            <!-- ----- right: whatever came back ----- -->
+            <article class="panel">
+              <div class="panel__head">
+                <h3 class="panel__title">Response</h3>
+              </div>
+              <div class="panel__body">
+
+                <div class="rr-panel rr-panel--fields" data-res="key">
+                  <div class="field field--status"><p class="field__value" data-out="status">&mdash; nothing called yet &mdash;</p></div>
+                  <div class="field field--headers">
+<pre class="field__value" data-out="headers">Content-Type: application/json</pre>
+                  </div>
+                  <div class="field field--body">
+<pre class="field__value" data-out="body">Send it once with the key box empty. That 401 is the previous slide, live.
 
 Then paste the key and send it again.</pre>
+                  </div>
                 </div>
+
               </div>
-            </div>
-
-            <!-- ----- bookmark 2: the token is issued, then presented ----- -->
-            <div class="tabs__panel tabs__panel--live-token">
-              <p class="tabs__lead">
-                dummyjson hands out a genuine JWT. Three calls, in this order: ask with nothing, log in, then ask again with what the login gave you. The credentials below are dummyjson&rsquo;s own public demo account.
-              </p>
-
-              <div class="live" data-live="token">
-                <div class="live__steps">
-                  <div class="live__step">
-                    <span class="live__num">1</span>
-                    <div class="live__step-body">
-                      <p class="live__step-title"><strong>GET</strong> <code>/auth/me</code> &mdash; carrying nothing</p>
-                      <button class="live__send" type="button" data-action="me-anon">Call it</button>
-                    </div>
-                  </div>
-
-                  <div class="live__step">
-                    <span class="live__num">2</span>
-                    <div class="live__step-body">
-                      <p class="live__step-title"><strong>POST</strong> <code>/auth/login</code></p>
-                      <label class="live__field">
-                        <input class="live__input" type="text" name="username" value="emilys" size="10" autocomplete="off" spellcheck="false" aria-label="username">
-                      </label>
-                      <label class="live__field">
-                        <input class="live__input" type="text" name="password" value="emilyspass" size="12" autocomplete="off" spellcheck="false" aria-label="password">
-                      </label>
-                      <button class="live__send" type="button" data-action="login">Log in</button>
-                    </div>
-                  </div>
-
-                  <div class="live__step">
-                    <span class="live__num">3</span>
-                    <div class="live__step-body">
-                      <p class="live__step-title"><strong>GET</strong> <code>/auth/me</code> &mdash; carrying the token</p>
-                      <button class="live__send" type="button" data-action="me-auth" disabled>Call it again</button>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="field field--headers">
-<pre class="field__value" data-out="token">Authorization: Bearer &mdash; nothing yet, step 2 issues it</pre>
-                </div>
-
-                <div class="live__out" aria-live="polite">
-                  <span class="live__status" data-out="status">idle</span>
-                  <pre class="live__body" data-out="body">Step 1 is the 401. Step 3 is the same call, same endpoint, one header heavier.</pre>
-                </div>
-              </div>
-            </div>
-
+            </article>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ---------- 14. Axis: API at Scale ---------- -->
+    <!-- ---------- 17. Custom call: Token (JWT) ----------
+         The same shell a third time, but the switch in the corner steps
+         through a sequence instead of picking a verb: ask with nothing,
+         log in, ask again with what the login handed back.
+
+         Three request panels and three response panels, paired by key.
+         Each step keeps its own answer, so the 401 from the first call is
+         still sitting there when you come back to it from the third —
+         the two side by side are the whole lesson.
+
+         The token itself lives in a live.js closure: not in this file,
+         not in the page, not in storage. The Authorization line below is
+         rewritten with a truncated copy once there is one, because a box
+         that claims to send a header has to show the header it sends. -->
+    <section class="slide slide--live" data-nav-group="overview" data-family="contract">
+      <div class="slide__inner">
+        <div class="rr rr--call rr--jwt">
+          <input class="rr__radio" type="radio" name="jwt-step" id="jwt-1" value="1" checked>
+          <input class="rr__radio" type="radio" name="jwt-step" id="jwt-2" value="2">
+          <input class="rr__radio" type="radio" name="jwt-step" id="jwt-3" value="3">
+
+          <div class="rr__head">
+            <h2 class="slide__title">Custom call &mdash; Token (JWT)</h2>
+            <div class="rr__methods">
+              <label class="rr__method" for="jwt-1">1st Call</label>
+              <label class="rr__method" for="jwt-2">Login</label>
+              <label class="rr__method" for="jwt-3">2nd Call</label>
+            </div>
+          </div>
+
+          <p class="slide__lede slide__lede--wide">
+            dummyjson hands out a genuine JWT. Three calls, in this order: ask with nothing, log in, then ask again with what the login gave you. The credentials below are dummyjson&rsquo;s own public demo account.
+          </p>
+
+          <div class="rr__grid">
+            <!-- ----- left: the three requests ----- -->
+            <article class="panel">
+              <div class="panel__head">
+                <h3 class="panel__title">Request</h3>
+                <button class="call__send" type="button" data-action="send">Send</button>
+              </div>
+              <div class="panel__body">
+
+                <!-- 1 — carrying nothing at all -->
+                <div class="rr-panel rr-panel--fields rr-panel--jwt-1" data-req="1" data-method="GET">
+                  <div class="field-row">
+                    <div class="field field--method"><p class="field__value">GET</p></div>
+                    <div class="field field--endpoint">
+                      <input class="field__value call__input" type="text" name="jwt-1-endpoint" value="https://dummyjson.com/auth/me" spellcheck="false" autocomplete="off" aria-label="endpoint">
+                    </div>
+                  </div>
+                  <div class="field field--headers">
+<pre class="field__value">Accept: application/json</pre>
+                  </div>
+                  <p class="call__hint">
+                    No <code>Authorization</code> line. That absence is the whole request.
+                  </p>
+                  <div class="field field--body">
+<pre class="field__value">&mdash; none &mdash;
+a GET asks for data, it sends none</pre>
+                  </div>
+                </div>
+
+                <!-- 2 — the login that issues the token -->
+                <div class="rr-panel rr-panel--fields rr-panel--jwt-2" data-req="2" data-method="POST" data-capture="token">
+                  <div class="field-row">
+                    <div class="field field--method"><p class="field__value">POST</p></div>
+                    <div class="field field--endpoint">
+                      <input class="field__value call__input" type="text" name="jwt-2-endpoint" value="https://dummyjson.com/auth/login" spellcheck="false" autocomplete="off" aria-label="endpoint">
+                    </div>
+                  </div>
+                  <div class="field field--headers">
+<pre class="field__value">Content-Type: application/json</pre>
+                  </div>
+                  <div class="field field--body">
+<textarea class="field__value call__input" name="jwt-2-body" data-role="body" spellcheck="false" aria-label="login body">{
+  "username": "emilys",
+  "password": "emilyspass",
+  "expiresInMins": 30
+}</textarea>
+                  </div>
+                  <p class="call__hint">
+                    dummyjson&rsquo;s own demo account. Break the password on purpose and the next slide&rsquo;s 401 arrives on cue.
+                  </p>
+                </div>
+
+                <!-- 3 — same call as 1, one header heavier -->
+                <div class="rr-panel rr-panel--fields rr-panel--jwt-3" data-req="3" data-method="GET" data-auth="bearer" data-requires="token">
+                  <div class="field-row">
+                    <div class="field field--method"><p class="field__value">GET</p></div>
+                    <div class="field field--endpoint">
+                      <input class="field__value call__input" type="text" name="jwt-3-endpoint" value="https://dummyjson.com/auth/me" spellcheck="false" autocomplete="off" aria-label="endpoint">
+                    </div>
+                  </div>
+                  <div class="field field--headers">
+<pre class="field__value" data-token>Accept: application/json
+Authorization: Bearer &mdash; nothing yet, step 2 issues it</pre>
+                  </div>
+                  <p class="call__hint">
+                    A JWT&rsquo;s middle chunk is base64url, not encryption &mdash; anyone holding the token can read what it claims:
+                  </p>
+                  <pre class="call__note" data-claims>step 2 has not issued one yet</pre>
+                  <div class="field field--body">
+<pre class="field__value">&mdash; none &mdash;
+same endpoint as the first call, one header heavier</pre>
+                  </div>
+                </div>
+
+              </div>
+            </article>
+
+            <!-- ----- right: one answer per step, each kept ----- -->
+            <article class="panel">
+              <div class="panel__head">
+                <h3 class="panel__title">Response</h3>
+              </div>
+              <div class="panel__body">
+
+                <div class="rr-panel rr-panel--fields rr-panel--jwt-1" data-res="1">
+                  <div class="field field--status"><p class="field__value" data-out="status">&mdash; nothing called yet &mdash;</p></div>
+                  <div class="field field--headers">
+<pre class="field__value" data-out="headers">Content-Type: application/json</pre>
+                  </div>
+                  <div class="field field--body">
+<pre class="field__value" data-out="body">Press Send. With no credential at all, the door stays shut &mdash; and the number on it is the one from the flashcard two slides back.</pre>
+                  </div>
+                </div>
+
+                <div class="rr-panel rr-panel--fields rr-panel--jwt-2" data-res="2">
+                  <div class="field field--status"><p class="field__value" data-out="status">&mdash; nothing called yet &mdash;</p></div>
+                  <div class="field field--headers">
+<pre class="field__value" data-out="headers">Content-Type: application/json</pre>
+                  </div>
+                  <div class="field field--body">
+<pre class="field__value" data-out="body">Press Send. The answer carries an accessToken; the third call is what it is for.</pre>
+                  </div>
+                </div>
+
+                <div class="rr-panel rr-panel--fields rr-panel--jwt-3" data-res="3">
+                  <div class="field field--status"><p class="field__value" data-out="status">&mdash; nothing called yet &mdash;</p></div>
+                  <div class="field field--headers">
+<pre class="field__value" data-out="headers">Content-Type: application/json</pre>
+                  </div>
+                  <div class="field field--body">
+<pre class="field__value" data-out="body">Locked until step 2 has issued a token. Then: same endpoint as the first call, and this time the data comes back.</pre>
+                  </div>
+                </div>
+
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- 18. Axis: API at Scale ---------- -->
     <section class="slide slide--toc" data-nav-group="overview" data-family="horizon">
       <div class="slide__inner">
         <h2 class="slide__title">API at Scale</h2>
@@ -1096,7 +1396,7 @@ Then paste the key and send it again.</pre>
       </div>
     </section>
 
-    <!-- ---------- 15. And for performance? ---------- -->
+    <!-- ---------- 19. And for performance? ---------- -->
     <section class="slide slide--split" data-nav-group="overview" data-family="horizon">
       <div class="slide__inner">
         <div class="slide__titlerow">
@@ -1153,37 +1453,49 @@ Retry-After: 37</pre>
       </div>
     </section>
 
-    <!-- ---------- 16. Infrastructure Best Practices ----------
-         Each tab is a diagram and nothing else — the two panels share one
-         grid cell, so they want to be about the same height, and the
-         load-balancing pair is sized to land near the caching one. -->
-    <section class="slide slide--infra" data-nav-group="overview" data-family="horizon">
+    <!-- ---------- 20. Infrastructure Best Practices ----------
+         The two pages the tab strip used to switch between, turned into
+         the same carousel slide 11 uses: the cards share a grid cell and
+         the right arrow turns the page through data-steps="1". The strip
+         on top of the box is what it always was to look at — it just no
+         longer waits to be clicked. -->
+    <section class="slide slide--infra" data-nav-group="overview" data-family="horizon" data-steps="1">
       <div class="slide__inner">
         <h2 class="slide__title">Infrastructure Best Practices</h2>
         <p class="slide__lede slide__lede--wide">
           The previous slide was the <strong>contract</strong> level &mdash; what a caller is allowed to ask for. This is the other one: what stands behind the API so that the calls it does allow stay fast, whatever the load.
         </p>
 
-        <div class="tabs">
-          <input class="tabs__radio" type="radio" name="infra-practice" id="infra-cache" checked>
-          <input class="tabs__radio" type="radio" name="infra-practice" id="infra-lb">
+        <div class="carousel carousel--infra">
 
-          <div class="tabs__bar">
-            <label class="tabs__tab" for="infra-cache">Caching</label>
-            <label class="tabs__tab" for="infra-lb">Load balancing</label>
-          </div>
+          <!-- Position, not a control: the deck has no click handlers and
+               the arrow keys are what turn the page. Hidden from assistive
+               tech because each card names itself underneath. -->
+          <ol class="carousel__tabs" aria-hidden="true">
+            <li class="carousel__tab carousel__tab--1">Caching</li>
+            <li class="carousel__tab carousel__tab--2">Load balancing</li>
+          </ol>
 
-          <div class="tabs__body">
-            <div class="tabs__panel tabs__panel--infra-cache">
+          <div class="carousel__track">
+
+            <article class="carousel__card carousel__card--1">
+              <div class="carousel__text">
+                <h3 class="carousel__name">Caching</h3>
+                <blockquote class="carousel__quote">Answer it once, then keep the answer &mdash; the fastest call is the one that never has to reach the server.</blockquote>
+              </div>
               <figure class="figure figure--centered">
                 <img class="figure__img" src="assets/caching.png" alt="A browser and a web server exchanging a request and a response. A second pair of arrows runs from the browser down to two stores — a local cache and a server cache — labelled store for later use.">
               </figure>
-            </div>
+            </article>
 
             <!-- The same diagram twice, at the two layers a balancer can
                  work on. Side by side rather than one after the other:
                  the whole point is what changes between them. -->
-            <div class="tabs__panel tabs__panel--infra-lb">
+            <article class="carousel__card carousel__card--2">
+              <div class="carousel__text">
+                <h3 class="carousel__name">Load balancing</h3>
+                <blockquote class="carousel__quote">One address in front, several servers behind it &mdash; the traffic is spread before any single machine feels all of it.</blockquote>
+              </div>
               <div class="figure-pair">
                 <figure class="figure">
                   <img class="figure__img" src="assets/load-balancer-application-layer.png" alt="A browser sends a mixed stream of requests to a load balancer working at the application layer. It reads each URL and sends /users, /products and /images each to a server dedicated to that path.">
@@ -1194,13 +1506,14 @@ Retry-After: 37</pre>
                   <figcaption class="figure__caption">Transport layer</figcaption>
                 </figure>
               </div>
-            </div>
+            </article>
+
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ---------- 17. Axis: Where to go next ---------- -->
+    <!-- ---------- 21. Axis: Where to go next ---------- -->
     <section class="slide slide--toc" data-nav-group="overview" data-family="next">
       <div class="slide__inner">
         <h2 class="slide__title">Where to go next</h2>
@@ -1253,8 +1566,8 @@ Retry-After: 37</pre>
   <div class="hud__bar"><div class="hud__fill" id="hud-fill"></div></div>
 
   <script src="js/main.js"></script>
-  <!-- Slide 13 only. Loaded second so the deck is already built and
-       rendered before anything can reach for the network. -->
+  <!-- Slides 10, 16 and 17 only. Loaded second so the deck is already
+       built and rendered before anything can reach for the network. -->
   <script src="js/live.js"></script>
 </body>
 </html>

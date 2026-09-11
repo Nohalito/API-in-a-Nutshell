@@ -273,17 +273,40 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
 }
 
 /* "API, Kesako?" keeps its title on the top line like every other slide,
-   but the card grid is short enough to float in the middle: the inner
-   fills the slide height and the grid's auto block margins centre it in
-   whatever space the title leaves. */
+   but what sits under it is short enough to float in the middle: the
+   inner fills the slide height and the figure's auto block margins
+   centre it in whatever space the title leaves. */
 .slide--concepts .slide__inner {
   min-height: 100%;
   display: flex;
   flex-direction: column;
 }
 
-.slide--concepts .concept-grid {
+.slide--concepts .figure {
   margin-block: auto;
+}
+
+/* Well over the deck's shared figure cap. Everywhere else a figure shares
+   its slide with prose and has to leave room for it; here the drawing is
+   the slide, so the only thing worth capping it against is the screen —
+   which is what the vh term does, the 775 only binding on a tall one.
+
+   All three terms are 1.25x what they were. The cap is what sizes this
+   image, not its column — 16:9 at 775px tall is barely 1380 wide, and
+   the slide is wider than that — so raising the cap is what moves it,
+   the way it is for the caching diagram and unlike .figure--tcpip. The
+   vh term is the one to watch: title and padding account for a little
+   over 10vh, so 77.5 is close to the point where the slide would start
+   to scroll rather than grow. */
+.slide--concepts .figure__img {
+  max-height: clamp(350px, 77.5vh, 775px);
+  /* No frame. The shared rule boxes every figure because elsewhere one
+     sits among prose and needs an edge to be a figure rather than a
+     picture in the page; this one is the whole slide, and a line drawn
+     just inside the slide's own margins only reads as a second margin.
+     The surface behind it stays — the drawing has no ground of its own
+     in its transparent parts, and it is white where it does. */
+  border: 0;
 }
 
 @keyframes rise {
@@ -341,6 +364,23 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
   flex: 0 0 auto;
   width: auto;
   height: calc(var(--title-size) * 1.25);
+}
+
+/* --- "1/2" beside a title whose slide runs over two. A chip in the
+       slide's own hue rather than more heading: it is not part of the
+       sentence the title makes, it says where in the pair you are. The
+       row centres it against the heading, and the mono figures keep the
+       two pages the same width so the chip does not shift as you turn
+       the page. --- */
+.slide__count {
+  flex: 0 0 auto;
+  padding: clamp(2px, 0.3vw, 4px) clamp(8px, 1vw, 12px);
+  border-radius: 999px;
+  background: var(--accent-bg);
+  color: var(--accent-fg);
+  font-family: var(--font-mono);
+  font-size: clamp(12px, 1.1vw, 16px);
+  font-weight: 700;
 }
 
 
@@ -714,7 +754,7 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
    container hugs the start edge while the prose around it runs the full
    width, and the block reads lopsided. Two properties because the
    containers differ — a flex column on the HTTP slide, a grid cell in
-   the infrastructure tabs. */
+   the infrastructure carousel. */
 .figure--centered {
   align-self: center;
   margin-inline: auto;
@@ -931,7 +971,13 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
        a middle line. Overrides .split's own align-items: start — same
        specificity, so this has to stay after it. --- */
 .slide__inner:has(> .split--centered),
-.slide__inner:has(> .split--vcenter) {
+.slide__inner:has(> .split--vcenter),
+.slide__inner:has(> .carousel),
+/* By slide rather than by :has(> .tabs). Slide 8 is now the deck's only
+   tabbed slide, so the two would select the same thing today — but the
+   hook is about this slide's proportions, not about tabs, and the next
+   tabbed slide should not inherit the centring by accident. */
+.slide--styles > .slide__inner {
   min-height: 100%;
   display: flex;
   flex-direction: column;
@@ -1562,6 +1608,468 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
 
 
 /* ============================================================
+   Custom call — slides 10, 16 and 17. The anatomy above with live
+   hands on it: the plain one, the one with a key in the URL, and
+   the one that logs in first.
+
+   Everything here is a delta on that block and has to stay after
+   it: same .rr shell, same colour-coded .field boxes, minus the
+   view chips and the legend, plus boxes you can type in and a
+   right-hand panel that js/live.js fills from the network.
+
+   All three carry .rr--call, which is what js/live.js looks for.
+   The classes below are what the stylesheet switches on; the
+   data-req / data-res attributes in the markup are what the script
+   pairs panels by. Two names for two readers, on purpose.
+
+   The one structural difference is height. Slide 9 pins its panels
+   to a fixed viewport so switching view never resizes the card;
+   here the payload is whatever the API sends back, so the panels
+   grow with it and the slide scrolls — which is what .slide's own
+   overflow-y: auto has always been there for.
+   ============================================================ */
+
+/* One radio group instead of two, so the left panel is chosen by
+   method alone. The response never hides: it holds whatever the last
+   call left in it. */
+#call-get:checked  ~ .rr__grid .rr-panel--call-get,
+#call-post:checked ~ .rr__grid .rr-panel--call-post,
+.rr--call .rr-panel--call-response {
+  display: flex;
+}
+
+/* The method switch, lit the same purple as slide 9's. */
+#call-get:checked  ~ .rr__head .rr__method[for="call-get"],
+#call-post:checked ~ .rr__head .rr__method[for="call-post"] {
+  background: var(--foundations-bg);
+  color: var(--foundations-fg);
+}
+
+/* Grow rather than clip — see the height note above. The min-height
+   holds the shape before the first call, when the response box has
+   three short lines in it and nothing else. */
+.rr--call .panel__body {
+  height: auto;
+  min-height: clamp(240px, 40vh, 420px);
+}
+
+.rr--call .rr-panel--fields { overflow-y: visible; }
+
+/* The orange box takes the size of the JSON, however long it runs.
+   Uncapping it is what hands the scrolling up to the slide.
+
+   The response side only. The request's body is a textarea, and a
+   textarea is a scroll container by definition — overflow: visible on
+   one spills its own content over the box. It keeps the shared cap and
+   scrolls in place, which is also the right answer for something you
+   are editing rather than reading. */
+.rr--call [data-res] .field--body .field__value {
+  max-height: none;
+  overflow: visible;
+}
+
+/* --- the two boxes you can type in. Both keep their category's hue:
+       the endpoint stays the anatomy blue, the body the horizon
+       orange. The control is stripped back to nothing so what shows
+       through is the .field around it — and .field__value sits on the
+       same element, so the mono face, the size and the colour all come
+       from the rules above and none of them are repeated here. --- */
+
+.call__input {
+  display: block;
+  width: 100%;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+}
+
+/* No ring while typing. It has to be said rather than just left out:
+   drop the rule and the browser draws its own, which is the same
+   rectangle in a colour nobody chose. The box is already framed by the
+   .field it sits in and the caret says which one has the keyboard, so
+   the outline only ever added a second frame a few pixels outside the
+   first — loudest on the endpoint slots, where it boxed a box. */
+.call__input:focus,
+.call__input:focus-visible {
+  outline: none;
+}
+
+/* resize: vertical rather than none — pasting a longer payload
+   mid-demo is exactly what an editable body invites. */
+textarea.call__input {
+  min-height: clamp(96px, 17vh, 200px);
+  resize: vertical;
+}
+
+/* The optional values, under the box they belong to. Same grey italic
+   as .field__note and for the same reason: it annotates the payload,
+   it is not part of it. */
+.call__hint {
+  margin: 0;
+  font-size: clamp(10px, 0.85vw, 12px);
+  font-style: italic;
+  color: var(--text-tertiary);
+}
+
+.call__hint code {
+  font-family: var(--font-mono);
+  font-style: normal;
+}
+
+/* The axis colour, in the corner of the request panel — blue on slide
+   10, green on 16 and 17, because --accent-fg is whatever the section's
+   data-family says it is and nothing here has to know which slide it is
+   sitting on. The one button in the deck that reaches the network, and
+   the only shape that means that. */
+.call__send {
+  flex: 0 0 auto;
+  padding: clamp(5px, 0.7vw, 8px) clamp(14px, 1.8vw, 24px);
+  background: var(--accent-fg);
+  border: 0;
+  border-radius: 6px;
+  color: #fff;
+  font-family: inherit;
+  font-size: clamp(11px, 1vw, 14px);
+  font-weight: 700;
+  cursor: pointer;
+  transition: filter 0.15s ease;
+}
+
+.call__send:hover { filter: brightness(1.1); }
+
+/* Held down while the call is out, so a slow API cannot be sent twice. */
+.call__send:disabled {
+  background: var(--border-strong);
+  color: var(--surface);
+  cursor: not-allowed;
+}
+
+/* A 404 printed in the 200-green would contradict the status table the
+   deck teaches a slide earlier. The box keeps its shape and swaps to
+   the rose already used for a refusal. Delete these two rules to go
+   back to a single hue. */
+.field--status.is-bad { background: var(--next-bg); }
+.field--status.is-bad .field__value { color: var(--next-fg); }
+
+/* The lede sits between the title row and the panels, and .rr already
+   spaces its children — so the paragraph's own bottom margin would
+   double the gap. */
+.rr > .slide__lede { margin-bottom: 0; }
+
+
+/* --- slides 16 and 17: the same shell, with a credential in it.
+       Both sections carry data-family="contract", so --accent-fg is
+       already the axis green and .call__send picks it up without a
+       word here. --- */
+
+/* Slide 16 has no switch: its single pair is always on screen. */
+.rr--key .rr-panel { display: flex; }
+
+/* Slide 17's three steps. Request and response share a step's class, so
+   one selector brings up the pair — and each step keeps its own answer
+   rather than sharing one box, which is what lets the 401 and the 200
+   be compared by flipping between them. */
+#jwt-1:checked ~ .rr__grid .rr-panel--jwt-1,
+#jwt-2:checked ~ .rr__grid .rr-panel--jwt-2,
+#jwt-3:checked ~ .rr__grid .rr-panel--jwt-3 {
+  display: flex;
+}
+
+/* Green rather than slide 10's purple, and for a reason beyond the axis:
+   this switch picks a step in a sequence, not an HTTP verb, so borrowing
+   the method hue would say something untrue. */
+#jwt-1:checked ~ .rr__head .rr__method[for="jwt-1"],
+#jwt-2:checked ~ .rr__head .rr__method[for="jwt-2"],
+#jwt-3:checked ~ .rr__head .rr__method[for="jwt-3"] {
+  background: var(--accent-bg);
+  color: var(--accent-fg);
+}
+
+/* Three labels where the pill was built for two, and longer ones. */
+.rr--jwt .rr__method { padding-inline: clamp(10px, 1.5vw, 22px); }
+
+/* --- the two holes in slide 16's URL. Everything around them is fixed
+       text in the same blue; these are boxed so the back row can see at
+       a glance which two parts of a credentialed URL are the variables
+       and which is boilerplate. --- */
+
+.call__slot {
+  padding: 1px 5px;
+  border-radius: 5px;
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1px var(--anatomy-fg);
+}
+
+/* Overrides .call__input's block/100% above — ties on specificity, so it
+   has to stay after it. The width comes from the size attribute, which
+   keeps the URL reading as one line of text rather than as a form. */
+.call__input--slot {
+  display: inline;
+  width: auto;
+}
+
+/* The decoded claims under slide 17's third request. Grey and small: it
+   is an aside about the token, not part of the request. */
+.call__note {
+  margin: 0;
+  padding: clamp(7px, 0.9vw, 11px) clamp(9px, 1.1vw, 14px);
+  background: var(--surface-sunk);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: clamp(10px, 0.85vw, 12px);
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+
+/* ============================================================
+   Carousel — a stack of cards in one place, one of them showing.
+
+   No timer and nothing to click: it runs on the deck's own right
+   arrow, the same data-step that swaps the TCP/IP diagram. The
+   cards share a grid cell, so the block is as tall as the tallest
+   of them and the position strip never moves as they change.
+
+   Two slides use it. Features (11) shows four cards under a row of
+   dots; Infrastructure (19) shows two under the page tabs it used
+   to be a tab strip for — see .carousel--infra at the end.
+   ============================================================ */
+
+/* margin-block for the same reason as .split--centered above: the inner
+   runs the full height, so the auto margins split the slack under the
+   lede and float the carousel in the middle of it. */
+.carousel {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(12px, 1.8vw, 20px);
+  margin-block: auto;
+}
+
+/* The 20% is slide 11's alone. It goes on this block rather than on
+   .slide__inner, which carries min-height: 100% for the centring above:
+   zoomed, that would resolve to a fifth more than the slide's own height
+   and the slide would always scroll. The title and the lede therefore
+   keep the size they have on every other slide. */
+.slide--features .carousel { zoom: 1.2; }
+
+.carousel__track { display: grid; }
+
+/* Same surface as .split__box — a card on this deck looks like a card,
+   whichever slide it is on. visibility as well as opacity so a hidden
+   card cannot be tabbed into or read out while it is faded away.
+
+   Two columns: the diagram on the left with the larger share, the words
+   against the top of the column beside it. align-items: start is what
+   puts them there — the image is the taller of the two, so it sets the
+   height of the row and the text hangs from the top of it. */
+.carousel__card {
+  grid-area: 1 / 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  grid-template-areas: "image text";
+  align-items: start;
+  column-gap: clamp(14px, 2vw, 28px);
+  row-gap: clamp(10px, 1.4vw, 18px);
+  padding: clamp(16px, 2.2vw, 26px) clamp(18px, 2.4vw, 30px);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.35s ease;
+}
+
+/* Name over quote, both left-aligned inside the column: the rule down
+   the side of the quote wants a straight edge to start from, and a
+   ragged left one would cost more than the corner gains. */
+.carousel__text {
+  grid-area: text;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(8px, 1.2vw, 14px);
+}
+
+.carousel__name {
+  margin: 0;
+  font-size: clamp(17px, 1.5vw, 22px);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* The rule takes the slide's own hue, so the line reads as the card's
+   voice rather than as something quoted from elsewhere. */
+.carousel__quote {
+  margin: 0;
+  padding-left: clamp(10px, 1.2vw, 16px);
+  border-left: 3px solid var(--accent-fg);
+  font-size: clamp(13px, 1.15vw, 16px);
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.carousel__card > .figure { grid-area: image; }
+
+/* Twice the height the shared cap allows, so slide 11's four are shown
+   at their own size rather than shrunk to the deck's usual figure height
+   — they are cropped tight to the drawing, so what is on screen is all
+   diagram and none of it can afford to be smaller. Scoped to that slide:
+   the infrastructure three are full canvases and want the ordinary cap.
+   The vh term still ties it to the screen, so on a short window the image
+   comes down instead of the slide growing a scrollbar. */
+.slide--features .carousel__card .figure__img { max-height: clamp(360px, 68vh, 760px); }
+
+/* The four files are cropped to their own content rather than to a
+   common canvas, so they arrive at four different shapes: three wide
+   strips and this one, 557x500 and nearly square. Left alone it renders
+   two and a half times taller than the others and, since the cards share
+   a grid cell, drags all four to that height. zoom rather than a
+   max-height so the reduction is the stated 30% whichever dimension
+   happens to be binding — the same reason .figure--tcpip uses it. */
+.slide--features .carousel__card--1 .figure__img { zoom: 0.7; }
+
+.carousel__dots {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  gap: clamp(6px, 0.8vw, 10px);
+  margin: 0;
+  padding: 0;
+}
+
+.carousel__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--border-strong);
+  transition: background 0.25s ease, transform 0.25s ease;
+}
+
+/* --- the other position strip: named pages rather than dots, for a
+       carousel of two whose cards are worth telling apart before you
+       get to them. Traced from .tabs__bar / .tabs__tab below, down to
+       the 1px overlap onto the card, so the box still reads as a tabbed
+       one; list items rather than labels because there is no radio
+       behind them and nothing to click. --- */
+
+.carousel__tabs {
+  list-style: none;
+  display: flex;
+  gap: clamp(3px, 0.4vw, 6px);
+  margin: 0 0 -1px;
+  padding-left: clamp(8px, 1vw, 14px);
+}
+
+.carousel__tab {
+  position: relative;
+  z-index: 1;
+  padding: clamp(7px, 1vw, 12px) clamp(14px, 2vw, 28px);
+  background: var(--surface-sunk);
+  border: 1px solid var(--border);
+  border-radius: 9px 9px 0 0;
+  font-size: clamp(12px, 1.15vw, 16px);
+  font-weight: 600;
+  color: var(--text-tertiary);
+  user-select: none;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+/* --- which card is showing: one line per position ---
+       js/main.js drops data-step entirely at zero rather than writing
+       "0", so the bare slide is the first card. */
+
+.slide:not([data-step]) .carousel__card--1,
+.slide[data-step="1"] .carousel__card--2,
+.slide[data-step="2"] .carousel__card--3,
+.slide[data-step="3"] .carousel__card--4 {
+  opacity: 1;
+  visibility: visible;
+}
+
+.slide:not([data-step]) .carousel__dot--1,
+.slide[data-step="1"] .carousel__dot--2,
+.slide[data-step="2"] .carousel__dot--3,
+.slide[data-step="3"] .carousel__dot--4 {
+  background: var(--accent-fg);
+  transform: scale(1.4);
+}
+
+/* The page that is showing lifts into the card, exactly as the checked
+   tab does below — same three declarations, driven by the step instead
+   of by a radio. */
+.slide:not([data-step]) .carousel__tab--1,
+.slide[data-step="1"] .carousel__tab--2,
+.slide[data-step="2"] .carousel__tab--3,
+.slide[data-step="3"] .carousel__tab--4 {
+  background: var(--surface);
+  border-bottom-color: var(--surface);
+  color: var(--accent-fg);
+  font-weight: 700;
+}
+
+
+/* --- infrastructure (19): the two cards are laid out differently,
+       because what they hold is differently shaped. Load balancing
+       carries a .figure-pair, and two diagrams cut down to a third of a
+       card are two diagrams nobody at the back can read — so it stacks,
+       words across the top and the pair full width beneath. Caching is
+       one image and can afford the column beside it. No gap on the
+       carousel itself: the strip overlaps the card instead. --- */
+
+.carousel--infra { gap: 0; }
+
+.carousel--infra .carousel__card {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "text" "image";
+  /* Square under the strip, rounded everywhere else — .tabs__body's
+     corners, for the same reason. */
+  border-radius: 0 10px 10px 10px;
+  /* Half the shared card's top and bottom. padding-block rather than the
+     shorthand so the left and right keep the deck's common value, and
+     every term is halved so it scales down the way the original scales
+     up. The diagrams are wide and the vertical rim is what a tall one
+     spends first; the horizontal rim is what keeps the box a box. */
+  padding-block: clamp(8px, 1.1vw, 13px);
+}
+
+.carousel--infra .carousel__card > .figure-pair { grid-area: image; }
+
+/* Caching: words left, diagram right, the wider share to the diagram.
+
+   Both cards sit in the same grid cell and so are the same height — the
+   taller sets it — which leaves this card slack the other does not have.
+   The two align-selfs put the words and the diagram each in the middle
+   of it rather than against the top, overriding align-items: start. */
+.carousel--infra .carousel__card--1 {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2.82fr);
+  grid-template-areas: "text image";
+}
+
+.carousel--infra .carousel__card--1 > .carousel__text,
+.carousel--infra .carousel__card--1 > .figure { align-self: center; }
+
+/* A little over the deck's ordinary figure cap. These three are still
+   full 960x540 canvases rather than tight crops, so they do not need
+   slide 11's doubled one. It only ever binds in a short window: side by
+   side, the load-balancing pair is held by its own two columns first. */
+.carousel--infra .carousel__card .figure__img { max-height: clamp(200px, 42vh, 440px); }
+
+/* The caching 20%. Its column, not the cap, is what sizes this image —
+   at the cap above it already renders inside its height — so the growth
+   is bought by widening the column: 1.6fr gave the diagram 1.6/2.6 of
+   the row, and 2.82fr is 1.2x that share. zoom would not do it here the
+   way it does on .figure--tcpip, because max-width: 100% is resolved in
+   the zoomed coordinate space and the column would hand the 20% straight
+   back. The cap is lifted in step or it would take the growth back
+   instead; the vh term still rules on a short window. Must stay after
+   the rule above — same specificity, so source order is what carries. */
+.carousel--infra .carousel__card--1 .figure__img { max-height: clamp(240px, 50vh, 530px); }
+
+
+/* ============================================================
    Tabs — a card fronted by browser-style page tabs.
 
    Driven by three same-name radios that sit ahead of the bar and
@@ -1572,6 +2080,12 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
    ============================================================ */
 
 .tabs { display: flex; flex-direction: column; }
+
+/* The auto margins split whatever is left under the lede, floating the
+   card in the middle of it — the same mechanism .split--centered and the
+   carousel use, and it costs nothing on a panel already tall enough to
+   fill the slide. Slide 8 only; see the :has() block above for why. */
+.slide--styles .tabs { margin-block: auto; }
 
 .tabs__radio {
   position: absolute;
@@ -1647,11 +2161,7 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
 
 #style-rest:checked    ~ .tabs__bar .tabs__tab[for="style-rest"],
 #style-graphql:checked ~ .tabs__bar .tabs__tab[for="style-graphql"],
-#style-grpc:checked    ~ .tabs__bar .tabs__tab[for="style-grpc"],
-#live-key:checked      ~ .tabs__bar .tabs__tab[for="live-key"],
-#live-token:checked    ~ .tabs__bar .tabs__tab[for="live-token"],
-#infra-cache:checked   ~ .tabs__bar .tabs__tab[for="infra-cache"],
-#infra-lb:checked      ~ .tabs__bar .tabs__tab[for="infra-lb"] {
+#style-grpc:checked    ~ .tabs__bar .tabs__tab[for="style-grpc"] {
   background: var(--surface);
   border-bottom-color: var(--surface);
   color: var(--accent-fg);
@@ -1660,11 +2170,7 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
 
 #style-rest:checked    ~ .tabs__body .tabs__panel--rest,
 #style-graphql:checked ~ .tabs__body .tabs__panel--graphql,
-#style-grpc:checked    ~ .tabs__body .tabs__panel--grpc,
-#live-key:checked      ~ .tabs__body .tabs__panel--live-key,
-#live-token:checked    ~ .tabs__body .tabs__panel--live-token,
-#infra-cache:checked   ~ .tabs__body .tabs__panel--infra-cache,
-#infra-lb:checked      ~ .tabs__body .tabs__panel--infra-lb {
+#style-grpc:checked    ~ .tabs__body .tabs__panel--grpc {
   visibility: visible;
 }
 
@@ -1734,203 +2240,6 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
   font-size: clamp(11px, 0.95vw, 14px);
   line-height: 1.45;
   color: var(--text-secondary);
-}
-
-
-/* ============================================================
-   Live call — slide 13, the only component wired to the network.
-
-   Behaviour is in js/live.js. The colours are borrowed rather than
-   invented: the endpoint keeps its blue and the status pill reuses
-   the traffic light from the status-code table, so a 401 here is
-   the same rose the audience already met.
-   ============================================================ */
-
-.live {
-  display: flex;
-  flex-direction: column;
-  gap: clamp(10px, 1.4vw, 16px);
-}
-
-.live__form {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  gap: clamp(8px, 1vw, 14px);
-}
-
-.live__field {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  min-width: 0;
-}
-
-/* The key box takes whatever the city box leaves. */
-.live__field--grow { flex: 1 1 clamp(180px, 22vw, 320px); }
-
-.live__label {
-  font-size: clamp(10px, 0.85vw, 12px);
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--text-secondary);
-}
-
-.live__hint {
-  font-weight: 400;
-  font-style: italic;
-  letter-spacing: 0;
-  text-transform: none;
-  color: var(--text-tertiary);
-}
-
-.live__input {
-  width: 100%;
-  padding: clamp(6px, 0.8vw, 9px) clamp(8px, 1vw, 12px);
-  background: var(--surface-sunk);
-  border: 1px solid var(--border-strong);
-  border-radius: 6px;
-  color: var(--text);
-  font-family: var(--font-mono);
-  font-size: clamp(11px, 1vw, 14px);
-}
-
-.live__input:focus-visible {
-  outline: 2px solid var(--accent-fg);
-  outline-offset: 1px;
-}
-
-.live__send {
-  flex: 0 0 auto;
-  padding: clamp(7px, 0.9vw, 10px) clamp(14px, 1.8vw, 24px);
-  background: var(--accent-fg);
-  border: 0;
-  border-radius: 6px;
-  color: #fff;
-  font-family: inherit;
-  font-size: clamp(11px, 1vw, 14px);
-  font-weight: 700;
-  cursor: pointer;
-  transition: filter 0.15s ease;
-}
-
-.live__send:hover { filter: brightness(1.1); }
-
-/* Step 3 stays dead until step 2 has issued a token — the sequence
-   is the lesson, so the button enforces it. */
-.live__send:disabled {
-  background: var(--border-strong);
-  color: var(--surface);
-  cursor: not-allowed;
-}
-
-/* The endpoint blue from the legend: this line is the URL, and on
-   this slide the credential is part of it. */
-.live__url {
-  margin: 0;
-  padding: clamp(7px, 0.9vw, 11px) clamp(9px, 1.1vw, 14px);
-  background: var(--anatomy-bg);
-  border-radius: 8px;
-  color: var(--anatomy-fg);
-  font-family: var(--font-mono);
-  font-size: clamp(10px, 0.9vw, 13px);
-  line-height: 1.6;
-  word-break: break-all;
-}
-
-.live__url strong { font-weight: 700; }
-
-/* --- the three-step token sequence --- */
-
-.live__steps {
-  display: flex;
-  flex-direction: column;
-  gap: clamp(8px, 1vw, 12px);
-}
-
-.live__step {
-  display: flex;
-  align-items: center;
-  gap: clamp(9px, 1.1vw, 14px);
-}
-
-.live__num {
-  flex: 0 0 auto;
-  display: grid;
-  place-items: center;
-  width: clamp(21px, 2vw, 27px);
-  height: clamp(21px, 2vw, 27px);
-  border-radius: 999px;
-  background: var(--accent-bg);
-  color: var(--accent-fg);
-  font-family: var(--font-mono);
-  font-size: clamp(10px, 0.9vw, 13px);
-  font-weight: 700;
-}
-
-.live__step-body {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: clamp(8px, 1vw, 12px);
-  min-width: 0;
-}
-
-.live__step-title {
-  margin: 0;
-  font-size: clamp(12px, 1vw, 15px);
-  color: var(--text-secondary);
-}
-
-.live__step-title strong { color: var(--text); font-weight: 700; }
-
-.live__step-title code {
-  padding: 1px 5px;
-  border-radius: 4px;
-  background: var(--surface-sunk);
-  color: var(--text);
-  font-size: 0.92em;
-}
-
-/* --- what came back --- */
-
-.live__out {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.live__status {
-  align-self: flex-start;
-  padding: 2px clamp(8px, 1vw, 12px);
-  border-radius: 999px;
-  background: var(--surface-sunk);
-  color: var(--text-tertiary);
-  font-family: var(--font-mono);
-  font-size: clamp(10px, 0.9vw, 13px);
-  font-weight: 700;
-}
-
-.live__status--wait  { color: var(--text-secondary); }
-.live__status--ok    { background: var(--status-bg); color: var(--status-fg); }
-.live__status--denied,
-.live__status--error { background: var(--next-bg); color: var(--next-fg); }
-
-/* Dark like the code cells, because that is what it is: a console.
-   Capped and scrollable — a weather payload is longer than a slide. */
-.live__body {
-  margin: 0;
-  max-height: clamp(110px, 20vh, 230px);
-  overflow: auto;
-  padding: clamp(9px, 1.1vw, 14px);
-  background: var(--code-bg);
-  border-radius: 8px;
-  color: var(--code-fg);
-  font-size: clamp(10px, 0.9vw, 13px);
-  line-height: 1.5;
-  white-space: pre-wrap;
-  word-break: break-word;
 }
 
 
@@ -2087,6 +2396,16 @@ kbd {
   .split__pane--left     { grid-area: auto; order: 2; }
   .split__heading--right { grid-area: auto; order: 3; }
   .split__pane--right    { grid-area: auto; order: 4; }
+  /* One column: the words come back above the diagram, which is the
+     order they are written in and the order they should be read in. */
+  .carousel__card,
+  /* Named again, not inherited: the caching card's two-column rule wins
+     on specificity and would otherwise survive into a narrow window. */
+  .carousel--infra .carousel__card--1 {
+    grid-template-columns: 1fr;
+    grid-template-areas: "text" "image";
+  }
+  .carousel__tabs { flex-wrap: wrap; }
   .tabs__bar { flex-wrap: wrap; }
   .tabs__panel--grpc { grid-template-columns: 1fr; }
   .figure-pair { grid-template-columns: 1fr; }
@@ -2126,6 +2445,15 @@ kbd {
   /* No arrow key on paper — unstack the two states and print both. */
   .figure--swap { display: flex; gap: 12px; }
   .figure--swap > .figure__img { opacity: 1 !important; }
+  /* Nor a carousel to advance: print every card, drop both position
+     strips — a row of dots and a pair of page tabs mean nothing once
+     every card is on the page, and each one names itself anyway. The
+     tabbed corner goes back to a plain box with the strip gone. */
+  .carousel__track { display: block; }
+  .carousel__card { opacity: 1 !important; visibility: visible; }
+  .carousel__card + .carousel__card { margin-top: 12px; }
+  .carousel__dots, .carousel__tabs { display: none; }
+  .carousel--infra .carousel__card { border-radius: 10px; }
   /* Nothing to click on paper either — unstack and print all three. */
   .tabs__body { display: block; }
   .tabs__panel { visibility: visible; }
@@ -2143,11 +2471,12 @@ kbd {
   .field--body .field__value { max-height: none; overflow: visible; }
   .rr__methods, .panel__views { display: none; }
   /* Paper cannot call an API. The request stays on the handout as a
-     worked example; the controls that would send it do not. */
-  .live__send, .live__form, .live__status { display: none; }
-  .live__body { max-height: none; overflow: visible; }
+     worked example; the button that would send it does not. */
+  .call__send { display: none; }
   /* No viewport to fill on paper — let the slides close up. */
   .slide__inner:has(> .rr),
-  .slide__inner:has(> .split--centered) { min-height: 0; }
+  .slide__inner:has(> .split--centered),
+  .slide__inner:has(> .carousel),
+  .slide--styles > .slide__inner { min-height: 0; }
   .legend { margin-top: 24px; }
 }
