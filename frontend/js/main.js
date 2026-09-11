@@ -4,9 +4,10 @@
    Responsibilities:
    1. Build the sidebar table of contents from the slides in the DOM,
       so the deck markup stays the single source of truth.
-   2. Keyboard-only navigation, including build steps within a slide.
-      No click handlers in this file — by design. The deck's only ones
-      belong to js/live.js, on the three slides that call the network.
+   2. Navigation, including build steps within a slide. The keyboard
+      drives the deck; the sidebar is the one thing here you can click,
+      and it only jumps between sections. The other click handlers in
+      the deck belong to js/live.js, on the slides that call the network.
    3. Keep the progress bar and the URL hash in sync.
    ============================================================ */
 
@@ -26,15 +27,26 @@
   var step = 0;
 
   /* ----------------------------------------------------------
-     Sidebar: one "Overview" entry for the cover + TOC slides,
-     then one entry per [data-section] slide.
+     Sidebar: one "Overview" entry for the slides before the deck
+     reaches its first axis, then one entry per [data-section] slide
+     — the five axis slides, each of which opens a section.
+
+     A slide belongs to the axis it follows, so only those five carry
+     data-section and every content slide behind one lights it up.
+     That is why the key is worked out here, in source order, rather
+     than read off the slide: the content slides say nothing about
+     which section they are in, and nothing in the markup should have
+     to repeat what their position already states.
      ---------------------------------------------------------- */
 
   var entries = [];
+  var keys = [];   /* parallel to slides: the entry each one lights */
 
-  function addEntry(key, num, label, time, family) {
-    var el = document.createElement('div');
+  function addEntry(key, target, num, label, time, family) {
+    var el = document.createElement('button');
+    el.type = 'button';
     el.className = 'toc-link';
+    el.dataset.target = target;
     el.setAttribute('data-family', family);
     el.setAttribute('title', label + (time ? ' — ' + time : ''));
 
@@ -69,30 +81,32 @@
       return s.dataset.navGroup === 'overview';
     });
 
+    var key = '';
+
     if (hasOverview) {
-      addEntry('overview', '—', 'Overview', 'intro + contents', 'foundations');
+      key = 'overview';
+      addEntry(key, 0, '—', 'Overview', 'intro + contents', 'foundations');
     }
 
-    slides.forEach(function (slide) {
-      if (!slide.dataset.section) return;
-      addEntry(
-        'section:' + slide.dataset.section,
-        slide.dataset.section,
-        slide.dataset.title || 'Untitled',
-        slide.dataset.duration || '',
-        slide.dataset.family || 'foundations'
-      );
+    slides.forEach(function (slide, i) {
+      if (slide.dataset.section) {
+        key = 'section:' + slide.dataset.section;
+        addEntry(
+          key,
+          i,
+          slide.dataset.section,
+          slide.dataset.title || 'Untitled',
+          slide.dataset.duration || '',
+          slide.dataset.family || 'foundations'
+        );
+      }
+      keys[i] = key;
     });
   }
 
   /* ----------------------------------------------------------
      Rendering
      ---------------------------------------------------------- */
-
-  function keyFor(slide) {
-    if (slide.dataset.section) return 'section:' + slide.dataset.section;
-    return slide.dataset.navGroup || '';
-  }
 
   function render() {
     var slide = slides[index];
@@ -107,7 +121,7 @@
        highlight and the progress bar pick up the same hue. */
     document.body.setAttribute('data-family', slide.dataset.family || 'foundations');
 
-    var activeKey = keyFor(slide);
+    var activeKey = keys[index];
     entries.forEach(function (entry) {
       var on = entry.key === activeKey;
       entry.el.classList.toggle('is-active', on);
@@ -167,8 +181,23 @@
   }
 
   /* ----------------------------------------------------------
-     Sidebar collapse
+     Sidebar: jumping to a section, and collapsing the whole thing
+
+     An entry lands on the axis slide that opens its section, never
+     mid-section: the sidebar is a map of the talk, not a slide picker.
+     Delegated to the nav so it survives however many entries the
+     markup ends up declaring.
      ---------------------------------------------------------- */
+
+  nav.addEventListener('click', function (event) {
+    var link = event.target.closest('.toc-link');
+    if (!link) return;
+    /* Hand the keyboard straight back to the deck: a button keeps focus
+       after a click, and Space would re-trigger the jump instead of
+       advancing the slide. */
+    link.blur();
+    goTo(parseInt(link.dataset.target, 10));
+  });
 
   function setCollapsed(collapsed) {
     document.body.classList.toggle('is-collapsed', collapsed);
@@ -227,6 +256,12 @@
     if (event.target.matches && event.target.matches('.call__input')) return;
 
     var key = event.key;
+
+    /* A sidebar entry reached by Tab keeps Enter and Space for itself —
+       that is how a button is pressed without a mouse. The arrows are
+       left to the deck, so tabbing into the sidebar strands nobody. */
+    if (event.target.closest && event.target.closest('.toc-link') &&
+        (key === 'Enter' || key === ' ' || key === 'Spacebar')) return;
 
     /* A slide with steps left to build spends one before the deck
        moves on, and winds one back before it goes back. */

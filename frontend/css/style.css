@@ -146,14 +146,32 @@ code, kbd, pre { font-family: var(--font-mono); }
   overflow-x: hidden;
 }
 
+/* A button, because it jumps to a section — so it also has to be
+   stripped back to the plain row it looks like. */
 .toc-link {
   display: flex;
   align-items: baseline;
   gap: 11px;
+  width: 100%;
   padding: 9px 10px;
-  border-radius: 8px;
+  border: 0;
   border-left: 3px solid transparent;
+  border-radius: 8px;
   margin-bottom: 2px;
+  background: none;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+/* Must stay ahead of .is-active: same specificity, and the active
+   entry keeps its family fill when the pointer crosses it. */
+.toc-link:hover { background: var(--surface-sunk); }
+.toc-link:hover .toc-link__label { color: var(--text); }
+
+.toc-link:focus-visible {
+  outline: 2px solid var(--accent-fg);
+  outline-offset: -2px;
 }
 
 .toc-link__num {
