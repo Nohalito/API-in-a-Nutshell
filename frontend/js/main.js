@@ -5,7 +5,8 @@
    1. Build the sidebar table of contents from the slides in the DOM,
       so the deck markup stays the single source of truth.
    2. Keyboard-only navigation, including build steps within a slide.
-      No click handlers anywhere — by design.
+      No click handlers in this file — by design. The deck's only ones
+      belong to js/live.js, on the three slides that call the network.
    3. Keep the progress bar and the URL hash in sync.
    ============================================================ */
 

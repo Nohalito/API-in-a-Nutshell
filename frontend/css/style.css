@@ -543,7 +543,7 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
 
 
 /* ============================================================
-   Concept slides — icon-illustrated bullets
+   Slide lede — the standfirst that sits under a slide title
    ============================================================ */
 
 .slide__lede {
@@ -551,119 +551,6 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
   max-width: 70ch;
   font-size: clamp(15px, 1.3vw, 18px);
   line-height: 1.55;
-  color: var(--text-secondary);
-}
-
-.concept-grid {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: clamp(14px, 2vw, 24px);
-}
-
-/* Two boxes on top, one centered underneath — apex pointing down. */
-.concept-grid--triangle {
-  grid-template-columns: repeat(2, minmax(240px, 1fr));
-}
-
-.concept-grid--triangle > .concept-card--example {
-  grid-column: 1 / -1;
-  justify-self: center;
-  width: 55%;
-  min-width: 220px;
-}
-
-/* Base card. Modifiers/descendants below all win ties on source
-   order, so keep this rule first among the .concept-card family. */
-.concept-card {
-  display: flex;
-  flex-direction: column;
-  gap: clamp(8px, 1.2vw, 14px);
-  padding: clamp(16px, 2.2vw, 26px) clamp(18px, 2.4vw, 30px);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-}
-
-.concept-card--example {
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding-top: clamp(10px, 1.4vw, 16px);
-  padding-bottom: clamp(10px, 1.4vw, 16px);
-}
-
-.concept-card--why {
-  flex-direction: row;
-  align-items: center;
-  gap: clamp(14px, 2vw, 24px);
-}
-
-.concept-card__cols {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  gap: clamp(12px, 1.6vw, 20px);
-}
-
-.concept-card__col {
-  display: flex;
-  flex-direction: column;
-  gap: clamp(8px, 1.2vw, 14px);
-}
-
-.concept-card__branches {
-  flex: 1 1 auto;
-  display: flex;
-  flex-direction: column;
-  gap: clamp(10px, 1.4vw, 18px);
-}
-
-.concept-card__row {
-  display: flex;
-  align-items: center;
-  gap: clamp(8px, 1.2vw, 14px);
-}
-
-.concept-card__arrow {
-  flex: 0 0 auto;
-  color: var(--accent-fg);
-  font-size: clamp(16px, 1.8vw, 22px);
-  font-weight: 700;
-}
-
-.concept-card__row-label {
-  font-size: clamp(13px, 1.05vw, 15px);
-  color: var(--text-secondary);
-}
-
-.concept-card__icon {
-  width: clamp(36px, 4vw, 48px);
-  height: clamp(36px, 4vw, 48px);
-  display: grid;
-  place-items: center;
-  border-radius: 10px;
-  background: var(--accent-bg);
-}
-
-.concept-card__icon img {
-  width: clamp(18px, 2.2vw, 26px);
-  height: clamp(18px, 2.2vw, 26px);
-  object-fit: contain;
-}
-
-.concept-card__title {
-  font-size: clamp(15px, 1.35vw, 18px);
-  font-weight: 600;
-  letter-spacing: -0.01em;
-}
-
-.concept-card__desc {
-  margin: 0;
-  font-size: clamp(13px, 1.05vw, 15px);
-  line-height: 1.5;
   color: var(--text-secondary);
 }
 
@@ -729,9 +616,10 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
 }
 
 
-/* --- a supplied diagram. It takes the same slot as the placeholder
-       below, so it gets the same frame; the height cap keeps a wide
-       image from pushing the rest of the pane off a short screen. --- */
+/* --- a supplied diagram. The frame is what makes it read as a figure
+       rather than as a picture dropped into the prose; the height cap
+       keeps a wide image from pushing the rest of the pane off a short
+       screen. --- */
 
 .figure {
   margin: 0;
@@ -819,32 +707,6 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
 
 .slide[data-step="1"] .figure--swap > .figure__img       { opacity: 0; }
 .slide[data-step="1"] .figure--swap > .figure__img--after { opacity: 1; }
-
-
-/* --- stand-in for a diagram that has not been supplied yet --- */
-
-.figure--placeholder {
-  display: grid;
-  place-items: center;
-  min-height: clamp(90px, 14vh, 170px);
-  padding: clamp(10px, 1.4vw, 16px);
-  background: var(--surface-alt);
-  border: 1px dashed var(--border-strong);
-  border-radius: 10px;
-}
-
-/* Stand-in prose. Capped to a readable measure so the placeholder
-   previews the line length the real copy will have — the box runs the
-   full width of a slide, and an uncapped paragraph in it would set one
-   very long line and misrepresent the space. */
-.figure--placeholder > .tabs__lead { max-width: 74ch; }
-
-.figure__hint {
-  font-family: var(--font-mono);
-  font-size: clamp(11px, 0.95vw, 13px);
-  color: var(--text-tertiary);
-  text-align: center;
-}
 
 
 /* --- HTTP methods: a chip per verb, its CRUD gloss beside it.
@@ -1834,7 +1696,7 @@ textarea.call__input {
    of them and the position strip never moves as they change.
 
    Two slides use it. Features (11) shows four cards under a row of
-   dots; Infrastructure (19) shows two under the page tabs it used
+   dots; Infrastructure (20) shows two under the page tabs it used
    to be a tab strip for — see .carousel--infra at the end.
    ============================================================ */
 
@@ -2001,9 +1863,7 @@ textarea.call__input {
    tab does below — same three declarations, driven by the step instead
    of by a radio. */
 .slide:not([data-step]) .carousel__tab--1,
-.slide[data-step="1"] .carousel__tab--2,
-.slide[data-step="2"] .carousel__tab--3,
-.slide[data-step="3"] .carousel__tab--4 {
+.slide[data-step="1"] .carousel__tab--2 {
   background: var(--surface);
   border-bottom-color: var(--surface);
   color: var(--accent-fg);
@@ -2011,7 +1871,7 @@ textarea.call__input {
 }
 
 
-/* --- infrastructure (19): the two cards are laid out differently,
+/* --- infrastructure (20): the two cards are laid out differently,
        because what they hold is differently shaped. Load balancing
        carries a .figure-pair, and two diagrams cut down to a third of a
        card are two diagrams nobody at the back can read — so it stacks,
@@ -2380,11 +2240,6 @@ kbd {
   .toc-link { justify-content: center; padding: 10px 0; border-left-width: 0; }
   .toc-link__num { width: auto; }
   .toc { grid-template-columns: 1fr; grid-template-rows: none; grid-auto-flow: row; }
-  .concept-grid { grid-template-columns: 1fr; }
-  .concept-grid--triangle { grid-template-columns: 1fr; }
-  .concept-grid--triangle > .concept-card--example { grid-column: 1; width: 100%; }
-  .concept-card__cols { grid-template-columns: 1fr; }
-  .concept-card--why { flex-direction: column; align-items: stretch; }
   .split { grid-template-columns: 1fr; }
   .split__rule { display: none; }
   .points--cols { grid-template-columns: 1fr; }
