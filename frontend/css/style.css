@@ -666,6 +666,31 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
   margin-inline: auto;
 }
 
+/* The closing pair, stacked in one column and locked to a single width
+   so the two pictures read as one block rather than as two images that
+   happen to sit above each other. One width means the height is no
+   longer something either image chooses: the iceberg is portrait at
+   roughly 2:3, so a width w costs it 1.5w of height, and the 16:9 meme
+   under it another 0.56w — a little over 2w for the stack. The width is
+   therefore budgeted against the viewport height and not the column;
+   at 35vh the pair comes to about 74vh, which is what the title leaves.
+   min() hands the decision back to the column on a narrow window, where
+   the column is the tighter of the two constraints.
+
+   The shared max-height goes with it. That cap is sized for one diagram
+   in a pane, and here it would letterbox the iceberg inside a short box
+   — object-fit: contain scaling it down rather than cropping — which is
+   the one outcome a fixed width is meant to rule out. */
+.split--more .figure {
+  width: min(100%, clamp(190px, 35vh, 420px));
+}
+
+.split--more .figure__img {
+  width: 100%;
+  max-height: none;
+}
+
+
 /* --- two states of one diagram, shown together. Wide enough that the
        labels inside them survive a projector only because the panel
        runs the full width of the slide; justify-items keeps the pair
@@ -910,6 +935,22 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
 /* A row of its own across both columns, for a heading or an intro that
    introduces the pair rather than belonging to either. */
 .split__full { grid-column: 1 / -1; }
+
+/* The closing slide: one bullet against the two pictures that actually
+   make its point. Two explicit tracks for the same reason .split--dense
+   respecifies them — there is no rule element here, so the second pane
+   would otherwise land in the auto track .split reserves for one. The
+   text column is the narrower of the two because the bullet is a caption
+   for the iceberg rather than a column arguing beside it, and the panes
+   centre against each other so the short sentence sits level with the
+   middle of the stack instead of hanging off its top. Ties with .split
+   on specificity, so it has to stay after it. */
+.split--more {
+  grid-template-columns: minmax(0, 0.72fr) minmax(0, 1fr);
+  align-items: center;
+}
+
+.split--more > .split__pane { gap: clamp(12px, 1.8vh, 22px); }
 
 .split__heading--left  { grid-area: 1 / 1; }
 .split__heading--right { grid-area: 1 / 3; }
