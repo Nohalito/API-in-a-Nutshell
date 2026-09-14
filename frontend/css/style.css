@@ -536,11 +536,11 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
    46% so that a wide, short window cannot let the picture take the half
    of the row the words are standing in. */
 .thanks__meme {
-  width: min(46%, clamp(200px, 68vh, 700px));
+  width: min(46%, clamp(200px, 68vh, 600px));
 }
 
 .thanks__meme .figure__img {
-  width: 100%;
+  width: 95%;
   max-height: none;
 }
 
@@ -922,10 +922,13 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
        short ordered set", and the agenda and the HTTP methods both say
        it that way.
 
-       These are the only anchors in the whole deck, so there is no link
-       style to inherit and no reset to fall back on: without the rules
-       below they would render as browser blue, which belongs to no
-       family here. They take the slide's own accent instead, on the
+       These three and the playground link in the pane beside them are
+       the only anchors in the whole deck, so there is no link style to
+       inherit and no reset to fall back on: without the rules below they
+       would render as browser blue, which belongs to no family here.
+       .points__link is the other one, and it borrows this treatment
+       rather than inventing a second. They take the slide's own accent
+       instead of the browser's, on the
        underline rather than on the text, so the label keeps full
        contrast against white and the colour is carried by a line that
        is allowed to be thin. --- */
@@ -2678,6 +2681,26 @@ textarea.call__input {
   background: var(--surface-sunk);
   color: var(--text);
 }
+
+/* The way out to the playground, and the only anchor in the deck that is
+   not in the reading list below it. Styled as .reflist__link is — accent
+   on the underline rather than on the text, so the label keeps its full
+   contrast and the colour is carried by a line thin enough to take it —
+   but with no size of its own: this link is a phrase inside a sentence,
+   not the head of an entry, and setting it would break the line it sits
+   in. Weight is the only thing it adds, which is what an anchor buried
+   mid-sentence needs to be findable from the back of the room. */
+.points__link {
+  font-weight: 600;
+  color: var(--text);
+  text-decoration: underline;
+  text-decoration-color: var(--accent-fg);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+.points__link:hover,
+.points__link:focus-visible { color: var(--accent-fg); }
 
 
 /* --- a labelled cluster of points, so several groups can share one

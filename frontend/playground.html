@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>API in a Nutshell &mdash; Playground</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/playground.css">
+</head>
+<body class="pg-page">
+
+  <!-- ============================================================
+       Playground — slide 17's shell, off the rails.
+
+       The deck walks a fixed sequence: each panel there has its verb,
+       its endpoint and its body decided in advance, because the room is
+       being shown one idea at a time. Here there is no sequence. One
+       request panel, one answer panel, and everything in the request is
+       yours to change.
+
+       Deliberately not a second engine: js/live.js drives this page
+       exactly as it drives slides 10, 16 and 17, because the block below
+       carries .rr--call and speaks the same data-* vocabulary. What
+       js/playground.js adds is only what the deck never needed — a verb
+       that changes under one panel instead of switching between two, and
+       a Tab key that indents JSON instead of leaving the box.
+       ============================================================ -->
+
+  <main class="pg">
+
+    <div class="pg__bar">
+      <p class="pg__eyebrow">API in a Nutshell</p>
+      <a class="pg__back" href="index.html">&larr; Back to the deck</a>
+    </div>
+
+    <div class="slide__inner">
+      <div class="rr rr--call rr--pg">
+
+        <!-- Both radios carry the same value on purpose. live.js resolves
+             the active panel with [data-req="<checked radio value>"], and
+             on this page there is only ever one panel to resolve to — the
+             verb is not a different request, it is the same request sent
+             differently. Which verb was picked is read off data-verb by
+             js/playground.js; the id is what the stylesheet lights up. -->
+        <input class="rr__radio" type="radio" name="pg-method" id="pg-get" value="main" data-verb="GET" checked>
+        <input class="rr__radio" type="radio" name="pg-method" id="pg-post" value="main" data-verb="POST">
+
+        <div class="rr__head">
+          <h2 class="slide__title">Playground</h2>
+          <div class="rr__methods">
+            <label class="rr__method" for="pg-get">GET</label>
+            <label class="rr__method" for="pg-post">POST</label>
+          </div>
+        </div>
+
+        <p class="slide__lede slide__lede--wide">
+          A real request against the talk&rsquo;s own API. Pick a verb, type an endpoint, edit the body &mdash; then send it and read what comes back. Nothing fires on load and nothing is remembered: every call is a click.
+        </p>
+
+        <div class="rr__grid">
+
+          <!-- ----- left: the request, entirely as typed ----- -->
+          <article class="panel">
+            <div class="panel__head">
+              <h3 class="panel__title">Request</h3>
+              <button class="call__send" type="button" data-action="send">Send</button>
+            </div>
+            <div class="panel__body">
+
+              <div class="rr-panel rr-panel--fields" data-req="main" data-method="GET">
+
+                <div class="field-row">
+                  <!-- Rewritten by playground.js when the switch moves. A
+                       purple box reading GET above a request that POSTs is
+                       the one kind of lie this page cannot afford either. -->
+                  <div class="field field--method">
+                    <p class="field__value" data-verb-label>GET</p>
+                  </div>
+                  <div class="field field--endpoint">
+                    <input class="field__value call__input" type="text" name="pg-endpoint" value="https://api-in-a-nutshell.onrender.com/api/v1/hello" spellcheck="false" autocomplete="off" aria-label="endpoint">
+                  </div>
+                </div>
+
+                <!-- Left static for now, and so listing both lines is the
+                     honest option: a GET carrying Content-Type is untidy
+                     rather than wrong, where a POST missing it is a 422.
+                     Wiring this box to the verb is the next thing to do. -->
+                <div class="field field--headers">
+<pre class="field__value">Accept: application/json
+Content-Type: application/json</pre>
+                </div>
+
+                <div class="field field--body">
+<textarea class="field__value call__input" name="pg-body" data-role="body" spellcheck="false" aria-label="request body">{
+  "message": "hello from the playground"
+}</textarea>
+                </div>
+
+                <p class="call__hint">
+                  <kbd>Tab</kbd> indents, <kbd>Shift</kbd>+<kbd>Tab</kbd> outdents, <kbd>Esc</kbd> leaves the box. On <code>GET</code> the body is ignored &mdash; a GET asks for data, it sends none.
+                </p>
+
+              </div>
+
+            </div>
+          </article>
+
+          <!-- ----- right: whatever came back ----- -->
+          <article class="panel">
+            <div class="panel__head">
+              <h3 class="panel__title">Response</h3>
+            </div>
+            <div class="panel__body">
+
+              <div class="rr-panel rr-panel--fields" data-res>
+                <div class="field field--status">
+                  <p class="field__value" data-out="status">&mdash; nothing called yet &mdash;</p>
+                </div>
+                <div class="field field--headers">
+<pre class="field__value" data-out="headers">Content-Type: application/json</pre>
+                </div>
+                <div class="field field--body">
+<pre class="field__value" data-out="body">Press Send. Whatever the endpoint on the left answers lands here &mdash; status, headers and payload.
+
+The API sleeps when nobody is calling it, so the first request of the day can take up to a minute. Every one after that is immediate.</pre>
+                </div>
+              </div>
+
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- live.js first: it wires every .rr--call it finds, this one included.
+       playground.js only adds the two behaviours the deck never needed. -->
+  <script src="js/live.js"></script>
+  <script src="js/playground.js"></script>
+
+</body>
+</html>

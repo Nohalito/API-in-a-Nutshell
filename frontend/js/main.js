@@ -261,12 +261,18 @@
        that is how a button is pressed without a mouse. The arrows are
        left to the deck, so tabbing into the sidebar strands nobody.
 
-       The closing slide's reference links are in on the same terms, and
-       they need it more: a link has no other way of being followed from
-       the keyboard, so without this Enter would advance the slide off
-       the reference it was meant to open. Space is in the list because
-       NEXT claims it, not because a link answers to it. */
-    if (event.target.closest && event.target.closest('.toc-link, .reflist__link') &&
+       The closing slide's links are in on the same terms, and they need
+       it more: a link has no other way of being followed from the
+       keyboard, so without this Enter would advance the slide off the
+       reference it was meant to open. Space is in the list because NEXT
+       claims it, not because a link answers to it.
+
+       Both of that slide's kinds are listed — the three references and
+       the point that leads out to the playground. Any anchor added to
+       the deck later has to be named here too, or it is unreachable
+       without a mouse. */
+    if (event.target.closest &&
+        event.target.closest('.toc-link, .reflist__link, .points__link') &&
         (key === 'Enter' || key === ' ' || key === 'Spacebar')) return;
 
     /* A slide with steps left to build spends one before the deck

@@ -1,0 +1,124 @@
+/* ============================================================
+   Playground — the little that css/style.css does not already have.
+
+   Everything the page is made of is borrowed: .rr, .panel, .field,
+   .call__input, .call__send, .slide__inner. Three things do not
+   transfer, and they are the whole of this file:
+
+     1. a page shell, because .slide is absolutely positioned and
+        expects a deck controller to reveal it;
+     2. one always-visible request panel, where the deck hides every
+        .rr-panel until a radio picks it;
+     3. the active-verb highlight, which style.css writes per id and
+        this page's ids are new.
+   ============================================================ */
+
+/* --- 1. page shell ----------------------------------------------
+   Two things in style.css assume a deck, and both have to be undone
+   here rather than worked around:
+
+   body is `grid-template-columns: var(--sidebar-w) 1fr`, a fixed
+   300px track for the sidebar and the rest for the deck. This page
+   has no sidebar, so its only child landed in column 1 and rendered
+   300px wide. Re-declaring the body as a block is the honest fix; the
+   alternative, pinning the main to grid-column 2, would leave an
+   empty 300px gutter down the left for no reason.
+
+   body also carries `height: 100%` + `overflow: hidden`, because the
+   deck paginates and must never scroll. This page is a document and
+   must, so both are given back. */
+
+body.pg-page {
+  display: block;
+  height: auto;
+  overflow: auto;
+}
+
+/* .slide is position:absolute + display:none, revealed by main.js
+   marking the deck ready. No deck and no controller here, so the page
+   supplies its own column. Padding matches .slide's. */
+
+.pg {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: 3vh 5vw 4vh;
+}
+
+/* The deck caps its measure at 1040px so a line of prose stays
+   readable across a projector. Nothing here is prose — it is two
+   panels of monospace side by side, and they earn the extra width. */
+
+.pg .slide__inner { max-width: 1400px; }
+
+.pg__bar {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: clamp(12px, 2vw, 28px);
+  margin-bottom: clamp(14px, 2.4vh, 28px);
+}
+
+.pg__eyebrow {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: clamp(10px, 0.9vw, 12px);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.pg__back {
+  font-size: clamp(11px, 1vw, 14px);
+  color: var(--text-secondary);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.pg__back:hover {
+  color: var(--anatomy-fg);
+  border-bottom-color: currentColor;
+}
+
+/* --- 2. the single request panel --------------------------------
+   In the deck a .rr-panel is display:none until its radio is checked,
+   because a slide holds several and shows one. This page holds one
+   and shows it always: the radios here change the verb *inside* the
+   panel, they do not choose between panels. */
+
+.rr--pg .rr-panel { display: flex; }
+
+/* --- 3. active verb ---------------------------------------------
+   Same treatment style.css gives #rr-get / #call-get, against this
+   page's ids. Blue because it is the switch, matching the deck. */
+
+#pg-get:checked  ~ .rr__head .rr__method[for="pg-get"],
+#pg-post:checked ~ .rr__head .rr__method[for="pg-post"] {
+  background: var(--anatomy-bg);
+  color: var(--anatomy-fg);
+}
+
+/* The hint under the body names three keys, and a key that is not
+   drawn as one reads as emphasis instead of as a keycap. */
+
+.call__hint kbd {
+  padding: 1px 5px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--surface-sunk);
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  font-style: normal;
+}
+
+/* The deck runs on a projector and is never narrow. This page is a
+   link someone opens on whatever they are holding, so the two panels
+   stop being a pair and become a stack. */
+
+@media (max-width: 860px) {
+  .rr--pg .rr__grid { grid-template-columns: 1fr; }
+  .rr--pg .panel { grid-row: auto; grid-template-rows: auto auto; }
+  .rr--pg .panel__body { height: auto; max-height: 60vh; }
+}
