@@ -8,8 +8,9 @@ is laid out — the folder tree is part of what the project teaches.
 
 ```bash
 cd backend
-venv/Scripts/python.exe -m pip install -r requirements.txt   # first time only
-venv/Scripts/python.exe -m uvicorn app.main:app --reload --port 8000
+source venv/Scripts/activate
+pip install -r requirements.txt   # first time only
+uvicorn app.main:app --reload --port 8000
 ```
 
 Then open <http://localhost:8000/docs> — the interactive documentation is

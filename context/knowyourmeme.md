@@ -23,11 +23,11 @@ LOOK at what microservices have been demanding your respect for all this time, w
 
 (This is REAL SOFTWARE, done by REAL ENGINEERS):
 
-🔴 POST /api/v3/auth/session
+🔴 API: "Apps Please Integrate"
 
-🔴 GET /api/v3/users/42/profile?include=preferences,permissions,settings
+🔴 GET /api/v73/users/42/profile?include=preferences,permissions,settings
 
-🔴 {"status":"ok","data":{"user":{...}}}
+🔴 HTTP/1.1 200 {"status":"400","detail":"Bad Request"}
 
 "Hello I would like <img> please"
 

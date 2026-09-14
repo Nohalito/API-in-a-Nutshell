@@ -61,8 +61,8 @@
             </p>
           </div>
           <ul class="points">
-            <li>A liking toward computer as a whole</li>
-            <li>To help other avoid the struggle I faced</li>
+            <li>I'm pretty fond of the coding environment.</li>
+            <li>To allow other avoiding the troubles I faced when learning it myself.</li>
           </ul>
         </div>
       </div>
@@ -1036,34 +1036,59 @@ a GET asks for data, it sends none</pre>
             </p>
           </div>
 
-          <div class="split__box">
-            <h4 class="split__title">API Key</h4>
-            <p class="split__desc">
-              A long random string the provider hands you once. The server keeps its own copy and compares the two.
-            </p>
-            <div class="field field--headers">
+          <div class="flashcard flashcard--key">
+            <input class="flashcard__toggle" type="checkbox" id="key-flip">
+
+            <div class="flashcard__faces">
+              <div class="flashcard__face flashcard__face--front">
+                <label class="flashcard__hit" for="key-flip" aria-label="Turn the API Key box over"></label>
+                <h4 class="split__title">API Key</h4>
+                <p class="split__desc">
+                  A long random string the provider hands you once. The server keeps its own copy and compares the two.
+                </p>
+                <div class="field field--headers">
 <pre class="field__value">X-API-Key: 3f9a1c7e-84d2-4b6a-9e2f-7c1a5d9b0e42</pre>
+                </div>
+                <ul class="points points--tight">
+                  <li><strong>Carries nothing.</strong> The string says nothing on its own &mdash; the server has to look it up to learn who you are.</li>
+                  <li><strong>Never expires</strong> until somebody revokes it, which is exactly why a leaked key stays useful for years.</li>
+                </ul>
+              </div>
+
+              <div class="flashcard__face flashcard__face--back">
+                <label class="flashcard__hit" for="key-flip" aria-label="Turn the API Key box back"></label>
+                <img class="flashcard__img" src="assets/api-key-and-intern.png" alt="A tweet reading &ldquo;today&rsquo;s my last day of unpaid internship&rdquo;, above a commit diff adding an API key to a .env file.">
+              </div>
             </div>
-            <ul class="points points--tight">
-              <li><strong>Carries nothing.</strong> The string says nothing on its own &mdash; the server has to look it up to learn who you are.</li>
-              <li><strong>Never expires</strong> until somebody revokes it, which is exactly why a leaked key stays useful for years.</li>
-            </ul>
           </div>
 
-          <div class="split__box">
-            <h4 class="split__title">JWT &mdash; JSON Web Token</h4>
-            <p class="split__desc">
-              Three chunks separated by dots: header, payload, signature. The payload is <strong>readable by anyone</strong>; the signature is what proves the server issued it.
-            </p>
-            <div class="field field--headers">
+          <div class="flashcard flashcard--jwt">
+            <input class="flashcard__toggle" type="checkbox" id="jwt-flip">
+            <label class="flashcard__flip" for="jwt-flip">&#10227;&nbsp; Flip</label>
+
+            <div class="flashcard__faces">
+              <div class="flashcard__face flashcard__face--front">
+                <label class="flashcard__hit" for="jwt-flip" aria-label="Turn the JWT box over"></label>
+                <h4 class="split__title">JWT &mdash; JSON Web Token</h4>
+                <p class="split__desc">
+                  Three chunks separated by dots: header, payload, signature. The payload is <strong>readable by anyone</strong>; the signature is what proves the server issued it.
+                </p>
+                <div class="field field--headers">
 <pre class="field__value">Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI0MiIsInJvbGUiOiJlZGl0b3IifQ.Kx8h&hellip;</pre>
-            </div>
+                </div>
 <pre class="code"><code><span class="code__key">payload</span>, decoded &mdash; no secret needed
 { "sub": "42", "role": "editor", "exp": 1789243200 }</code></pre>
-            <ul class="points points--tight">
-              <li><strong>Carries its claims.</strong> Who you are, what role you hold, when it dies &mdash; all in the token, so no lookup.</li>
-              <li><strong>Expires on its own</strong>, often within the hour. A stolen token has a short life.</li>
-            </ul>
+                <ul class="points points--tight">
+                  <li><strong>Carries its claims.</strong> Who you are, what role you hold, when it dies &mdash; all in the token, so no lookup.</li>
+                  <li><strong>Expires on its own</strong>, often within the hour. A stolen token has a short life.</li>
+                </ul>
+              </div>
+
+              <div class="flashcard__face flashcard__face--back">
+                <label class="flashcard__hit" for="jwt-flip" aria-label="Turn the JWT box back"></label>
+                <img class="flashcard__img" src="assets/JWT-sequence.png" alt="A sequence diagram across three lifelines &mdash; client, auth server, API server. The client posts to /auth/login with a password; the auth server validates the credentials and returns a JWT. The client then calls the API server with the token in an Authorization: Bearer header, and the API server verifies the signature locally: a valid token returns the requested data, an invalid one returns 401 Unauthorized.">
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -1087,28 +1112,70 @@ a GET asks for data, it sends none</pre>
             </p>
           </div>
 
-          <div class="split__box">
-            <h4 class="split__title">RBAC &mdash; Role-Based Access Control</h4>
-            <p class="split__desc">
-              Permissions are never granted to people. They are granted to <strong>roles</strong>, and people are handed a role &mdash; so a new joiner is one assignment, not twenty.
-            </p>
-            <ul class="method-list">
-              <li class="method">
-                <span class="method__name">viewer</span>
-                <span class="method__def"><strong>GET</strong> &mdash; may read the cart</span>
-              </li>
-              <li class="method">
-                <span class="method__name">editor</span>
-                <span class="method__def"><strong>GET, POST, PATCH</strong> &mdash; may add and change items</span>
-              </li>
-              <li class="method">
-                <span class="method__name">admin</span>
-                <span class="method__def">everything, <strong>DELETE</strong> included</span>
-              </li>
-            </ul>
-            <p class="split__desc">
-              The JWT on the previous page says <code>"role": "editor"</code>. So a <code>DELETE</code> comes back <strong>403</strong>, not 401 &mdash; authenticated, simply not authorized.
-            </p>
+          <!-- The RBAC box is a flashcard: RBAC on the front, ABAC on the
+               back, told in the same vocabulary — a title, one paragraph,
+               a three-row list, one closing line — so the pair reads as
+               two answers to the same question rather than two topics.
+
+               The flip chip stays on this one, unlike slide 14's API Key
+               card: that card's back is a punchline and has to be a
+               surprise, this one is a comparison, and a comparison the
+               room does not know is there is one the room never makes. -->
+          <div class="flashcard flashcard--rbac">
+            <input class="flashcard__toggle" type="checkbox" id="rbac-flip">
+            <label class="flashcard__flip" for="rbac-flip">&#10227;&nbsp; Flip</label>
+
+            <div class="flashcard__faces">
+              <div class="flashcard__face flashcard__face--front">
+                <label class="flashcard__hit" for="rbac-flip" aria-label="Turn the card over to ABAC"></label>
+                <h4 class="split__title">RBAC &mdash; Role-Based Access Control</h4>
+                <p class="split__desc">
+                  Permissions are never granted to people. They are granted to <strong>roles</strong>, and people are handed a role &mdash; so a new joiner is one assignment, not twenty.
+                </p>
+                <ul class="method-list">
+                  <li class="method">
+                    <span class="method__name">viewer</span>
+                    <span class="method__def"><strong>GET</strong> &mdash; may read the cart</span>
+                  </li>
+                  <li class="method">
+                    <span class="method__name">editor</span>
+                    <span class="method__def"><strong>GET, POST, PATCH</strong> &mdash; may add and change items</span>
+                  </li>
+                  <li class="method">
+                    <span class="method__name">admin</span>
+                    <span class="method__def">everything, <strong>DELETE</strong> included</span>
+                  </li>
+                </ul>
+                <p class="split__desc">
+                  The JWT on the previous page says <code>"role": "editor"</code>. So a <code>DELETE</code> comes back <strong>403</strong>, not 401 &mdash; authenticated, simply not authorized.
+                </p>
+              </div>
+
+              <div class="flashcard__face flashcard__face--back">
+                <label class="flashcard__hit" for="rbac-flip" aria-label="Turn the card back to RBAC"></label>
+                <h4 class="split__title">ABAC &mdash; Attribute-Based Access Control</h4>
+                <p class="split__desc">
+                  Nothing is handed out in advance. Every call is weighed against a <strong>policy</strong> that reads the attributes in play &mdash; so the same person can be told yes and no ten minutes apart.
+                </p>
+                <ul class="method-list">
+                  <li class="method">
+                    <span class="method__name">subject</span>
+                    <span class="method__def">who is asking &mdash; <strong>team, seniority, clearance</strong></span>
+                  </li>
+                  <li class="method">
+                    <span class="method__name">resource</span>
+                    <span class="method__def">what is being touched &mdash; <strong>its owner, its amount</strong></span>
+                  </li>
+                  <li class="method">
+                    <span class="method__name">context</span>
+                    <span class="method__def">when and from where &mdash; <strong>hour, network, device</strong></span>
+                  </li>
+                </ul>
+                <p class="split__desc">
+                  So <code>DELETE</code> on your own draft passes, and the same <code>DELETE</code> on someone else&rsquo;s invoice does not. Finer than a role &mdash; and far harder to audit, since nobody can list who may do what without running the policy.
+                </p>
+              </div>
+            </div>
           </div>
 
           <div class="split__box">
@@ -1137,96 +1204,74 @@ a GET asks for data, it sends none</pre>
 
          No credential is stored in this file. The appid box starts empty
          and is a password field, so a projector shows bullets; the value
-         is read at the moment of the call and written nowhere else.
-
-         The whole thing is a flashcard, and deliberately an unmarked one:
-         no flip chip, just the .flashcard__hit label over each face. The
-         punchline on the back is what the lede is warning about, so it
-         only lands if the room does not see it coming. Clicking the two
-         typable boxes or Send does not flip it — see .flashcard--key. -->
+         is read at the moment of the call and written nowhere else. -->
     <section class="slide slide--live" data-nav-group="overview" data-family="contract">
       <div class="slide__inner">
         <div class="rr rr--call rr--key">
-          <div class="flashcard flashcard--key">
-            <input class="flashcard__toggle" type="checkbox" id="key-flip">
 
-            <div class="flashcard__faces">
-              <div class="flashcard__face flashcard__face--front">
-                <label class="flashcard__hit" for="key-flip" aria-label="Flip the slide over"></label>
+          <div class="rr__head">
+            <h2 class="slide__title">Custom call &mdash; API Key</h2>
+          </div>
 
-                <div class="rr__head">
-                  <h2 class="slide__title">Custom call &mdash; API Key</h2>
-                </div>
+          <p class="slide__lede slide__lede--wide">
+            OpenWeatherMap wants its key <strong>in the URL</strong>, as <code>appid</code>. Convenient &mdash; and the reason the pattern is fading: the key lands in browser history, in server logs, and in every screenshot of this slide.
+          </p>
 
-                <p class="slide__lede slide__lede--wide">
-                  OpenWeatherMap wants its key <strong>in the URL</strong>, as <code>appid</code>. Convenient &mdash; and the reason the pattern is fading: the key lands in browser history, in server logs, and in every screenshot of this slide.
-                </p>
+          <div class="rr__grid">
+            <!-- ----- left: one call, two typable holes ----- -->
+            <article class="panel">
+              <div class="panel__head">
+                <h3 class="panel__title">Request</h3>
+                <button class="call__send" type="button" data-action="send">Send</button>
+              </div>
+              <div class="panel__body">
 
-                <div class="rr__grid">
-                  <!-- ----- left: one call, two typable holes ----- -->
-                  <article class="panel">
-                    <div class="panel__head">
-                      <h3 class="panel__title">Request</h3>
-                      <button class="call__send" type="button" data-action="send">Send</button>
-                    </div>
-                    <div class="panel__body">
-
-                      <div class="rr-panel rr-panel--fields" data-req="key" data-method="GET">
-                        <div class="field-row">
-                          <div class="field field--method"><p class="field__value">GET</p></div>
-                          <!-- One line, deliberately: .field__value is pre-wrap, so a
-                               newline in the source would be a space on the screen and
-                               a space in the URL live.js reads back off it. -->
-                          <div class="field field--endpoint">
+                <div class="rr-panel rr-panel--fields" data-req="key" data-method="GET">
+                  <div class="field-row">
+                    <div class="field field--method"><p class="field__value">GET</p></div>
+                    <!-- One line, deliberately: .field__value is pre-wrap, so a
+                         newline in the source would be a space on the screen and
+                         a space in the URL live.js reads back off it. -->
+                    <div class="field field--endpoint">
 <p class="field__value">https://api.openweathermap.org/data/2.5/weather<span class="call__slot">?q=<input class="field__value call__input call__input--slot" type="text" name="city" value="Delhi" size="9" data-encode spellcheck="false" autocomplete="off" aria-label="city"></span>&amp;<span class="call__slot">appid=<input class="field__value call__input call__input--slot" type="password" name="key" size="24" data-encode spellcheck="false" autocomplete="off" placeholder="paste it at demo time" aria-label="appid"></span>&amp;units=metric</p>
-                          </div>
-                        </div>
-                        <p class="call__hint">
-                          Only the two boxed parts are editable. The key is a password field &mdash; the room sees bullets, the call sends the value.
-                        </p>
-                        <div class="field field--headers">
+                    </div>
+                  </div>
+                  <p class="call__hint">
+                    Only the two boxed parts are editable. The key is a password field &mdash; the room sees bullets, the call sends the value.
+                  </p>
+                  <div class="field field--headers">
 <pre class="field__value">Accept: application/json</pre>
-                        </div>
-                        <div class="field field--body">
+                  </div>
+                  <div class="field field--body">
 <pre class="field__value">&mdash; none &mdash;
 the credential rides in the URL, not in the body</pre>
-                        </div>
-                      </div>
+                  </div>
+                </div>
 
-                    </div>
-                  </article>
+              </div>
+            </article>
 
-                  <!-- ----- right: whatever came back ----- -->
-                  <article class="panel">
-                    <div class="panel__head">
-                      <h3 class="panel__title">Response</h3>
-                    </div>
-                    <div class="panel__body">
+            <!-- ----- right: whatever came back ----- -->
+            <article class="panel">
+              <div class="panel__head">
+                <h3 class="panel__title">Response</h3>
+              </div>
+              <div class="panel__body">
 
-                      <div class="rr-panel rr-panel--fields" data-res="key">
-                        <div class="field field--status"><p class="field__value" data-out="status">&mdash; nothing called yet &mdash;</p></div>
-                        <div class="field field--headers">
+                <div class="rr-panel rr-panel--fields" data-res="key">
+                  <div class="field field--status"><p class="field__value" data-out="status">&mdash; nothing called yet &mdash;</p></div>
+                  <div class="field field--headers">
 <pre class="field__value" data-out="headers">Content-Type: application/json</pre>
-                        </div>
-                        <div class="field field--body">
+                  </div>
+                  <div class="field field--body">
 <pre class="field__value" data-out="body">Send it once with the key box empty. That 401 is the previous slide, live.
 
 Then paste the key and send it again.</pre>
-                        </div>
-                      </div>
-
-                    </div>
-                  </article>
+                  </div>
                 </div>
-              </div>
 
-              <!-- ----- the other side: what the lede is actually warning
-                         about, told as a joke instead of as a rule ----- -->
-              <div class="flashcard__face flashcard__face--back">
-                <label class="flashcard__hit" for="key-flip" aria-label="Flip the slide back"></label>
-                <img class="flashcard__img" src="assets/api-key-and-intern.png" alt="A tweet reading &ldquo;today&rsquo;s my last day of unpaid internship&rdquo;, over a commit diff adding an API key to a .env file.">
               </div>
-            </div>
+            </article>
           </div>
         </div>
       </div>
@@ -1605,8 +1650,35 @@ Retry-After: 37</pre>
         <div class="split split--vcenter split--more">
           <div class="split__pane">
             <ul class="points">
-              <li>An hour buys you the part above the waterline. <strong>There is a great deal more to learn about APIs</strong>.</li>
+              <li>What if I told you this was only the beginning? <strong>There is a great deal more to learn about APIs</strong>.</li>
             </ul>
+
+            <div class="reflist">
+              <h3 class="reflist__title">My personal favorites</h3>
+              <ol class="reflist__items">
+                <li class="reflist__item">
+                  <span class="reflist__body">
+                    <a class="reflist__link" href="https://www.youtube.com/@ByteByteGo/videos" target="_blank" rel="noopener noreferrer">ByteByteGo</a>
+                    <span class="reflist__why">System design and APIs short videos. Much of this deck's knowledge is theirs.</span>
+                    <span class="reflist__where">youtube.com/@ByteByteGo</span>
+                  </span>
+                </li>
+                <li class="reflist__item">
+                  <span class="reflist__body">
+                    <a class="reflist__link" href="https://api101.org/en" target="_blank" rel="noopener noreferrer">API 101</a>
+                    <span class="reflist__why">A free course to take if you would rather read than watch.</span>
+                    <span class="reflist__where">api101.org</span>
+                  </span>
+                </li>
+                <li class="reflist__item">
+                  <span class="reflist__body">
+                    <a class="reflist__link" href="https://www.geeksforgeeks.org/blogs/api-design-roadmap/" target="_blank" rel="noopener noreferrer">API Design Roadmap</a>
+                    <span class="reflist__why">A full roadmap to start learning APIs.</span>
+                    <span class="reflist__where">geeksforgeeks.org</span>
+                  </span>
+                </li>
+              </ol>
+            </div>
           </div>
 
           <div class="split__pane">
@@ -1618,6 +1690,36 @@ Retry-After: 37</pre>
             </figure>
           </div>
         </div>
+      </div>
+    </section>
+
+    <!-- ---------- 23. Thanks ---------- -->
+
+    <!-- The slide that stays up through the whole Q&A, so what is on it
+         has to survive being looked at for twenty minutes: two lines, and
+         one picture that rewards a second look.
+
+         Every joke in the meme is a callback — programs not meant to
+         communicate is slide 4, REST and HTTP requests are 5 and 8, the
+         200 KB of JSON is 6, the 200 response carrying a 400 is slide 9's
+         status table, the gateways and service meshes are slide 20, and
+         the API key is 14 and 16. Which is exactly why it is here and not
+         earlier: at the front of the deck it is a joke about material the
+         room has not seen yet.
+
+         No title and no sidebar entry of its own — it belongs to the
+         closing section, and the progress bar reaching its right edge is
+         the only marker the end of the deck needs. -->
+    <section class="slide slide--thanks" data-nav-group="overview" data-family="next">
+      <div class="slide__inner">
+        <div class="thanks__words">
+          <h2 class="thanks__title">Thanks</h2>
+          <p class="thanks__sub">Any questions?</p>
+        </div>
+
+        <figure class="figure figure--centered thanks__meme">
+          <img class="figure__img" src="assets/STOP-DOING-API.jpg" alt="A parody of the &quot;STOP DOING MATH&quot; copypasta, retitled STOP DOING API. Its complaints: programs were not supposed to communicate; years of REST yet no real-world use found for HTTP requests; wanted to read a file anyway, we had a tool for that and it was called a function call; and &quot;yes please give me 200 KB of JSON, please give me another 200 KB of it&quot; — statements dreamed up by the utterly deranged. Then: LOOK at what microservices have been demanding your respect for all this time, with all the gateways and service meshes we built for them. (This is REAL SOFTWARE, done by REAL ENGINEERS) — three boxed exhibits follow, each answered by a row of red question marks: an API announcing &quot;Apps Please Integrate&quot;, a GET /api/v73/users/42/profile?include=preferences,permissions,settings, and an HTTP/1.1 200 response whose body reads status 400, Bad Request. At the foot, &quot;Hello I would like&quot; a wall of binary &quot;API Key please&quot;, over the caption: They have played us for absolute fools.">
+        </figure>
       </div>
     </section>
 

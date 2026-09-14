@@ -276,16 +276,24 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
   animation: rise 0.34s ease both;
 }
 
-/* Content slides — anything that is not the cover, the motivation card
-   or an axis/table-of-contents slide. They run flush instead of being
-   centred in a fixed measure: 95% of the deck's width, anchored to the
-   top-left corner 2.5% in from the sidebar and from the top. */
-.slide:not(.slide--cover):not(.slide--about):not(.slide--toc) {
+/* Content slides — anything that is not the cover, the motivation card,
+   an axis/table-of-contents slide or the closing thanks. They run flush
+   instead of being centred in a fixed measure: 95% of the deck's width,
+   anchored to the top-left corner 2.5% in from the sidebar and from the
+   top.
+
+   The four exceptions are the four slides with no title bar and little
+   on them, which is why they are named here rather than given rules of
+   their own: they want the centring .slide and .slide__inner already
+   provide, and it is cheaper to leave them out of this override than to
+   outrank it afterwards — the chain is (0,5,0) and nothing short of a
+   contrivance beats it. */
+.slide:not(.slide--cover):not(.slide--about):not(.slide--toc):not(.slide--thanks) {
   align-items: flex-start;
   padding: 2.5vh 2.5% calc(var(--progress-h) + 2.5vh);
 }
 
-.slide:not(.slide--cover):not(.slide--about):not(.slide--toc) .slide__inner {
+.slide:not(.slide--cover):not(.slide--about):not(.slide--toc):not(.slide--thanks) .slide__inner {
   max-width: none;
   margin: 0;
 }
@@ -444,6 +452,100 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
 
 
 /* ============================================================
+   Closing slide — two lines and the meme, side by side
+
+   The one slide in the deck that is not read. It is looked at, for as
+   long as the questions last, so its whole job is to be legible from
+   the back of the room and to hold nothing that competes with whoever
+   is speaking. The meme earns its place on the second count: it is
+   looked at once, understood, and then it is wallpaper.
+
+   The words are left and the picture right, rather than stacked,
+   because the picture is portrait and the screen is not. Stacked, the
+   two would fight over the same vertical inch and both would lose; side
+   by side, the meme takes the height the slide has spare and the words
+   take the width it has spare.
+
+   The inner drops its 1040px measure for this one — that measure is
+   sized for prose, and there is none here. Vertical centring still
+   costs nothing: .slide is already a flex row with align-items: center,
+   which applies because this slide is named in the content-slide
+   exception up at the top of this sheet.
+   ============================================================ */
+
+.slide--thanks .slide__inner {
+  max-width: none;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: clamp(24px, 4vw, 64px);
+  text-align: center;
+}
+
+/* A container, so the word inside can be sized against this column
+   rather than against the viewport — see .thanks__title. */
+.thanks__words { container-type: inline-size; }
+
+/* Two declarations, and the order matters. The first is the whole rule
+   on a browser without container query units, which ignores the second
+   outright.
+
+   The second is what actually runs, and it exists because the column
+   this word sits in is not the screen: it is whatever the meme leaves,
+   and vw knows nothing about that. 27cqi is 27% of the column, and
+   "Thanks" at that size comes to roughly 94% of the column's width — so
+   the word fits, on every screen, without a single breakpoint. min()
+   and not clamp() because the vw figure is the intent and the cqi
+   figure is only a ceiling: the word is never made larger than the
+   line above asks for, only smaller when the column cannot take it. */
+.thanks__title {
+  margin: 0;
+  font-size: clamp(64px, 7vw, 200px);
+  font-size: min(clamp(64px, 7vw, 200px), 27cqi);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-weight: 700;
+}
+
+/* Sized against the title rather than against the body text — roughly a
+   seventh of it at either end of the clamp — so the pair reads as one
+   block at any width rather than as a heading with a caption that
+   drifts toward it on a small screen. Secondary grey, because the room
+   has already read this line by the time it is being asked. */
+.thanks__sub {
+  margin: clamp(18px, 2.4vh, 34px) 0 0;
+  font-size: clamp(20px, 2vw, 30px);
+  font-weight: 400;
+  color: var(--text-secondary);
+}
+
+/* An explicit width, the same way .split--more sizes the iceberg and for
+   the same reason: the picture is portrait, so the constraint is the
+   slide's height and not its column, and a width is the only way to say
+   that to a grid track sized by content. The image is 540x646, so a
+   width w costs 1.2w of height — 68vh of width is 81vh of picture, and
+   the slide's own padding takes another 7vh, which leaves it clearing
+   the bottom of the screen by a hair.
+
+   The 700px cap is the one number here that is not about layout. The
+   source file is 540px wide; past about 1.3x it stops being a picture of
+   a joke and starts being a picture of some pixels, and the four
+   paragraphs of body text inside it are the first thing to go. If a
+   larger copy of the image ever turns up, this is the line to raise.
+
+   46% so that a wide, short window cannot let the picture take the half
+   of the row the words are standing in. */
+.thanks__meme {
+  width: min(46%, clamp(200px, 68vh, 700px));
+}
+
+.thanks__meme .figure__img {
+  width: 100%;
+  max-height: none;
+}
+
+
+/* ============================================================
    Motivation ("about") slide
    ============================================================ */
 
@@ -586,7 +688,19 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
   align-items: start;
 }
 
-.split__box {
+/* Three boxes in this deck are flashcards rather than plain boxes —
+   slide 14's API Key and JWT, slide 15's RBAC — and BOTH sides of each
+   have to be this box. A card that looked different on one side would
+   announce itself as a card, which for the API Key box is fatal: only
+   the JWT card beside it carries a chip, so the Key box has nothing on
+   it at all and its back only lands unannounced. See .flashcard--key,
+   .flashcard--jwt and .flashcard--rbac. The pairing is here rather than
+   there so the three cannot drift: change the box and all of them
+   follow. */
+.split__box,
+.flashcard--key .flashcard__face,
+.flashcard--jwt .flashcard__face,
+.flashcard--rbac .flashcard__face {
   display: flex;
   flex-direction: column;
   gap: clamp(10px, 1.4vw, 16px);
@@ -796,6 +910,113 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
 }
 
 .method__def strong { color: var(--text); font-weight: 600; }
+
+
+/* --- the closing slide's reading list: three references, ranked.
+
+       The number chips come from a CSS counter rather than from typed
+       digits, so reordering the three in the markup renumbers them and
+       cannot leave a 1, 3, 2 behind. They are .method__name's chip at a
+       smaller size — same fill, same radius, same mono — because a
+       number in a box is already this deck's way of saying "one of a
+       short ordered set", and the agenda and the HTTP methods both say
+       it that way.
+
+       These are the only anchors in the whole deck, so there is no link
+       style to inherit and no reset to fall back on: without the rules
+       below they would render as browser blue, which belongs to no
+       family here. They take the slide's own accent instead, on the
+       underline rather than on the text, so the label keeps full
+       contrast against white and the colour is carried by a line that
+       is allowed to be thin. --- */
+
+.reflist {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(8px, 1.1vw, 12px);
+}
+
+/* Sized and cased as a label, not as a heading — it introduces the list
+   without competing with the slide title two rows up. */
+.reflist__title {
+  margin: 0;
+  font-size: clamp(11px, 0.95vw, 13px);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.reflist__items {
+  counter-reset: ref;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(10px, 1.4vw, 15px);
+}
+
+.reflist__item {
+  display: flex;
+  align-items: flex-start;
+  gap: clamp(9px, 1.1vw, 13px);
+}
+
+.reflist__item::before {
+  counter-increment: ref;
+  content: counter(ref);
+  flex: 0 0 auto;
+  width: clamp(21px, 2vw, 26px);
+  height: clamp(21px, 2vw, 26px);
+  display: grid;
+  place-items: center;
+  border-radius: 6px;
+  background: var(--accent-bg);
+  color: var(--accent-fg);
+  font-family: var(--font-mono);
+  font-size: clamp(11px, 0.95vw, 13px);
+  font-weight: 700;
+}
+
+/* min-width: 0 so a long address can wrap instead of widening the flex
+   item past the column. */
+.reflist__body {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.reflist__link {
+  align-self: flex-start;
+  font-size: clamp(13px, 1.15vw, 16px);
+  font-weight: 600;
+  color: var(--text);
+  text-decoration: underline;
+  text-decoration-color: var(--accent-fg);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+.reflist__link:hover,
+.reflist__link:focus-visible { color: var(--accent-fg); }
+
+.reflist__why {
+  font-size: clamp(12px, 1vw, 14px);
+  line-height: 1.45;
+  color: var(--text-secondary);
+}
+
+/* --text-secondary and not --text-tertiary: this line is small and mono
+   already, and the tertiary grey does not clear AA at this size. */
+.reflist__where {
+  font-family: var(--font-mono);
+  font-size: clamp(10px, 0.85vw, 12px);
+  line-height: 1.4;
+  color: var(--text-secondary);
+  overflow-wrap: anywhere;
+}
 
 
 /* --- status codes. Each row carries its own family, so the traffic
@@ -1212,6 +1433,126 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
 }
 
 
+/* --- slide 14's two boxes: the same flip again, twice, and the two are
+       announced differently on purpose.
+
+       The API Key card has nothing at all on it. No chip, no cursor
+       change, no tell — the box is the button and the only way to learn
+       that is to click it. Its back is the warning its front makes in
+       earnest, told as a joke, and a joke you can see coming is not one.
+
+       The JWT card carries the chip. Its back is a sequence diagram, not
+       a punchline: something the room is meant to ask for, and nobody
+       asks for what they cannot see is there. The cost is that a marked
+       box beside an unmarked one is a hint about the unmarked one — but
+       only to somebody already looking, and the Key card's face gives
+       away nothing about what is behind it.
+
+       Both faces of both are dressed by .split__box itself, up at the
+       top of this sheet, so each card is the box on either side. That
+       also overrides the component's own --surface-alt on the back face,
+       deliberately: a second shade would be the tell.
+
+       Height, and why these two are sized unlike .flashcard--rbac below.
+       There the back is prose, which can outrun the front, so the faces
+       share a grid cell and the longer side wins. A picture has no
+       length to lose — object-fit: contain means it takes whatever box
+       it is handed. So here the FRONT stays in flow and sets the height:
+       the text sizes the card and the illustration scales into it, which
+       is the right way round. The back stays absolute over it and
+       contributes nothing.
+
+       That matters more than it reads, because slide 14 is now two cards
+       and no plain box left on the row. With both fronts out of flow the
+       row would have nothing to measure and would fall back to the
+       component's floor — so the floor goes to 0 and the fronts do the
+       work. min-height: 100% then hands each front the rest of the row
+       whenever the other card is the taller of the two, so its border
+       still reaches the bottom. --- */
+
+.flashcard--key .flashcard__faces,
+.flashcard--jwt .flashcard__faces { min-height: 0; }
+
+.flashcard--key .flashcard__face--front,
+.flashcard--jwt .flashcard__face--front {
+  position: relative;
+  min-height: 100%;
+}
+
+/* The chip, positioned exactly as slide 15's is and for the same reason:
+   these offsets are the face's own padding — from .split__box, which
+   dresses both sides of this card — so the chip and the heading start on
+   the same line box instead of the chip floating above it.
+
+   It sits outside .flashcard__faces, so it does not turn with them and
+   stays reachable from the diagram side. That is what gets the room back
+   to the token. */
+.flashcard--jwt .flashcard__flip {
+  top: clamp(16px, 2.2vw, 26px);
+  right: clamp(18px, 2.4vw, 30px);
+}
+
+/* Right side only: the heading is left-aligned, so it has just the
+   chip's footprint to clear. It needs the room — "JWT — JSON Web Token"
+   is the longest title on the slide, and without this it would run under
+   the chip on a narrow window rather than wrapping before it. */
+.flashcard--jwt .split__title { padding-right: clamp(54px, 6vw, 84px); }
+
+
+/* --- slide 15's RBAC box: the same flip once more, and this one is
+       a straight comparison — RBAC on the front, ABAC on the back, in
+       the same vocabulary so the two read as two answers to one question
+       rather than two subjects. The chip is back: the API Key card hides
+       itself because its back is a joke, and a comparison nobody knows
+       is there is one nobody makes.
+
+       Both faces are dressed by .split__box, up at the top of this
+       sheet, so the card is the box next to OAuth from either side.
+
+       Height is the interesting part, and it is the one thing this card
+       does differently from the other three. They stack their faces with
+       position: absolute, which takes both out of flow — so neither face
+       can make the card any taller and each needs a hand-set min-height
+       to measure. That floor has to be re-read off the copy every time a
+       line is edited, and if the back outgrows it, the back scrolls.
+
+       Here the two faces share a single grid cell instead. Both stay in
+       flow, so the row is sized to the TALLER of them and both stretch
+       to it: whichever side is longer sets the card, and neither can
+       scroll because it lost a race with the other. Nothing to keep in
+       step by hand — rewrite either side and the box follows. The same
+       measurement carries on up: .flashcard is itself a grid item beside
+       the OAuth box, so the split row ends up the tallest of the three.
+
+       inset: 0 off the base rule goes inert once the faces are no longer
+       absolute, so it is left where it is. overflow: auto stays on as a
+       backstop for a viewport too short for either side. --- */
+
+.flashcard--rbac .flashcard__faces {
+  display: grid;
+  min-height: 0;
+}
+
+/* Both faces into row 1, column 1 — the stack, without taking either of
+   them out of flow. */
+.flashcard--rbac .flashcard__face {
+  position: relative;
+  grid-area: 1 / 1;
+}
+
+/* The chip shares the title's line rather than sitting above it: these
+   offsets are the face's own padding, so chip and heading start on the
+   same line box. */
+.flashcard--rbac .flashcard__flip {
+  top: clamp(16px, 2.2vw, 26px);
+  right: clamp(18px, 2.4vw, 30px);
+}
+
+/* One-sided, unlike .flashcard__title: this heading is left-aligned, so
+   it only has to clear the chip's footprint on the right. */
+.flashcard--rbac .split__title { padding-right: clamp(54px, 6vw, 84px); }
+
+
 /* --- plain data table, front of the flashcard --- */
 
 .data {
@@ -1337,12 +1678,20 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
   transition: background 0.15s ease, color 0.15s ease;
 }
 
-/* The method is the purple category, so the control borrows that hue
-   rather than the slide's accent. */
+/* Axis 2's blue, and deliberately not the purple of the .field--method
+   box below: the switch is chrome, it chooses which call you are
+   looking at, and tying it to the one field it happens to change made
+   the two read as the same thing.
+
+   Named rather than taken from --accent-*, which on this slide and on
+   slide 10 resolves to this very blue — both are data-family="anatomy".
+   The explicit token says the switch is blue because it is the switch,
+   not because of where in the deck it happens to sit: move either slide
+   into another section and the control still looks like itself. */
 #rr-get:checked  ~ .rr__head .rr__method[for="rr-get"],
 #rr-post:checked ~ .rr__head .rr__method[for="rr-post"] {
-  background: var(--foundations-bg);
-  color: var(--foundations-fg);
+  background: var(--anatomy-bg);
+  color: var(--anatomy-fg);
 }
 
 /* --- the two panels --- */
@@ -1605,11 +1954,13 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
   display: flex;
 }
 
-/* The method switch, lit the same purple as slide 9's. */
+/* The method switch, lit the same axis-2 blue as slide 9's — the two
+   are one control seen twice, and the reasoning is written out up
+   there rather than repeated here. */
 #call-get:checked  ~ .rr__head .rr__method[for="call-get"],
 #call-post:checked ~ .rr__head .rr__method[for="call-post"] {
-  background: var(--foundations-bg);
-  color: var(--foundations-fg);
+  background: var(--anatomy-bg);
+  color: var(--anatomy-fg);
 }
 
 /* Grow rather than clip — see the height note above. The min-height
@@ -1743,9 +2094,10 @@ textarea.call__input {
   display: flex;
 }
 
-/* Green rather than slide 10's purple, and for a reason beyond the axis:
-   this switch picks a step in a sequence, not an HTTP verb, so borrowing
-   the method hue would say something untrue. */
+/* The section's own green, rather than the blue slides 9 and 10 light
+   their switch in, and for a reason beyond the axis: this one picks a
+   step in a sequence, not an HTTP verb. Looking like the GET/POST pill
+   would say something untrue about what it does. */
 #jwt-1:checked ~ .rr__head .rr__method[for="jwt-1"],
 #jwt-2:checked ~ .rr__head .rr__method[for="jwt-2"],
 #jwt-3:checked ~ .rr__head .rr__method[for="jwt-3"] {
@@ -2421,6 +2773,14 @@ kbd {
   .toc { grid-template-columns: 1fr; grid-template-rows: none; grid-auto-flow: row; }
   .split { grid-template-columns: 1fr; }
   .split__rule { display: none; }
+  /* One column here too: below this width the words' column would be too
+     narrow for 27cqi to save, and a "Thanks" shrunk to fit beside a meme
+     is not the thing this slide is for. Stacked, the word gets the full
+     width back and the picture takes what is left under it — the slide
+     scrolls on a short window, which is the right trade on a screen
+     nobody is presenting from. */
+  .slide--thanks .slide__inner { grid-template-columns: 1fr; }
+  .thanks__meme { width: min(100%, clamp(200px, 42vh, 420px)); }
   /* One column, so there is no band beside the title to lift the stack
      into. Hand the inner and the split back to normal flow and let the
      three blocks fall in DOM order: title, caption, pictures. */
@@ -2485,7 +2845,10 @@ kbd {
   .slide__inner { animation: none; }
   /* A handout cannot be flipped — unstack the card and print both sides. */
   .flashcard__flip, .flashcard__hit { display: none; }
-  .flashcard__faces { height: auto; min-height: 0; transform: none; }
+  /* display: block for the RBAC card, whose faces share one grid cell on
+     screen — static positioning alone would still leave them stacked on
+     top of each other here. The other cards are already block. */
+  .flashcard__faces { display: block; height: auto; min-height: 0; transform: none; }
   .flashcard__face {
     position: static;
     margin-bottom: 12px;
