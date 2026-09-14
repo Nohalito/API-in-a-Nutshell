@@ -402,18 +402,36 @@
             </div>
 
             <div class="tabs__panel tabs__panel--graphql">
-              <p class="tabs__lead">
-                One single address, and the <strong>caller writes the shopping list</strong>.
-              </p>
-              <p class="tabs__lead">
-                With REST the server decides what a response contains; with GraphQL the client asks for exactly the fields it wants and gets back exactly those &mdash; no more, no less. That removes the two classic frustrations: receiving a fat object when all you needed was a name, and having to make three round trips to fill one screen.
-              </p>
-              <p class="tabs__lead">
-                The price is paid elsewhere. Because every request is different, the easy wins of REST &mdash; caching a response, capping how much a caller may ask for &mdash; become real work. It shines when many different screens need many different slices of the same data.
-              </p>
+              <!-- REST's own list component, one column wide so the logo can
+                   have the other half. -->
+              <ol class="principles principles--single">
+                <li>
+                  <span class="principles__name">Query language</span>
+                  <span class="principles__def">Clients request exactly what they need.</span>
+                </li>
+                <li>
+                  <span class="principles__name">Single endpoint</span>
+                  <span class="principles__def">One endpoint for all operations.</span>
+                </li>
+                <li>
+                  <span class="principles__name">Operations</span>
+                  <span class="principles__def">Query (read), Mutation (write), Subscription (real-time).</span>
+                </li>
+                <li>
+                  <span class="principles__name">Minimal round trips</span>
+                </li>
+              </ol>
+              <span class="tabs__logo">
+                <img src="assets/graphql-logo.png" alt="GraphQL">
+              </span>
             </div>
 
             <div class="tabs__panel tabs__panel--grpc">
+              <!-- First in the markup and first in the panel: top left, with
+                   the prose in the row under it. -->
+              <span class="tabs__logo">
+                <img src="assets/grpc-logo.png" alt="gRPC">
+              </span>
               <div class="tabs__col">
                 <p class="tabs__lead">
                   Built for <strong>machines talking to machines, fast</strong>. Rather than human-readable text, gRPC sends a compact binary format down a connection that stays open, and both sides agree in advance on the exact shape of every message. That agreement is written in a <code>.proto</code> file &mdash; a contract both programs are generated from, so neither can drift.
@@ -482,8 +500,7 @@
                     <div class="field field--endpoint"><p class="field__value">https://catfact.ninja/fact</p></div>
                   </div>
                   <div class="field field--headers">
-<pre class="field__value">Content-Type: application/json
-Accept: application/json</pre>
+<pre class="field__value">Accept: application/json</pre>
                   </div>
                   <div class="field field--body">
 <pre class="field__value">&mdash; none &mdash;
@@ -497,7 +514,6 @@ a GET asks for data, it sends none</pre>
 response = requests.<span class="tok-fn">get</span>(
     <span class="tok-str">"https://catfact.ninja/fact"</span>,
     headers={
-        <span class="tok-str">"Content-Type"</span>: <span class="tok-str">"application/json"</span>,
         <span class="tok-str">"Accept"</span>: <span class="tok-str">"application/json"</span>,
     },
 )
@@ -510,7 +526,6 @@ response = requests.<span class="tok-fn">get</span>(
 <pre class="code code--dark"><code><span class="tok-kw">const</span> response = <span class="tok-kw">await</span> <span class="tok-fn">fetch</span>(<span class="tok-str">"https://catfact.ninja/fact"</span>, {
   method: <span class="tok-str">"GET"</span>,
   headers: {
-    <span class="tok-str">"Content-Type"</span>: <span class="tok-str">"application/json"</span>,
     Accept: <span class="tok-str">"application/json"</span>,
   },
 });
@@ -522,7 +537,6 @@ console.<span class="tok-fn">log</span>(data.fact);</code></pre>
 
                 <div class="rr-panel rr-panel--code rr-panel--get-curl">
 <pre class="code code--term"><code><span class="tok-dim">$</span> curl -X GET <span class="tok-str">'https://catfact.ninja/fact'</span> \
-     -H <span class="tok-str">'Content-Type: application/json'</span> \
      -H <span class="tok-str">'Accept: application/json'</span>
 
 <span class="tok-dim">{"fact":"A cat&rsquo;s hearing is better than a dog&rsquo;s. And a cat can hear high-frequency sounds up to two octaves higher than a human.","length":119}</span></code></pre>
@@ -1123,74 +1137,96 @@ a GET asks for data, it sends none</pre>
 
          No credential is stored in this file. The appid box starts empty
          and is a password field, so a projector shows bullets; the value
-         is read at the moment of the call and written nowhere else. -->
+         is read at the moment of the call and written nowhere else.
+
+         The whole thing is a flashcard, and deliberately an unmarked one:
+         no flip chip, just the .flashcard__hit label over each face. The
+         punchline on the back is what the lede is warning about, so it
+         only lands if the room does not see it coming. Clicking the two
+         typable boxes or Send does not flip it — see .flashcard--key. -->
     <section class="slide slide--live" data-nav-group="overview" data-family="contract">
       <div class="slide__inner">
         <div class="rr rr--call rr--key">
+          <div class="flashcard flashcard--key">
+            <input class="flashcard__toggle" type="checkbox" id="key-flip">
 
-          <div class="rr__head">
-            <h2 class="slide__title">Custom call &mdash; API Key</h2>
-          </div>
+            <div class="flashcard__faces">
+              <div class="flashcard__face flashcard__face--front">
+                <label class="flashcard__hit" for="key-flip" aria-label="Flip the slide over"></label>
 
-          <p class="slide__lede slide__lede--wide">
-            OpenWeatherMap wants its key <strong>in the URL</strong>, as <code>appid</code>. Convenient &mdash; and the reason the pattern is fading: the key lands in browser history, in server logs, and in every screenshot of this slide.
-          </p>
-
-          <div class="rr__grid">
-            <!-- ----- left: one call, two typable holes ----- -->
-            <article class="panel">
-              <div class="panel__head">
-                <h3 class="panel__title">Request</h3>
-                <button class="call__send" type="button" data-action="send">Send</button>
-              </div>
-              <div class="panel__body">
-
-                <div class="rr-panel rr-panel--fields" data-req="key" data-method="GET">
-                  <div class="field-row">
-                    <div class="field field--method"><p class="field__value">GET</p></div>
-                    <!-- One line, deliberately: .field__value is pre-wrap, so a
-                         newline in the source would be a space on the screen and
-                         a space in the URL live.js reads back off it. -->
-                    <div class="field field--endpoint">
-<p class="field__value">https://api.openweathermap.org/data/2.5/weather<span class="call__slot">?q=<input class="field__value call__input call__input--slot" type="text" name="city" value="Delhi" size="9" data-encode spellcheck="false" autocomplete="off" aria-label="city"></span>&amp;<span class="call__slot">appid=<input class="field__value call__input call__input--slot" type="password" name="key" size="24" data-encode spellcheck="false" autocomplete="off" placeholder="paste it at demo time" aria-label="appid"></span>&amp;units=metric</p>
-                    </div>
-                  </div>
-                  <p class="call__hint">
-                    Only the two boxed parts are editable. The key is a password field &mdash; the room sees bullets, the call sends the value.
-                  </p>
-                  <div class="field field--headers">
-<pre class="field__value">Accept: application/json</pre>
-                  </div>
-                  <div class="field field--body">
-<pre class="field__value">&mdash; none &mdash;
-the credential rides in the URL, not in the body</pre>
-                  </div>
+                <div class="rr__head">
+                  <h2 class="slide__title">Custom call &mdash; API Key</h2>
                 </div>
 
-              </div>
-            </article>
+                <p class="slide__lede slide__lede--wide">
+                  OpenWeatherMap wants its key <strong>in the URL</strong>, as <code>appid</code>. Convenient &mdash; and the reason the pattern is fading: the key lands in browser history, in server logs, and in every screenshot of this slide.
+                </p>
 
-            <!-- ----- right: whatever came back ----- -->
-            <article class="panel">
-              <div class="panel__head">
-                <h3 class="panel__title">Response</h3>
-              </div>
-              <div class="panel__body">
+                <div class="rr__grid">
+                  <!-- ----- left: one call, two typable holes ----- -->
+                  <article class="panel">
+                    <div class="panel__head">
+                      <h3 class="panel__title">Request</h3>
+                      <button class="call__send" type="button" data-action="send">Send</button>
+                    </div>
+                    <div class="panel__body">
 
-                <div class="rr-panel rr-panel--fields" data-res="key">
-                  <div class="field field--status"><p class="field__value" data-out="status">&mdash; nothing called yet &mdash;</p></div>
-                  <div class="field field--headers">
+                      <div class="rr-panel rr-panel--fields" data-req="key" data-method="GET">
+                        <div class="field-row">
+                          <div class="field field--method"><p class="field__value">GET</p></div>
+                          <!-- One line, deliberately: .field__value is pre-wrap, so a
+                               newline in the source would be a space on the screen and
+                               a space in the URL live.js reads back off it. -->
+                          <div class="field field--endpoint">
+<p class="field__value">https://api.openweathermap.org/data/2.5/weather<span class="call__slot">?q=<input class="field__value call__input call__input--slot" type="text" name="city" value="Delhi" size="9" data-encode spellcheck="false" autocomplete="off" aria-label="city"></span>&amp;<span class="call__slot">appid=<input class="field__value call__input call__input--slot" type="password" name="key" size="24" data-encode spellcheck="false" autocomplete="off" placeholder="paste it at demo time" aria-label="appid"></span>&amp;units=metric</p>
+                          </div>
+                        </div>
+                        <p class="call__hint">
+                          Only the two boxed parts are editable. The key is a password field &mdash; the room sees bullets, the call sends the value.
+                        </p>
+                        <div class="field field--headers">
+<pre class="field__value">Accept: application/json</pre>
+                        </div>
+                        <div class="field field--body">
+<pre class="field__value">&mdash; none &mdash;
+the credential rides in the URL, not in the body</pre>
+                        </div>
+                      </div>
+
+                    </div>
+                  </article>
+
+                  <!-- ----- right: whatever came back ----- -->
+                  <article class="panel">
+                    <div class="panel__head">
+                      <h3 class="panel__title">Response</h3>
+                    </div>
+                    <div class="panel__body">
+
+                      <div class="rr-panel rr-panel--fields" data-res="key">
+                        <div class="field field--status"><p class="field__value" data-out="status">&mdash; nothing called yet &mdash;</p></div>
+                        <div class="field field--headers">
 <pre class="field__value" data-out="headers">Content-Type: application/json</pre>
-                  </div>
-                  <div class="field field--body">
+                        </div>
+                        <div class="field field--body">
 <pre class="field__value" data-out="body">Send it once with the key box empty. That 401 is the previous slide, live.
 
 Then paste the key and send it again.</pre>
-                  </div>
-                </div>
+                        </div>
+                      </div>
 
+                    </div>
+                  </article>
+                </div>
               </div>
-            </article>
+
+              <!-- ----- the other side: what the lede is actually warning
+                         about, told as a joke instead of as a rule ----- -->
+              <div class="flashcard__face flashcard__face--back">
+                <label class="flashcard__hit" for="key-flip" aria-label="Flip the slide back"></label>
+                <img class="flashcard__img" src="assets/api-key-and-intern.png" alt="A tweet reading &ldquo;today&rsquo;s my last day of unpaid internship&rdquo;, over a commit diff adding an API key to a .env file.">
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -1561,11 +1597,7 @@ Retry-After: 37</pre>
     </section>
 
     <!-- ---------- 22. The tip of the iceberg ---------- -->
-    <!-- The closing slide argues itself in pictures, so the prose is one
-         bullet and the column holding it is the narrow one. The two
-         images stack in the order they are argued: first the map of
-         everything the hour skipped, then the joke about the one nobody
-         has built yet. -->
+
     <section class="slide slide--more" data-nav-group="overview" data-family="next">
       <div class="slide__inner">
         <h2 class="slide__title">The tip of the iceberg</h2>
