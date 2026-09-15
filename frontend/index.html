@@ -14,6 +14,10 @@
        the [data-section] slides below, so the deck stays the single
        source of truth. An entry jumps to the axis slide that opens
        its section; everything else in the deck is keyboard-only.
+
+       The two slides ahead of the first axis carry data-nav-group
+       instead. All it decides is whether the unnumbered "Overview"
+       entry exists at all, so it is on those two and on nothing else.
        ============================================================ -->
   <aside class="sidebar" id="sidebar" aria-label="Table of contents">
     <div class="sidebar__head">
@@ -23,10 +27,6 @@
     <nav class="sidebar__nav" id="sidebar-nav"></nav>
     <div class="sidebar__foot">
       <p class="sidebar__hint"><kbd>S</kbd> collapse</p>
-      <!-- The year is written here as well as filled by main.js: the deck is
-           opened straight off the disk as often as off a server, and a byline
-           that reads "©  Noa Boimond" because a script did not run is worse
-           than one that is a year behind. main.js overwrites it on boot. -->
       <p class="sidebar__note">&copy; <span data-year></span> Noa Boimond. All rights reserved.</p>
     </div>
   </aside>
@@ -67,14 +67,14 @@
           </div>
           <ul class="points">
             <li>I'm pretty fond of the coding environment.</li>
-            <li>To allow other avoiding the troubles I faced when learning it myself.</li>
+            <li>To allow others to avoid the troubles I faced when learning it myself.</li>
           </ul>
         </div>
       </div>
     </section>
 
     <!-- ---------- 3. Axis: Introduction ---------- -->
-    <section class="slide slide--toc" data-nav-group="overview" data-family="foundations"
+    <section class="slide slide--toc" data-family="foundations"
              data-section="1" data-title="Introduction">
       <div class="slide__inner">
         <h2 class="slide__title">Introduction</h2>
@@ -91,21 +91,21 @@
             <span class="toc__num">2</span>
             <span class="toc__body">
               <span class="toc__label">API Basics <span class="toc__flag">the core</span></span>
-              <span class="toc__desc">Anatomy of a request and response, then the styles that reshape them</span>
+              <span class="toc__desc">The styles that shape them, and the anatomy of a request and response</span>
             </span>
           </li>
           <li class="toc__item" data-family="contract">
             <span class="toc__num">3</span>
             <span class="toc__body">
               <span class="toc__label">API Security</span>
-              <span class="toc__desc">The contract's clauses, then who you are and what you may do</span>
+              <span class="toc__desc">Who you are, what you may do, and the headers that prove both</span>
             </span>
           </li>
           <li class="toc__item" data-family="horizon">
             <span class="toc__num">4</span>
             <span class="toc__body">
               <span class="toc__label">API at Scale</span>
-              <span class="toc__desc">Caching, load balancing and more</span>
+              <span class="toc__desc">The contract's ceilings, then the infrastructure that absorbs the load</span>
             </span>
           </li>
           <li class="toc__item" data-family="next">
@@ -120,7 +120,7 @@
     </section>
 
     <!-- ---------- 4. Kesako? ---------- -->
-    <section class="slide slide--concepts" data-nav-group="overview" data-family="foundations">
+    <section class="slide slide--concepts" data-family="foundations">
       <div class="slide__inner">
         <h2 class="slide__title">API, Kesako?</h2>
         <!-- The cards this slide used to build in markup, supplied as one
@@ -134,7 +134,7 @@
     </section>
 
     <!-- ---------- 5. Prerequisites: HTTP Request ---------- -->
-    <section class="slide slide--split" data-nav-group="overview" data-family="foundations">
+    <section class="slide" data-family="foundations">
       <div class="slide__inner">
         <h2 class="slide__title">Prerequisites: HTTP Request</h2>
         <p class="slide__lede slide__lede--wide">
@@ -230,7 +230,7 @@
          on. The one step swaps the TCP/IP diagram for the portal one —
          the layers vanish and the two Application boxes talk straight
          through, which is the "trusts the layers below" line beside it. -->
-    <section class="slide slide--split" data-nav-group="overview" data-family="foundations" data-steps="1">
+    <section class="slide" data-family="foundations" data-steps="1">
       <div class="slide__inner">
         <h2 class="slide__title">Prerequisites: JSON &amp; TCP/IP</h2>
 
@@ -309,7 +309,7 @@
     </section>
 
     <!-- ---------- 7. Axis: API Basics ---------- -->
-    <section class="slide slide--toc" data-nav-group="overview" data-family="anatomy"
+    <section class="slide slide--toc" data-family="anatomy"
              data-section="2" data-title="API Basics">
       <div class="slide__inner">
         <h2 class="slide__title">API Basics</h2>
@@ -326,21 +326,21 @@
             <span class="toc__num">2</span>
             <span class="toc__body">
               <span class="toc__label">API Basics <span class="toc__flag">the core</span></span>
-              <span class="toc__desc">Anatomy of a request and response, then the styles that reshape them</span>
+              <span class="toc__desc">The styles that shape them, and the anatomy of a request and response</span>
             </span>
           </li>
           <li class="toc__item" data-family="contract">
             <span class="toc__num">3</span>
             <span class="toc__body">
               <span class="toc__label">API Security</span>
-              <span class="toc__desc">The contract's clauses, then who you are and what you may do</span>
+              <span class="toc__desc">Who you are, what you may do, and the headers that prove both</span>
             </span>
           </li>
           <li class="toc__item" data-family="horizon">
             <span class="toc__num">4</span>
             <span class="toc__body">
               <span class="toc__label">API at Scale</span>
-              <span class="toc__desc">Caching, load balancing and more</span>
+              <span class="toc__desc">The contract's ceilings, then the infrastructure that absorbs the load</span>
             </span>
           </li>
           <li class="toc__item" data-family="next">
@@ -355,7 +355,7 @@
     </section>
 
     <!-- ---------- 8. API Styles ---------- -->
-    <section class="slide slide--styles" data-nav-group="overview" data-family="anatomy">
+    <section class="slide slide--styles" data-family="anatomy">
       <div class="slide__inner">
         <h2 class="slide__title">API Styles</h2>
         <p class="slide__lede slide__lede--wide">
@@ -465,7 +465,7 @@
     </section>
 
     <!-- ---------- 9. Request & Response ---------- -->
-    <section class="slide slide--anatomy" data-nav-group="overview" data-family="anatomy">
+    <section class="slide" data-family="anatomy">
       <div class="slide__inner">
         <div class="rr">
           <input class="rr__radio" type="radio" name="rr-method" id="rr-get" checked>
@@ -757,7 +757,7 @@ Date: Wed, 09 Sep 2026 14:32:45 GMT</pre>
          data-role are what live.js reads, so neither side has to guess at
          the other's names. -->
 
-    <section class="slide slide--anatomy" data-nav-group="overview" data-family="anatomy">
+    <section class="slide" data-family="anatomy">
       <div class="slide__inner">
         <div class="rr rr--call">
           <input class="rr__radio" type="radio" name="call-method" id="call-get" value="get" checked>
@@ -851,7 +851,7 @@ a GET asks for data, it sends none</pre>
          A carousel the deck already knows how to drive: four cards in one
          grid cell, data-steps="3" so the right arrow walks them before it
          leaves the slide. Ordered as the plan lists the files. -->
-    <section class="slide slide--features" data-nav-group="overview" data-family="anatomy" data-steps="3">
+    <section class="slide slide--features" data-family="anatomy" data-steps="3">
       <div class="slide__inner">
         <h2 class="slide__title">Features</h2>
         <p class="slide__lede slide__lede--wide">
@@ -870,7 +870,7 @@ a GET asks for data, it sends none</pre>
                 <img class="figure__img" src="assets/idempotency.png" alt="A client and a server on a sequence diagram. The client sends GET /users=123 and the server returns the object; the client repeats the very same request and the server still returns the same user 123.">
               </figure>
             </article>
-            
+
             <article class="carousel__card carousel__card--2">
               <div class="carousel__text">
                 <h3 class="carousel__name">Versioning</h3>
@@ -916,7 +916,7 @@ a GET asks for data, it sends none</pre>
     </section>
 
     <!-- ---------- 12. Axis: API Security ---------- -->
-    <section class="slide slide--toc" data-nav-group="overview" data-family="contract"
+    <section class="slide slide--toc" data-family="contract"
              data-section="3" data-title="API Security">
       <div class="slide__inner">
         <h2 class="slide__title">API Security</h2>
@@ -933,21 +933,21 @@ a GET asks for data, it sends none</pre>
             <span class="toc__num">2</span>
             <span class="toc__body">
               <span class="toc__label">API Basics <span class="toc__flag">the core</span></span>
-              <span class="toc__desc">Anatomy of a request and response, then the styles that reshape them</span>
+              <span class="toc__desc">The styles that shape them, and the anatomy of a request and response</span>
             </span>
           </li>
           <li class="toc__item toc__item--current" data-family="contract">
             <span class="toc__num">3</span>
             <span class="toc__body">
               <span class="toc__label">API Security</span>
-              <span class="toc__desc">The contract's clauses, then who you are and what you may do</span>
+              <span class="toc__desc">Who you are, what you may do, and the headers that prove both</span>
             </span>
           </li>
           <li class="toc__item" data-family="horizon">
             <span class="toc__num">4</span>
             <span class="toc__body">
               <span class="toc__label">API at Scale</span>
-              <span class="toc__desc">Caching, load balancing and more</span>
+              <span class="toc__desc">The contract's ceilings, then the infrastructure that absorbs the load</span>
             </span>
           </li>
           <li class="toc__item" data-family="next">
@@ -962,7 +962,7 @@ a GET asks for data, it sends none</pre>
     </section>
 
     <!-- ---------- 13. What about security? ---------- -->
-    <section class="slide slide--split" data-nav-group="overview" data-family="contract">
+    <section class="slide" data-family="contract">
       <div class="slide__inner">
         <h2 class="slide__title">What about security ?</h2>
 
@@ -1023,7 +1023,7 @@ a GET asks for data, it sends none</pre>
          beside it; .split--dense drops the rule column so the two boxes
          of a page sit side by side, and .split__full carries the heading
          that used to be a column heading across both of them. -->
-    <section class="slide slide--split" data-nav-group="overview" data-family="contract">
+    <section class="slide" data-family="contract">
       <div class="slide__inner">
         <div class="slide__titlerow">
           <h2 class="slide__title">Methods and Framework</h2>
@@ -1102,7 +1102,7 @@ a GET asks for data, it sends none</pre>
     <!-- ---------- 15. Methods and Framework (2/2) ----------
          No lede: the framing was made on the page before, and this one
          opens straight on its own question. -->
-    <section class="slide slide--split" data-nav-group="overview" data-family="contract">
+    <section class="slide" data-family="contract">
       <div class="slide__inner">
         <div class="slide__titlerow">
           <h2 class="slide__title">Methods and Framework</h2>
@@ -1210,7 +1210,7 @@ a GET asks for data, it sends none</pre>
          No credential is stored in this file. The appid box starts empty
          and is a password field, so a projector shows bullets; the value
          is read at the moment of the call and written nowhere else. -->
-    <section class="slide slide--live" data-nav-group="overview" data-family="contract">
+    <section class="slide" data-family="contract">
       <div class="slide__inner">
         <div class="rr rr--call rr--key">
 
@@ -1244,6 +1244,12 @@ a GET asks for data, it sends none</pre>
                   <p class="call__hint">
                     Only the two boxed parts are editable. The key is a password field &mdash; the room sees bullets, the call sends the value.
                   </p>
+                  <div class="spoiler">
+                    <p class="spoiler__label">Key for this demo</p>
+                    <code class="spoiler__value" data-spoiler-value>b16468ef6583a4c63b0f9558259dd0a5</code>
+                    <button class="spoiler__btn" type="button" data-action="reveal" aria-pressed="false">Reveal</button>
+                    <button class="spoiler__btn" type="button" data-action="copy">Copy</button>
+                  </div>
                   <div class="field field--headers">
 <pre class="field__value">Accept: application/json</pre>
                   </div>
@@ -1269,7 +1275,7 @@ the credential rides in the URL, not in the body</pre>
 <pre class="field__value" data-out="headers">Content-Type: application/json</pre>
                   </div>
                   <div class="field field--body">
-<pre class="field__value" data-out="body">Send it once with the key box empty. That 401 is the previous slide, live.
+<pre class="field__value" data-out="body">Send it once with the key box empty. That 401 is the flashcard that opened this section, live.
 
 Then paste the key and send it again.</pre>
                   </div>
@@ -1296,7 +1302,7 @@ Then paste the key and send it again.</pre>
          not in the page, not in storage. The Authorization line below is
          rewritten with a truncated copy once there is one, because a box
          that claims to send a header has to show the header it sends. -->
-    <section class="slide slide--live" data-nav-group="overview" data-family="contract">
+    <section class="slide" data-family="contract">
       <div class="slide__inner">
         <div class="rr rr--call rr--jwt">
           <input class="rr__radio" type="radio" name="jwt-step" id="jwt-1" value="1" checked>
@@ -1364,7 +1370,7 @@ a GET asks for data, it sends none</pre>
 }</textarea>
                   </div>
                   <p class="call__hint">
-                    dummyjson&rsquo;s own demo account. Break the password on purpose and the next slide&rsquo;s 401 arrives on cue.
+                    dummyjson&rsquo;s own demo account. Break the password on purpose and the login is refused right here, before there is any token to carry.
                   </p>
                 </div>
 
@@ -1406,7 +1412,7 @@ same endpoint as the first call, one header heavier</pre>
 <pre class="field__value" data-out="headers">Content-Type: application/json</pre>
                   </div>
                   <div class="field field--body">
-<pre class="field__value" data-out="body">Press Send. With no credential at all, the door stays shut &mdash; and the number on it is the one from the flashcard two slides back.</pre>
+<pre class="field__value" data-out="body">Press Send. With no credential at all, the door stays shut &mdash; and the number on it is the one from the flashcard that opened this section.</pre>
                   </div>
                 </div>
 
@@ -1438,7 +1444,7 @@ same endpoint as the first call, one header heavier</pre>
     </section>
 
     <!-- ---------- 18. Axis: API at Scale ---------- -->
-    <section class="slide slide--toc" data-nav-group="overview" data-family="horizon"
+    <section class="slide slide--toc" data-family="horizon"
              data-section="4" data-title="API at Scale">
       <div class="slide__inner">
         <h2 class="slide__title">API at Scale</h2>
@@ -1455,21 +1461,21 @@ same endpoint as the first call, one header heavier</pre>
             <span class="toc__num">2</span>
             <span class="toc__body">
               <span class="toc__label">API Basics <span class="toc__flag">the core</span></span>
-              <span class="toc__desc">Anatomy of a request and response, then the styles that reshape them</span>
+              <span class="toc__desc">The styles that shape them, and the anatomy of a request and response</span>
             </span>
           </li>
           <li class="toc__item" data-family="contract">
             <span class="toc__num">3</span>
             <span class="toc__body">
               <span class="toc__label">API Security</span>
-              <span class="toc__desc">The contract's clauses, then who you are and what you may do</span>
+              <span class="toc__desc">Who you are, what you may do, and the headers that prove both</span>
             </span>
           </li>
           <li class="toc__item toc__item--current" data-family="horizon">
             <span class="toc__num">4</span>
             <span class="toc__body">
               <span class="toc__label">API at Scale</span>
-              <span class="toc__desc">Caching, load balancing and more</span>
+              <span class="toc__desc">The contract's ceilings, then the infrastructure that absorbs the load</span>
             </span>
           </li>
           <li class="toc__item" data-family="next">
@@ -1484,7 +1490,7 @@ same endpoint as the first call, one header heavier</pre>
     </section>
 
     <!-- ---------- 19. And for performance? ---------- -->
-    <section class="slide slide--split" data-nav-group="overview" data-family="horizon">
+    <section class="slide" data-family="horizon">
       <div class="slide__inner">
         <div class="slide__titlerow">
           <h2 class="slide__title">And for performance ?</h2>
@@ -1546,7 +1552,7 @@ Retry-After: 37</pre>
          the right arrow turns the page through data-steps="1". The strip
          on top of the box is what it always was to look at — it just no
          longer waits to be clicked. -->
-    <section class="slide slide--infra" data-nav-group="overview" data-family="horizon" data-steps="1">
+    <section class="slide" data-family="horizon" data-steps="1">
       <div class="slide__inner">
         <h2 class="slide__title">Infrastructure Best Practices</h2>
         <p class="slide__lede slide__lede--wide">
@@ -1601,7 +1607,7 @@ Retry-After: 37</pre>
     </section>
 
     <!-- ---------- 21. Axis: Where to go next ---------- -->
-    <section class="slide slide--toc" data-nav-group="overview" data-family="next"
+    <section class="slide slide--toc" data-family="next"
              data-section="5" data-title="Where to go next">
       <div class="slide__inner">
         <h2 class="slide__title">Where to go next</h2>
@@ -1618,21 +1624,21 @@ Retry-After: 37</pre>
             <span class="toc__num">2</span>
             <span class="toc__body">
               <span class="toc__label">API Basics <span class="toc__flag">the core</span></span>
-              <span class="toc__desc">Anatomy of a request and response, then the styles that reshape them</span>
+              <span class="toc__desc">The styles that shape them, and the anatomy of a request and response</span>
             </span>
           </li>
           <li class="toc__item" data-family="contract">
             <span class="toc__num">3</span>
             <span class="toc__body">
               <span class="toc__label">API Security</span>
-              <span class="toc__desc">The contract's clauses, then who you are and what you may do</span>
+              <span class="toc__desc">Who you are, what you may do, and the headers that prove both</span>
             </span>
           </li>
           <li class="toc__item" data-family="horizon">
             <span class="toc__num">4</span>
             <span class="toc__body">
               <span class="toc__label">API at Scale</span>
-              <span class="toc__desc">Caching, load balancing and more</span>
+              <span class="toc__desc">The contract's ceilings, then the infrastructure that absorbs the load</span>
             </span>
           </li>
           <li class="toc__item toc__item--current" data-family="next">
@@ -1648,7 +1654,7 @@ Retry-After: 37</pre>
 
     <!-- ---------- 22. The tip of the iceberg ---------- -->
 
-    <section class="slide slide--more" data-nav-group="overview" data-family="next">
+    <section class="slide slide--more" data-family="next">
       <div class="slide__inner">
         <h2 class="slide__title">The tip of the iceberg</h2>
 
@@ -1662,7 +1668,7 @@ Retry-After: 37</pre>
             <ul class="points">
               <li>What if I told you this was only the beginning? <strong>There is a great deal more to learn about APIs</strong>.</li>
               <li>Would you rather poke at one than read about one? The <a class="points__link" href="playground.html" target="_blank" rel="noopener noreferrer">Playground&nbsp;&#8599;</a> is the live panels from earlier with nothing decided in advance &mdash; <strong>your verb, your endpoint, your body</strong>, sent against this talk&rsquo;s own API.</li>
-              <li>Still want more? I've made a public version of the repository here: <a class="points__link" href="https://github.com/Nohalito/API-in-a-Nutshell", target="_blank">API-in-a-Nutshell&nbsp;&#8599;</a> </li>
+              <li>Still want more? I've made a public version of the repository here: <a class="points__link" href="https://github.com/Nohalito/API-in-a-Nutshell" target="_blank" rel="noopener noreferrer">API-in-a-Nutshell&nbsp;&#8599;</a></li>
             </ul>
 
             <div class="reflist">
@@ -1713,7 +1719,7 @@ Retry-After: 37</pre>
 
          Every joke in the meme is a callback — programs not meant to
          communicate is slide 4, REST and HTTP requests are 5 and 8, the
-         200 KB of JSON is 6, the 200 response carrying a 400 is slide 9's
+         200 KB of JSON is 6, the 200 response carrying a 400 is slide 5's
          status table, the gateways and service meshes are slide 20, and
          the API key is 14 and 16. Which is exactly why it is here and not
          earlier: at the front of the deck it is a joke about material the
@@ -1722,7 +1728,7 @@ Retry-After: 37</pre>
          No title and no sidebar entry of its own — it belongs to the
          closing section, and the progress bar reaching its right edge is
          the only marker the end of the deck needs. -->
-    <section class="slide slide--thanks" data-nav-group="overview" data-family="next">
+    <section class="slide slide--thanks" data-family="next">
       <div class="slide__inner">
         <div class="thanks__words">
           <h2 class="thanks__title">Thanks</h2>
@@ -1748,4 +1754,3 @@ Retry-After: 37</pre>
   <script src="js/live.js"></script>
 </body>
 </html>
-  

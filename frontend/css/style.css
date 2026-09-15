@@ -5,9 +5,8 @@
    Palette rules honoured here:
    - Solid fills only. No gradients, no alpha blending on any colour.
      Lighter/darker variants are new solid tints, never transparency.
-   - One hue = one family. Five palette hues map to five families —
-     four map to a pair of sections each, "next" stands alone for
-     the closing section.
+   - One hue = one family, and one family = one section: five palette
+     hues, five families, the deck's five axes, in order.
    ============================================================ */
 
 :root {
@@ -470,100 +469,6 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
 
 
 /* ============================================================
-   Closing slide — two lines and the meme, side by side
-
-   The one slide in the deck that is not read. It is looked at, for as
-   long as the questions last, so its whole job is to be legible from
-   the back of the room and to hold nothing that competes with whoever
-   is speaking. The meme earns its place on the second count: it is
-   looked at once, understood, and then it is wallpaper.
-
-   The words are left and the picture right, rather than stacked,
-   because the picture is portrait and the screen is not. Stacked, the
-   two would fight over the same vertical inch and both would lose; side
-   by side, the meme takes the height the slide has spare and the words
-   take the width it has spare.
-
-   The inner drops its 1040px measure for this one — that measure is
-   sized for prose, and there is none here. Vertical centring still
-   costs nothing: .slide is already a flex row with align-items: center,
-   which applies because this slide is named in the content-slide
-   exception up at the top of this sheet.
-   ============================================================ */
-
-.slide--thanks .slide__inner {
-  max-width: none;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
-  gap: clamp(24px, 4vw, 64px);
-  text-align: center;
-}
-
-/* A container, so the word inside can be sized against this column
-   rather than against the viewport — see .thanks__title. */
-.thanks__words { container-type: inline-size; }
-
-/* Two declarations, and the order matters. The first is the whole rule
-   on a browser without container query units, which ignores the second
-   outright.
-
-   The second is what actually runs, and it exists because the column
-   this word sits in is not the screen: it is whatever the meme leaves,
-   and vw knows nothing about that. 27cqi is 27% of the column, and
-   "Thanks" at that size comes to roughly 94% of the column's width — so
-   the word fits, on every screen, without a single breakpoint. min()
-   and not clamp() because the vw figure is the intent and the cqi
-   figure is only a ceiling: the word is never made larger than the
-   line above asks for, only smaller when the column cannot take it. */
-.thanks__title {
-  margin: 0;
-  font-size: clamp(64px, 7vw, 200px);
-  font-size: min(clamp(64px, 7vw, 200px), 27cqi);
-  line-height: 1;
-  letter-spacing: -0.04em;
-  font-weight: 700;
-}
-
-/* Sized against the title rather than against the body text — roughly a
-   seventh of it at either end of the clamp — so the pair reads as one
-   block at any width rather than as a heading with a caption that
-   drifts toward it on a small screen. Secondary grey, because the room
-   has already read this line by the time it is being asked. */
-.thanks__sub {
-  margin: clamp(18px, 2.4vh, 34px) 0 0;
-  font-size: clamp(20px, 2vw, 30px);
-  font-weight: 400;
-  color: var(--text-secondary);
-}
-
-/* An explicit width, the same way .split--more sizes the iceberg and for
-   the same reason: the picture is portrait, so the constraint is the
-   slide's height and not its column, and a width is the only way to say
-   that to a grid track sized by content. The image is 540x646, so a
-   width w costs 1.2w of height — 68vh of width is 81vh of picture, and
-   the slide's own padding takes another 7vh, which leaves it clearing
-   the bottom of the screen by a hair.
-
-   The 700px cap is the one number here that is not about layout. The
-   source file is 540px wide; past about 1.3x it stops being a picture of
-   a joke and starts being a picture of some pixels, and the four
-   paragraphs of body text inside it are the first thing to go. If a
-   larger copy of the image ever turns up, this is the line to raise.
-
-   46% so that a wide, short window cannot let the picture take the half
-   of the row the words are standing in. */
-.thanks__meme {
-  width: min(46%, clamp(200px, 68vh, 600px));
-}
-
-.thanks__meme .figure__img {
-  width: 95%;
-  max-height: none;
-}
-
-
-/* ============================================================
    Motivation ("about") slide
    ============================================================ */
 
@@ -681,6 +586,216 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
 
 
 /* ============================================================
+   Closing slide — two lines and the meme, side by side
+
+   The one slide in the deck that is not read. It is looked at, for as
+   long as the questions last, so its whole job is to be legible from
+   the back of the room and to hold nothing that competes with whoever
+   is speaking. The meme earns its place on the second count: it is
+   looked at once, understood, and then it is wallpaper.
+
+   The words are left and the picture right, rather than stacked,
+   because the picture is portrait and the screen is not. Stacked, the
+   two would fight over the same vertical inch and both would lose; side
+   by side, the meme takes the height the slide has spare and the words
+   take the width it has spare.
+
+   The inner drops its 1040px measure for this one — that measure is
+   sized for prose, and there is none here. Vertical centring still
+   costs nothing: .slide is already a flex row with align-items: center,
+   which applies because this slide is named in the content-slide
+   exception up at the top of this sheet.
+
+   The reading list on the slide before it follows at the end of this
+   section: the two are the deck's closing pair, and they are the last
+   slide-specific block in the sheet. Everything past here is a
+   component that several slides share.
+   ============================================================ */
+
+.slide--thanks .slide__inner {
+  max-width: none;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: clamp(24px, 4vw, 64px);
+  text-align: center;
+}
+
+/* A container, so the word inside can be sized against this column
+   rather than against the viewport — see .thanks__title. */
+.thanks__words { container-type: inline-size; }
+
+/* Two declarations, and the order matters. The first is the whole rule
+   on a browser without container query units, which ignores the second
+   outright.
+
+   The second is what actually runs, and it exists because the column
+   this word sits in is not the screen: it is whatever the meme leaves,
+   and vw knows nothing about that. 27cqi is 27% of the column, and
+   "Thanks" at that size comes to roughly 94% of the column's width — so
+   the word fits, on every screen, without a single breakpoint. min()
+   and not clamp() because the vw figure is the intent and the cqi
+   figure is only a ceiling: the word is never made larger than the
+   line above asks for, only smaller when the column cannot take it. */
+.thanks__title {
+  margin: 0;
+  font-size: clamp(64px, 7vw, 200px);
+  font-size: min(clamp(64px, 7vw, 200px), 27cqi);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-weight: 700;
+}
+
+/* Sized against the title rather than against the body text — roughly a
+   seventh of it at either end of the clamp — so the pair reads as one
+   block at any width rather than as a heading with a caption that
+   drifts toward it on a small screen. Secondary grey, because the room
+   has already read this line by the time it is being asked. */
+.thanks__sub {
+  margin: clamp(18px, 2.4vh, 34px) 0 0;
+  font-size: clamp(20px, 2vw, 30px);
+  font-weight: 400;
+  color: var(--text-secondary);
+}
+
+/* An explicit width, the same way .split--more sizes the iceberg and for
+   the same reason: the picture is portrait, so the constraint is the
+   slide's height and not its column, and a width is the only way to say
+   that to a grid track sized by content. The image is 540x646, so a
+   width w costs 1.2w of height — 68vh of width is 81vh of picture, and
+   the slide's own padding takes another 7vh, which leaves it clearing
+   the bottom of the screen by a hair.
+
+   The 700px cap is the one number here that is not about layout. The
+   source file is 540px wide; past about 1.3x it stops being a picture of
+   a joke and starts being a picture of some pixels, and the four
+   paragraphs of body text inside it are the first thing to go. If a
+   larger copy of the image ever turns up, this is the line to raise.
+
+   46% so that a wide, short window cannot let the picture take the half
+   of the row the words are standing in. */
+.thanks__meme {
+  width: min(46%, clamp(200px, 68vh, 600px));
+}
+
+.thanks__meme .figure__img {
+  width: 95%;
+  max-height: none;
+}
+
+
+/* --- the closing slide's reading list: three references, ranked.
+
+       The number chips come from a CSS counter rather than from typed
+       digits, so reordering the three in the markup renumbers them and
+       cannot leave a 1, 3, 2 behind. They are .method__name's chip at a
+       smaller size — same fill, same radius, same mono — because a
+       number in a box is already this deck's way of saying "one of a
+       short ordered set", and the agenda and the HTTP methods both say
+       it that way.
+
+       These three and the playground link in the pane beside them are
+       the only anchors in the whole deck, so there is no link style to
+       inherit and no reset to fall back on: without the rules below they
+       would render as browser blue, which belongs to no family here.
+       .points__link is the other one, and it borrows this treatment
+       rather than inventing a second — it stays with the bullet lists,
+       since a link buried mid-sentence is sized by the sentence. Both
+       take the slide's own accent instead of the browser's, on the
+       underline rather than on the text, so the label keeps full
+       contrast against white and the colour is carried by a line that
+       is allowed to be thin. --- */
+
+.reflist {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(8px, 1.1vw, 12px);
+}
+
+/* Sized and cased as a label, not as a heading — it introduces the list
+   without competing with the slide title two rows up. */
+.reflist__title {
+  margin: 0;
+  font-size: clamp(11px, 0.95vw, 13px);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.reflist__items {
+  counter-reset: ref;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(10px, 1.4vw, 15px);
+}
+
+.reflist__item {
+  display: flex;
+  align-items: flex-start;
+  gap: clamp(9px, 1.1vw, 13px);
+}
+
+.reflist__item::before {
+  counter-increment: ref;
+  content: counter(ref);
+  flex: 0 0 auto;
+  width: clamp(21px, 2vw, 26px);
+  height: clamp(21px, 2vw, 26px);
+  display: grid;
+  place-items: center;
+  border-radius: 6px;
+  background: var(--accent-bg);
+  color: var(--accent-fg);
+  font-family: var(--font-mono);
+  font-size: clamp(11px, 0.95vw, 13px);
+  font-weight: 700;
+}
+
+/* min-width: 0 so a long address can wrap instead of widening the flex
+   item past the column. */
+.reflist__body {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.reflist__link {
+  align-self: flex-start;
+  font-size: clamp(13px, 1.15vw, 16px);
+  font-weight: 600;
+  color: var(--text);
+  text-decoration: underline;
+  text-decoration-color: var(--accent-fg);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+.reflist__link:hover,
+.reflist__link:focus-visible { color: var(--accent-fg); }
+
+.reflist__why {
+  font-size: clamp(12px, 1vw, 14px);
+  line-height: 1.45;
+  color: var(--text-secondary);
+}
+
+/* --text-secondary and not --text-tertiary: this line is small and mono
+   already, and the tertiary grey does not clear AA at this size. */
+.reflist__where {
+  font-family: var(--font-mono);
+  font-size: clamp(10px, 0.85vw, 12px);
+  line-height: 1.4;
+  color: var(--text-secondary);
+  overflow-wrap: anywhere;
+}
+
+
+/* ============================================================
    Slide lede — the standfirst that sits under a slide title
    ============================================================ */
 
@@ -692,12 +807,15 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
   color: var(--text-secondary);
 }
 
+/* The 70ch measure is for a column of prose. A lede running the full
+   width of a slide is not one, so it gives the cap up. Ties with the
+   rule above on specificity, which is why it sits after it. */
+.slide__lede--wide { max-width: none; }
+
 
 /* ============================================================
    Split slides — two boxes flanking a floating vertical rule
    ============================================================ */
-
-.slide__lede--wide { max-width: none; }
 
 .split {
   display: grid;
@@ -928,116 +1046,6 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
 }
 
 .method__def strong { color: var(--text); font-weight: 600; }
-
-
-/* --- the closing slide's reading list: three references, ranked.
-
-       The number chips come from a CSS counter rather than from typed
-       digits, so reordering the three in the markup renumbers them and
-       cannot leave a 1, 3, 2 behind. They are .method__name's chip at a
-       smaller size — same fill, same radius, same mono — because a
-       number in a box is already this deck's way of saying "one of a
-       short ordered set", and the agenda and the HTTP methods both say
-       it that way.
-
-       These three and the playground link in the pane beside them are
-       the only anchors in the whole deck, so there is no link style to
-       inherit and no reset to fall back on: without the rules below they
-       would render as browser blue, which belongs to no family here.
-       .points__link is the other one, and it borrows this treatment
-       rather than inventing a second. They take the slide's own accent
-       instead of the browser's, on the
-       underline rather than on the text, so the label keeps full
-       contrast against white and the colour is carried by a line that
-       is allowed to be thin. --- */
-
-.reflist {
-  display: flex;
-  flex-direction: column;
-  gap: clamp(8px, 1.1vw, 12px);
-}
-
-/* Sized and cased as a label, not as a heading — it introduces the list
-   without competing with the slide title two rows up. */
-.reflist__title {
-  margin: 0;
-  font-size: clamp(11px, 0.95vw, 13px);
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-secondary);
-}
-
-.reflist__items {
-  counter-reset: ref;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: clamp(10px, 1.4vw, 15px);
-}
-
-.reflist__item {
-  display: flex;
-  align-items: flex-start;
-  gap: clamp(9px, 1.1vw, 13px);
-}
-
-.reflist__item::before {
-  counter-increment: ref;
-  content: counter(ref);
-  flex: 0 0 auto;
-  width: clamp(21px, 2vw, 26px);
-  height: clamp(21px, 2vw, 26px);
-  display: grid;
-  place-items: center;
-  border-radius: 6px;
-  background: var(--accent-bg);
-  color: var(--accent-fg);
-  font-family: var(--font-mono);
-  font-size: clamp(11px, 0.95vw, 13px);
-  font-weight: 700;
-}
-
-/* min-width: 0 so a long address can wrap instead of widening the flex
-   item past the column. */
-.reflist__body {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  min-width: 0;
-}
-
-.reflist__link {
-  align-self: flex-start;
-  font-size: clamp(13px, 1.15vw, 16px);
-  font-weight: 600;
-  color: var(--text);
-  text-decoration: underline;
-  text-decoration-color: var(--accent-fg);
-  text-decoration-thickness: 2px;
-  text-underline-offset: 3px;
-}
-
-.reflist__link:hover,
-.reflist__link:focus-visible { color: var(--accent-fg); }
-
-.reflist__why {
-  font-size: clamp(12px, 1vw, 14px);
-  line-height: 1.45;
-  color: var(--text-secondary);
-}
-
-/* --text-secondary and not --text-tertiary: this line is small and mono
-   already, and the tertiary grey does not clear AA at this size. */
-.reflist__where {
-  font-family: var(--font-mono);
-  font-size: clamp(10px, 0.85vw, 12px);
-  line-height: 1.4;
-  color: var(--text-secondary);
-  overflow-wrap: anywhere;
-}
 
 
 /* --- status codes. Each row carries its own family, so the traffic
@@ -2054,6 +2062,70 @@ textarea.call__input {
 .call__hint code {
   font-family: var(--font-mono);
   font-style: normal;
+}
+
+/* --- slide 16's redacted key. Presenter furniture rather than part of
+       the request the room is reading: it sits under the hint, in the
+       hint's own grey, and takes no axis colour of its own, so it never
+       reads as a fourth box stacked under the three above it. --- */
+
+.spoiler {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.spoiler__label {
+  margin: 0;
+  font-size: clamp(10px, 0.85vw, 12px);
+  font-style: italic;
+  color: var(--text-tertiary);
+}
+
+/* Blur rather than bullets or a blank, and the difference is the whole
+   effect: a run of dots is a fixed width whatever is behind it, so there
+   is no telling a pasted key from an empty box across the room. A blur
+   keeps the value's own shape — the room can see that there is a real
+   key sitting on the slide, in the open, one click from readable, which
+   is the argument this slide is making, drawn.
+
+   Nothing disables selection here: when both copy paths refuse, live.js
+   uncovers the value and leaves selecting it by hand as the way out. */
+.spoiler__value {
+  flex: 1 1 22ch;
+  min-width: 0;
+  padding: 4px 8px;
+  font-family: var(--font-mono);
+  font-size: clamp(10px, 0.85vw, 12px);
+  color: var(--text-secondary);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  filter: blur(4px);
+  transition: filter 120ms ease-out;
+}
+
+.spoiler.is-revealed .spoiler__value { filter: none; }
+
+.spoiler__btn {
+  padding: 4px 10px;
+  font-family: inherit;
+  font-size: clamp(10px, 0.85vw, 12px);
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* The axis green, from --accent-fg, exactly as .call__send takes it —
+   nothing here has to know which slide it is sitting on. */
+.spoiler__btn:hover,
+.spoiler__btn:focus-visible {
+  color: var(--accent-fg);
+  border-color: var(--accent-fg);
 }
 
 /* The axis colour, in the corner of the request panel — blue on slide

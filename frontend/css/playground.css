@@ -2,15 +2,19 @@
    Playground — the little that css/style.css does not already have.
 
    Everything the page is made of is borrowed: .rr, .panel, .field,
-   .call__input, .call__send, .slide__inner. Three things do not
-   transfer, and they are the whole of this file:
+   .call__input, .call__send, .slide__inner, .spoiler. Five things do
+   not transfer, and they are the whole of this file:
 
      1. a page shell, because .slide is absolutely positioned and
         expects a deck controller to reveal it;
      2. one always-visible request panel, where the deck hides every
         .rr-panel until a radio picks it;
-     3. the active-verb highlight, which style.css writes per id and
-        this page's ids are new.
+     3. the verb, which the deck picks with chips above the panels and
+        this page picks inside the method box itself;
+     4. the headers, which the deck prints and this page lets you
+        assemble a row at a time;
+     5. the cheat sheet, which the deck does not need because the
+        presenter is the cheat sheet.
    ============================================================ */
 
 /* --- 1. page shell ----------------------------------------------
@@ -82,6 +86,32 @@ body.pg-page {
   border-bottom-color: currentColor;
 }
 
+/* The byline. .sidebar__note is the deck's version of this and the type
+   is copied from it — 10px, tertiary grey — because it should read the
+   same on both pages: findable by anyone looking for it, invisible to a
+   room reading the panels. What is not copied is the placement: the
+   sidebar is a rail with a foot, this is a column with an end.
+
+   margin-top:auto against .pg's flex column is what puts it there. .pg is
+   min-height:100vh, so on a tall window the rule pushes the footer to the
+   bottom of the viewport; on a short one it simply follows the panels and
+   the page scrolls to it. The border is the same hairline the sidebar
+   foot uses, for the same reason: without it the line reads as a stray
+   caption under the response rather than as the end of the page. */
+
+.pg__foot {
+  margin-top: auto;
+  padding-top: clamp(14px, 2.4vh, 26px);
+  border-top: 1px solid var(--border);
+}
+
+.pg__note {
+  margin: 0;
+  font-size: 10px;
+  line-height: 1.45;
+  color: var(--text-tertiary);
+}
+
 /* --- 2. the single request panel --------------------------------
    In the deck a .rr-panel is display:none until its radio is checked,
    because a slide holds several and shows one. This page holds one
@@ -90,15 +120,522 @@ body.pg-page {
 
 .rr--pg .rr-panel { display: flex; }
 
-/* --- 3. active verb ---------------------------------------------
-   Same treatment style.css gives #rr-get / #call-get, against this
-   page's ids. Blue because it is the switch, matching the deck. */
+/* --- 3. the verb, as a control -----------------------------------
+   The deck puts chips above the panels and prints the chosen verb in
+   the purple box below them. This page has one request, so the box is
+   the control: no chrome over the panel, and no read-out that can fall
+   out of step with what is being sent.
 
-#pg-get:checked  ~ .rr__head .rr__method[for="pg-get"],
-#pg-post:checked ~ .rr__head .rr__method[for="pg-post"] {
-  background: var(--anatomy-bg);
-  color: var(--anatomy-fg);
+   The select is stripped to nothing so what shows through is the
+   .field around it, exactly as .call__input does for the endpoint and
+   the body. It carries .field__value too, so the mono face, the size,
+   the purple and the weight all arrive from style.css and none of them
+   are repeated here — the same trick, applied to a different control.
+
+   appearance:none also takes the native arrow, so the caret below is
+   drawn back: a box that opens a menu has to look like one. */
+
+.pg__verb {
+  appearance: none;
+  -webkit-appearance: none;
+  padding: 0 15px 0 0;
+  border: 0;
+  border-radius: 0;
+  cursor: pointer;
+  /* .field__value sets white-space: pre-wrap, which a select renders
+     as a stray line break in some engines. */
+  white-space: nowrap;
+
+  /* Named rather than transparent, and the two are not interchangeable
+     here. The menu a select opens is painted by the browser, and what
+     it paints is the select's own background — leave it transparent and
+     the list drops out of a purple box as a white system panel. Setting
+     it to the same purple as the .field means nothing changes when the
+     box is closed, and the list arrives in the field's colour when it
+     opens. */
+  background: var(--foundations-bg);
 }
+
+/* Chromium and Firefox honour this; a macOS native popup does not, and
+   falls back to system chrome. Stated on the option rather than
+   inherited because the list is not a child of the select's box for
+   painting purposes. */
+.pg__verb option {
+  background: var(--foundations-bg);
+  color: var(--foundations-fg);
+}
+
+.pg__verb:focus,
+.pg__verb:focus-visible { outline: none; }
+
+/* The caret. On the .field rather than the select so it sits in the
+   box's own right padding, and pointer-events:none so the whole purple
+   box stays clickable rather than the arrow punching a hole in it. */
+
+.pg .field--method { position: relative; }
+
+.pg .field--method::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: clamp(9px, 1.1vw, 14px);
+  width: 6px;
+  height: 6px;
+  margin-top: -5px;
+  border-right: 1.5px solid var(--foundations-fg);
+  border-bottom: 1.5px solid var(--foundations-fg);
+  transform: rotate(45deg);
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+/* --- 4. the headers, as a checklist ------------------------------
+   The deck prints its headers, because a slide's header set is decided
+   before the room arrives and printing it is the whole job. Here they
+   are the thing being played with, so the box holds controls and then
+   prints what they add up to underneath.
+
+   Colour comes from the .field, as everywhere else on this page:
+   .field--headers is the contract green, so setting the text colour
+   once on the container lets the rows, the preview and the ghost list
+   all inherit it. Inputs are the exception — they do not inherit colour
+   without being told to, which is the one line of it repeated below. */
+
+.pg-hdr { color: var(--contract-fg); }
+
+/* Three columns rather than three-per-row, so the values line up down
+   the box however long the names are. The rows are display:contents:
+   they exist to be classed by playground.js and to group a checkbox
+   with its label, not to draw anything. */
+
+.pg-hdr__list {
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(3px, 0.5vh, 6px) clamp(6px, 0.8vw, 10px);
+}
+
+.pg-hdr__row { display: contents; }
+
+.pg-hdr__on {
+  width: 13px;
+  height: 13px;
+  margin: 0;
+  accent-color: var(--contract-fg);
+  cursor: pointer;
+}
+
+.pg-hdr__name,
+.pg-hdr__val {
+  font-family: var(--font-mono);
+  font-size: clamp(10px, 0.9vw, 13px);
+  line-height: 1.7;
+}
+
+.pg-hdr__name {
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+/* Basic and Bearer are the same header name, and the tag is what says
+   they are not the same header. Outlined rather than filled so it reads
+   as an annotation on the name and not as a second name. */
+
+.pg-hdr__scheme {
+  margin-left: 0.5em;
+  padding: 0 5px;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  font-size: 0.82em;
+  font-weight: 400;
+  opacity: 0.7;
+}
+
+/* A wash rather than the transparent the endpoint and body use. Those
+   are the only control in their box, so the .field itself reads as the
+   input; this box has five of them sitting next to five labels, and
+   without the wash there is nothing to say which half you can type in. */
+
+.pg-hdr__val {
+  min-width: 0;
+  padding: 1px 6px;
+  color: inherit;
+  background: rgba(255, 255, 255, 0.55);
+  border: 0;
+  border-radius: 4px;
+}
+
+.pg-hdr__val:focus { outline: none; background: rgba(255, 255, 255, 0.92); }
+
+.pg-hdr__val::placeholder { color: currentColor; opacity: 0.45; }
+
+/* Unticked is dimmed, not hidden: the row is still the list of what this
+   API accepts, which is half of what the box is for. */
+
+.pg-hdr__row.is-off .pg-hdr__name,
+.pg-hdr__row.is-off .pg-hdr__val { opacity: 0.4; }
+
+/* Ticked with nothing in it sends nothing, and a checkbox that looks on
+   while contributing no line is exactly the silent mismatch this page
+   exists to avoid. The dashes say the row is armed but empty. */
+
+.pg-hdr__row.is-empty .pg-hdr__val {
+  outline: 1px dashed currentColor;
+  outline-offset: -1px;
+}
+
+/* What actually goes out. Separated by a rule rather than a heading
+   because it is not another control — it is the same header set the
+   deck's slides print, assembled from the boxes above. */
+
+.pg-hdr__wire {
+  margin-top: clamp(7px, 1.1vh, 12px);
+  padding-top: clamp(6px, 1vh, 10px);
+  border-top: 1px dashed currentColor;
+}
+
+.pg-hdr__wire::before {
+  content: 'sent as';
+  display: block;
+  margin-bottom: 3px;
+  font-size: 0.8em;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.5;
+}
+
+/* Closed by default. The point of the list is that these arrive whether
+   or not anyone opens it, so it earns a line and not a third of the
+   panel — and anyone who does open it is asking a real question. */
+
+.pg-hdr__ghosts {
+  margin-top: clamp(7px, 1.1vh, 12px);
+  padding-top: clamp(6px, 1vh, 10px);
+  border-top: 1px dashed currentColor;
+}
+
+.pg-hdr__summary {
+  font-family: var(--font-mono);
+  font-size: clamp(9px, 0.8vw, 11px);
+  opacity: 0.6;
+  cursor: pointer;
+}
+
+.pg-hdr__ghostlist {
+  display: grid;
+  gap: 3px;
+  margin: 7px 0 0;
+  padding: 0;
+  list-style: none;
+  opacity: 0.6;
+}
+
+.pg-hdr__ghostlist li {
+  display: grid;
+  grid-template-columns: minmax(0, auto) minmax(0, 1fr);
+  gap: 0 10px;
+  font-size: clamp(9px, 0.8vw, 11px);
+  line-height: 1.5;
+}
+
+/* Not an input, and styled so nobody tries: mono and bold like the names
+   above, but with no wash behind it to type into. */
+
+.pg-hdr__ghost { font-family: var(--font-mono); font-weight: 600; }
+
+/* --- 5. the cheat sheet ------------------------------------------
+   A <dialog>, and the reason is the list of things showModal() does
+   that a div with a z-index does not: it centres on the viewport with
+   no transform, paints a backdrop, closes on Escape, keeps Tab inside
+   itself, and makes everything behind it inert. Each of those is a
+   small amount of code and a large amount of getting it wrong. */
+
+.pg__barend {
+  display: flex;
+  align-items: baseline;
+  gap: clamp(10px, 1.4vw, 18px);
+}
+
+/* Sized and coloured like .pg__back beside it, because they are the
+   same kind of thing — two ways off this page's one screen — and one of
+   them shouting would make the other look broken. The border is what
+   separates them: the link is a link, this opens something. */
+
+.pg__tipsbtn {
+  padding: 4px 11px;
+  font-family: inherit;
+  font-size: clamp(11px, 1vw, 14px);
+  color: var(--text-secondary);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.pg__tipsbtn:hover,
+.pg__tipsbtn:focus-visible {
+  color: var(--anatomy-fg);
+  border-color: var(--anatomy-fg);
+}
+
+/* display is set on [open] and nowhere else. The UA sheet closes a
+   dialog with `dialog:not([open]) { display: none }`, so declaring
+   display on .tips itself would out-specify that and leave the panel
+   sitting open in the page on load. */
+
+.tips {
+  width: min(680px, 92vw);
+  max-height: 86vh;
+  padding: 0;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  box-shadow: 0 24px 60px rgba(22, 23, 28, 0.22);
+  /* So the scrolling body is clipped by the rounded corners rather than
+     running square over them. */
+  overflow: hidden;
+
+  /* .spoiler__btn:hover takes --accent-fg, which is whatever the deck
+     section it sits in declares. There is no section here, so it would
+     fall back to near-black; naming it gives the borrowed component the
+     same blue the rest of this page's furniture hovers to. */
+  --accent-fg: var(--anatomy-fg);
+}
+
+.tips[open] {
+  display: flex;
+  flex-direction: column;
+}
+
+.tips::backdrop {
+  background: rgba(22, 23, 28, 0.55);
+}
+
+/* Padding lives on the head and the body rather than on the dialog, so
+   that a click landing on .tips is unambiguously a click on the
+   backdrop — which is what playground.js closes on. Padding on the
+   dialog would put a dead ring of it inside the panel that dismissed
+   the panel. */
+
+.tips__head {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: clamp(14px, 2vh, 20px) clamp(16px, 2.4vw, 26px);
+  border-bottom: 1px solid var(--border);
+}
+
+.tips__title {
+  margin: 0;
+  font-size: clamp(15px, 1.5vw, 19px);
+  font-weight: 700;
+}
+
+.tips__close {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  font-size: 20px;
+  line-height: 1;
+  color: var(--text-secondary);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.tips__close:hover,
+.tips__close:focus-visible {
+  color: var(--text);
+  border-color: var(--border);
+}
+
+/* The head stays, the content scrolls. A cheat sheet long enough to
+   scroll must not scroll its own title out of reach — that is the one
+   line telling you what you opened and how to shut it. */
+
+.tips__body {
+  /* A flex item will not shrink below its content without this, and a
+     child that cannot shrink is a child that never scrolls — the panel
+     would simply grow past max-height and overflow the viewport. */
+  min-height: 0;
+  overflow-y: auto;
+  padding: clamp(14px, 2vh, 20px) clamp(16px, 2.4vw, 26px) clamp(18px, 2.6vh, 26px);
+}
+
+.tips__sec + .tips__sec {
+  margin-top: clamp(18px, 2.6vh, 26px);
+  padding-top: clamp(16px, 2.4vh, 24px);
+  border-top: 1px solid var(--border);
+}
+
+.tips__h {
+  margin: 0 0 8px;
+  font-size: clamp(10px, 0.9vw, 12px);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.tips__note {
+  margin: 8px 0 0;
+  font-size: clamp(11px, 1vw, 13px);
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+
+.tips__list + .tips__note { margin-top: 12px; }
+
+.tips__prose {
+  margin: 0 0 10px;
+  font-size: clamp(12px, 1.1vw, 14px);
+  line-height: 1.65;
+}
+
+.tips__note code,
+.tips__prose code,
+.tips__meta code {
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+}
+
+/* --- the credential rows ---
+   Three columns so the values line up down the left however long the
+   note beside them runs, and the Use buttons down the right however
+   long the value is. Both edges are what makes it scannable rather
+   than four sentences stacked. */
+
+.tips__list {
+  display: grid;
+  gap: 6px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tips__item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 4px 12px;
+}
+
+.tips__val {
+  padding: 3px 8px;
+  font-family: var(--font-mono);
+  font-size: clamp(11px, 1vw, 13px);
+  color: var(--text);
+  background: var(--surface-sunk);
+  border-radius: 5px;
+  /* Selectable and wrappable: the Use button is the fast path, not the
+     only one, and someone on a phone will want to copy this by hand. */
+  overflow-wrap: anywhere;
+}
+
+.tips__meta {
+  font-size: clamp(10px, 0.9vw, 12px);
+  line-height: 1.45;
+  color: var(--text-secondary);
+}
+
+.tips__use {
+  flex: none;
+  padding: 3px 11px;
+  font-family: inherit;
+  font-size: clamp(10px, 0.9vw, 12px);
+  font-weight: 600;
+  color: var(--contract-fg);
+  background: var(--contract-bg);
+  border: 1px solid transparent;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* The header green, because that is the box it writes into. A button
+   whose colour says where its effect lands needs no label explaining
+   it, and the panel has enough prose already. */
+.tips__use:hover,
+.tips__use:focus-visible { border-color: var(--contract-fg); }
+
+/* The label is a sentence, not a caption, so it takes the whole first
+   row and leaves the value and its two buttons on the next. */
+.tips__spoiler { margin-top: 12px; }
+.tips__spoiler .spoiler__label {
+  flex: 1 0 100%;
+  font-style: normal;
+  line-height: 1.5;
+}
+
+/* --- the endpoint list --- */
+
+.tips__eps {
+  display: grid;
+  gap: 6px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tips__ep {
+  display: grid;
+  grid-template-columns: minmax(0, auto) minmax(0, 1fr);
+  align-items: center;
+  gap: 4px 12px;
+}
+
+.tips__epbtns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+/* Purple for the verb inside a blue-bordered path, which is the deck's
+   own colour grammar: method is --foundations, endpoint is --anatomy.
+   Someone who has sat through the slides can read this row without
+   being told what the two halves are. */
+
+.tips__path {
+  padding: 3px 9px;
+  font-family: var(--font-mono);
+  font-size: clamp(10px, 0.9vw, 12px);
+  color: var(--anatomy-fg);
+  background: var(--anatomy-bg);
+  border: 1px solid transparent;
+  border-radius: 5px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.tips__path b {
+  margin-right: 5px;
+  font-weight: 700;
+  color: var(--foundations-fg);
+}
+
+.tips__path:hover,
+.tips__path:focus-visible { border-color: var(--anatomy-fg); }
+
+.tips__link {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: clamp(11px, 1vw, 13px);
+  color: var(--anatomy-fg);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+
+.tips__link:hover,
+.tips__link:focus-visible { border-bottom-color: currentColor; }
 
 /* The hint under the body names three keys, and a key that is not
    drawn as one reads as emphasis instead of as a keycap. */
@@ -121,4 +658,28 @@ body.pg-page {
   .rr--pg .rr__grid { grid-template-columns: 1fr; }
   .rr--pg .panel { grid-row: auto; grid-template-rows: auto auto; }
   .rr--pg .panel__body { height: auto; max-height: 60vh; }
+
+  /* Two columns of prose in a phone's width leaves four characters for
+     the second one. The name goes above its note instead. */
+  .pg-hdr__ghostlist li { grid-template-columns: 1fr; }
+
+  /* Same reasoning one panel over: a credential and its explanation do
+     not both fit across a phone. The rows become two lines, with the
+     Use button pulled up beside the value rather than stranded on a
+     third line of its own. */
+  .tips__item {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+  }
+  /* Placed rather than flowed. Auto-placement would push the button
+     onto a third row, because the note in between claims the whole of
+     the second one and nothing after it can move back up. */
+  .tips__val { grid-column: 1; grid-row: 1; }
+  .tips__use { grid-column: 2; grid-row: 1; }
+  .tips__meta { grid-column: 1 / -1; grid-row: 2; }
+
+  .tips__ep { grid-template-columns: 1fr; }
+
+  /* The dialog gives back the margin the viewport no longer has. */
+  .tips { width: 94vw; max-height: 90vh; }
 }

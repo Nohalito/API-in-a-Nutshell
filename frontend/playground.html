@@ -23,39 +23,42 @@
        exactly as it drives slides 10, 16 and 17, because the block below
        carries .rr--call and speaks the same data-* vocabulary. What
        js/playground.js adds is only what the deck never needed — a verb
-       that changes under one panel instead of switching between two, and
-       a Tab key that indents JSON instead of leaving the box.
+       picked inside the panel instead of switching between two, a header
+       set you tick rather than read, a Tab key that indents JSON instead
+       of leaving the box, and a cheat sheet that fills the boxes rather
+       than asking anyone to retype a password from a slide.
        ============================================================ -->
 
   <main class="pg">
 
     <div class="pg__bar">
       <p class="pg__eyebrow">API in a Nutshell</p>
-      <a class="pg__back" href="index.html">&larr; Back to the deck</a>
+      <!-- Everything a room needs to actually make a call — accounts,
+           keys, the list of endpoints — behind one button rather than
+           down the side of the page. A panel nobody has opened costs
+           nothing; a column of credentials next to the request competes
+           with it for the only attention in the room. -->
+      <div class="pg__barend">
+        <button class="pg__tipsbtn" type="button" data-action="tips-open" aria-haspopup="dialog">Tips &amp; credentials</button>
+        <a class="pg__back" href="index.html">&larr; Back to the deck</a>
+      </div>
     </div>
 
     <div class="slide__inner">
       <div class="rr rr--call rr--pg">
 
-        <!-- Both radios carry the same value on purpose. live.js resolves
-             the active panel with [data-req="<checked radio value>"], and
-             on this page there is only ever one panel to resolve to — the
-             verb is not a different request, it is the same request sent
-             differently. Which verb was picked is read off data-verb by
-             js/playground.js; the id is what the stylesheet lights up. -->
-        <input class="rr__radio" type="radio" name="pg-method" id="pg-get" value="main" data-verb="GET" checked>
-        <input class="rr__radio" type="radio" name="pg-method" id="pg-post" value="main" data-verb="POST">
-
+        <!-- No switch above the panels. The deck has one because a slide
+             holds two requests and the chips say which is on screen; here
+             there is one request and the verb is a property of it, so it
+             belongs in the request, not over it. live.js needs no radio:
+             with none checked its active() falls through to the only
+             [data-req] on the page. -->
         <div class="rr__head">
           <h2 class="slide__title">Playground</h2>
-          <div class="rr__methods">
-            <label class="rr__method" for="pg-get">GET</label>
-            <label class="rr__method" for="pg-post">POST</label>
-          </div>
         </div>
 
         <p class="slide__lede slide__lede--wide">
-          A real request against the talk&rsquo;s own API. Pick a verb, type an endpoint, edit the body &mdash; then send it and read what comes back. Nothing fires on load and nothing is remembered: every call is a click.
+          A real request against the talk&rsquo;s own API. Pick a verb, type an endpoint, edit the body &mdash; then send it and read what comes back.
         </p>
 
         <div class="rr__grid">
@@ -71,24 +74,104 @@
               <div class="rr-panel rr-panel--fields" data-req="main" data-method="GET">
 
                 <div class="field-row">
-                  <!-- Rewritten by playground.js when the switch moves. A
-                       purple box reading GET above a request that POSTs is
-                       the one kind of lie this page cannot afford either. -->
+                  <!-- The purple box is now the control. In the deck it is
+                       a read-out of a verb decided elsewhere; here picking
+                       the verb and showing it are the same act, which is
+                       why there is nothing left to keep in step. What it
+                       cannot do on its own is reach live.js, so
+                       playground.js copies the choice onto data-method
+                       below — the attribute live.js reads at send time. -->
                   <div class="field field--method">
-                    <p class="field__value" data-verb-label>GET</p>
+                    <select class="field__value pg__verb" name="pg-verb" aria-label="method">
+                      <option value="GET" selected>GET</option>
+                      <option value="POST">POST</option>
+                    </select>
                   </div>
                   <div class="field field--endpoint">
                     <input class="field__value call__input" type="text" name="pg-endpoint" value="https://api-in-a-nutshell.onrender.com/api/v1/hello" spellcheck="false" autocomplete="off" aria-label="endpoint">
                   </div>
                 </div>
 
-                <!-- Left static for now, and so listing both lines is the
-                     honest option: a GET carrying Content-Type is untidy
-                     rather than wrong, where a POST missing it is a 422.
-                     Wiring this box to the verb is the next thing to do. -->
-                <div class="field field--headers">
-<pre class="field__value">Accept: application/json
+                <!-- The headers, as a checklist rather than a block of text.
+                     Every row is one this backend actually reads —
+                     backend/README.md's credential column is the whole of
+                     the list — so nothing here is a header you have to know
+                     to guess at, and nothing offered will be refused by CORS.
+
+                     Ticking rather than adding, because the demo is the
+                     toggle: untick Content-Type on a POST, send, read the
+                     422, tick it back, send again. Deleting a row would
+                     charge you a retype for every round of that.
+
+                     The two Authorization rows are one header name under two
+                     schemes, and they are mutually exclusive — one carries a
+                     password, the other a token you got *by* sending the
+                     password. /auth/login turns the first into the second.
+
+                     The <pre> is not decoration. live.js builds its header
+                     set by parsing the first .field__value in here line by
+                     line on the colon, so that block *is* the request;
+                     playground.js writes it from the boxes above. It ships
+                     with the default two already in it, so a page whose JS
+                     failed still sends something sensible. -->
+                <div class="field field--headers pg-hdr">
+
+                  <div class="pg-hdr__list">
+
+                    <div class="pg-hdr__row">
+                      <input class="pg-hdr__on" type="checkbox" id="h-accept" data-name="Accept" checked>
+                      <label class="pg-hdr__name" for="h-accept">Accept</label>
+                      <input class="pg-hdr__val" type="text" value="application/json" spellcheck="false" autocomplete="off" aria-label="Accept value">
+                    </div>
+
+                    <div class="pg-hdr__row">
+                      <input class="pg-hdr__on" type="checkbox" id="h-ctype" data-name="Content-Type" checked>
+                      <label class="pg-hdr__name" for="h-ctype">Content-Type</label>
+                      <input class="pg-hdr__val" type="text" value="application/json" spellcheck="false" autocomplete="off" aria-label="Content-Type value">
+                    </div>
+
+                    <div class="pg-hdr__row">
+                      <input class="pg-hdr__on" type="checkbox" id="h-basic" data-name="Authorization" data-scheme="Basic" data-excl="auth">
+                      <label class="pg-hdr__name" for="h-basic">Authorization <span class="pg-hdr__scheme">Basic</span></label>
+                      <input class="pg-hdr__val" type="text" value="viewer:viewerpass" spellcheck="false" autocomplete="off" aria-label="Basic credentials">
+                    </div>
+
+                    <div class="pg-hdr__row">
+                      <input class="pg-hdr__on" type="checkbox" id="h-bearer" data-name="Authorization" data-scheme="Bearer" data-excl="auth">
+                      <label class="pg-hdr__name" for="h-bearer">Authorization <span class="pg-hdr__scheme">Bearer</span></label>
+                      <input class="pg-hdr__val" type="text" value="" placeholder="paste accessToken from POST /auth/login" spellcheck="false" autocomplete="off" aria-label="Bearer token">
+                    </div>
+
+                    <div class="pg-hdr__row">
+                      <input class="pg-hdr__on" type="checkbox" id="h-key" data-name="X-API-Key">
+                      <label class="pg-hdr__name" for="h-key">X-API-Key</label>
+                      <input class="pg-hdr__val" type="text" value="nutshell-demo-key" spellcheck="false" autocomplete="off" aria-label="API key">
+                    </div>
+
+                  </div>
+
+<pre class="field__value pg-hdr__wire">Accept: application/json
 Content-Type: application/json</pre>
+
+                  <!-- The tier nobody teaches. A student reads the block
+                       above and concludes a request carries what they typed;
+                       it carries these too, and none of them are theirs to
+                       set — fetch() silently drops any attempt. Origin is
+                       the one to point at: it exists so a page cannot lie
+                       about where it came from, and it is why ticking
+                       Authorization below sends an OPTIONS call first. -->
+                  <details class="pg-hdr__ghosts">
+                    <summary class="pg-hdr__summary">&hellip; and six more the browser attaches itself</summary>
+                    <ul class="pg-hdr__ghostlist">
+                      <li><span class="pg-hdr__ghost">Origin</span><span>where this page was served from &mdash; the header the whole of CORS turns on</span></li>
+                      <li><span class="pg-hdr__ghost">Host</span><span>which server the connection is for</span></li>
+                      <li><span class="pg-hdr__ghost">Content-Length</span><span>the size of the body, counted for you</span></li>
+                      <li><span class="pg-hdr__ghost">User-Agent</span><span>the browser naming itself</span></li>
+                      <li><span class="pg-hdr__ghost">Accept-Encoding</span><span>the compressions it can undo</span></li>
+                      <li><span class="pg-hdr__ghost">Referer</span><span>the page the call was made from</span></li>
+                    </ul>
+                  </details>
+
                 </div>
 
                 <div class="field field--body">
@@ -134,10 +217,201 @@ The API sleeps when nobody is calling it, so the first request of the day can ta
       </div>
     </div>
 
+    <!-- Same byline the deck carries in its sidebar foot. The deck has a
+         permanent rail to hang it on; this page has none, so it goes at
+         the end of the column instead — pushed there by margin-top:auto
+         so a tall window leaves it at the bottom rather than floating it
+         under a short panel. The year is stamped by playground.js, as
+         main.js does for the deck. -->
+    <footer class="pg__foot">
+      <p class="pg__note">&copy; <span data-year></span> Noa Boimond. All rights reserved.</p>
+    </footer>
+
   </main>
 
+  <!-- ============================================================
+       The cheat sheet.
+
+       A <dialog> rather than a div and a z-index, because showModal()
+       is the only thing that centres on the viewport, paints a backdrop,
+       closes on Escape, traps the keyboard inside and makes the page
+       behind it inert — five behaviours, none of them worth
+       reimplementing, all of them wrong if you get one of them wrong.
+
+       Placed outside .rr--call on purpose. live.js wires every such
+       block it finds, including a spoiler inside one, and being adopted
+       by the shared engine is exactly what this panel must not be: it
+       has its own buttons, its own Escape key and no request in it.
+       playground.js wires it instead.
+
+       Everything in here is a value that already lives somewhere else —
+       backend/README.md for the accounts and the key, slide 16 for the
+       OpenWeatherMap one. Repeated rather than linked because a room
+       mid-demo will not go and look, and left in one panel so there is
+       one place to change when a credential does.
+       ============================================================ -->
+  <dialog class="tips" id="tips" aria-labelledby="tips-title">
+
+    <div class="tips__head">
+      <h2 class="tips__title" id="tips-title">Tips &amp; credentials</h2>
+      <button class="tips__close" type="button" data-action="tips-close" aria-label="Close">&times;</button>
+    </div>
+
+    <div class="tips__body">
+
+      <!-- ----- accounts ----- -->
+      <section class="tips__sec">
+        <h3 class="tips__h">Accounts</h3>
+        <p class="tips__note">
+          Hardcoded, because a teaching API has to let the room in. <b>Use</b> ticks
+          <code>Authorization&nbsp;Basic</code> and fills it in &mdash; the base64 happens in front of you.
+        </p>
+        <ul class="tips__list">
+          <li class="tips__item">
+            <code class="tips__val">viewer:viewerpass</code>
+            <span class="tips__meta">role <b>viewer</b> &mdash; opens <code>/viewer</code></span>
+            <button class="tips__use" type="button" data-fill-basic="viewer:viewerpass">Use</button>
+          </li>
+          <li class="tips__item">
+            <code class="tips__val">editor:editorpass</code>
+            <span class="tips__meta">role <b>editor</b> &mdash; opens <code>/viewer</code> and <code>/editor</code></span>
+            <button class="tips__use" type="button" data-fill-basic="editor:editorpass">Use</button>
+          </li>
+          <li class="tips__item">
+            <code class="tips__val">admin:adminpass</code>
+            <span class="tips__meta">role <b>admin</b> &mdash; opens all three</span>
+            <button class="tips__use" type="button" data-fill-basic="admin:adminpass">Use</button>
+          </li>
+          <li class="tips__item">
+            <code class="tips__val">dataschool:dataschool</code>
+            <span class="tips__meta">role <b>viewer</b> &mdash; the one <code>POST /echo</code> greets by name</span>
+            <button class="tips__use" type="button" data-fill-basic="dataschool:dataschool">Use</button>
+          </li>
+        </ul>
+        <p class="tips__note">
+          Roles rank rather than match, which is why <code>admin</code> reaches <code>/viewer</code>.
+          A token that is valid but not senior enough gets <b>403</b>, not 401 &mdash; and the
+          difference is the whole reason those three endpoints exist.
+        </p>
+      </section>
+
+      <!-- ----- keys ----- -->
+      <section class="tips__sec">
+        <h3 class="tips__h">Keys</h3>
+        <p class="tips__note">
+          A key says which <em>program</em> is calling. A token says which <em>person</em>.
+          Confusing the two is how a long-lived credential ends up hardcoded in a phone app.
+        </p>
+        <ul class="tips__list">
+          <li class="tips__item">
+            <code class="tips__val">nutshell-demo-key</code>
+            <span class="tips__meta">this backend, as <code>X-API-Key</code>, on <code>GET /app</code></span>
+            <button class="tips__use" type="button" data-fill-key="nutshell-demo-key">Use</button>
+          </li>
+        </ul>
+
+        <!-- The deck's own spoiler component, markup and all, so the two
+             pages treat the same key the same way: blurred by default,
+             because its shape being visible is the argument slide 16 is
+             making and its characters being visible is not. -->
+        <div class="spoiler tips__spoiler">
+          <p class="spoiler__label">
+            OpenWeatherMap, for slide 16 &mdash; rides in the URL as <code>appid</code>, never in a header,
+            which is why it lands in browser history and server logs
+          </p>
+          <code class="spoiler__value" data-spoiler-value>b16468ef6583a4c63b0f9558259dd0a5</code>
+          <button class="spoiler__btn" type="button" data-action="reveal" aria-pressed="false">Reveal</button>
+          <button class="spoiler__btn" type="button" data-action="copy">Copy</button>
+        </div>
+      </section>
+
+      <!-- ----- endpoints ----- -->
+      <section class="tips__sec">
+        <h3 class="tips__h">Endpoints</h3>
+        <p class="tips__note">
+          Click one to load it into the request. The host is kept as you have it, so a
+          <code>localhost</code> session stays on localhost.
+        </p>
+        <ul class="tips__eps">
+          <li class="tips__ep">
+            <span class="tips__epbtns">
+              <button class="tips__path" type="button" data-verb="GET" data-path="/hello"><b>GET</b> /hello</button>
+            </span>
+            <span class="tips__meta">the plainest possible request &mdash; no credential</span>
+          </li>
+          <li class="tips__ep">
+            <span class="tips__epbtns">
+              <button class="tips__path" type="button" data-verb="POST" data-path="/echo"><b>POST</b> /echo</button>
+            </span>
+            <span class="tips__meta">the only endpoint that reads a body &mdash; needs Basic</span>
+          </li>
+          <li class="tips__ep">
+            <span class="tips__epbtns">
+              <button class="tips__path" type="button" data-verb="GET" data-path="/produce?kind=fruit&amp;color=red"><b>GET</b> /produce</button>
+            </span>
+            <span class="tips__meta">query parameters &mdash; drop <code>?kind=</code> or ask for <code>mineral</code> to see a 422</span>
+          </li>
+          <li class="tips__ep">
+            <span class="tips__epbtns">
+              <button class="tips__path" type="button" data-verb="POST" data-path="/auth/login"><b>POST</b> /auth/login</button>
+            </span>
+            <span class="tips__meta">a POST with <em>no body</em> &mdash; trades Basic for a token to paste into the Bearer row</span>
+          </li>
+          <li class="tips__ep">
+            <span class="tips__epbtns">
+              <button class="tips__path" type="button" data-verb="GET" data-path="/viewer"><b>GET</b> /viewer</button>
+              <button class="tips__path" type="button" data-verb="GET" data-path="/editor"><b>GET</b> /editor</button>
+              <button class="tips__path" type="button" data-verb="GET" data-path="/admin"><b>GET</b> /admin</button>
+            </span>
+            <span class="tips__meta">roles, and 401 vs 403 &mdash; need Bearer</span>
+          </li>
+          <li class="tips__ep">
+            <span class="tips__epbtns">
+              <button class="tips__path" type="button" data-verb="GET" data-path="/app"><b>GET</b> /app</button>
+            </span>
+            <span class="tips__meta">a key identifying an application &mdash; needs <code>X-API-Key</code></span>
+          </li>
+          <li class="tips__ep">
+            <span class="tips__epbtns">
+              <button class="tips__path" type="button" data-verb="GET" data-path="/limited"><b>GET</b> /limited</button>
+            </span>
+            <span class="tips__meta">three per twenty seconds, then 429 &mdash; send it four times</span>
+          </li>
+        </ul>
+      </section>
+
+      <!-- ----- the docs ----- -->
+      <section class="tips__sec">
+        <h3 class="tips__h">The API describes itself</h3>
+        <p class="tips__prose">
+          Every endpoint above has a second address that explains it. Open it and you get a page
+          listing all of them &mdash; what each one needs, what each one answers, and which ones want a
+          credential. It is not a reference to read alongside the API: there is a <b>Try&nbsp;it&nbsp;out</b>
+          button on each entry, and an <b>Authorize</b> button at the top to hand it a username and
+          password first, so you can make every call on this page from that one instead.
+        </p>
+        <p class="tips__prose">
+          What makes it worth trusting is that nobody wrote it. The server generates it from the same
+          code that answers the requests, every time it starts &mdash; so it cannot describe an endpoint
+          that no longer exists, or forget one that was added yesterday. That is the difference between
+          documentation and a wiki. The description format is called <b>OpenAPI</b>; the page that draws
+          it is <b>Swagger&nbsp;UI</b>. You will meet both again on somebody else's API.
+        </p>
+        <a class="tips__link" href="https://api-in-a-nutshell.onrender.com/docs" target="_blank" rel="noopener">
+          api-in-a-nutshell.onrender.com/docs &rarr;
+        </a>
+        <p class="tips__note">
+          Running the backend yourself? It is at <code>localhost:8000/docs</code>, and the server's
+          root redirects there &mdash; opening an API in a browser should land somewhere useful.
+        </p>
+      </section>
+
+    </div>
+  </dialog>
+
   <!-- live.js first: it wires every .rr--call it finds, this one included.
-       playground.js only adds the two behaviours the deck never needed. -->
+       playground.js only adds what the deck never needed, the dialog
+       above among it. -->
   <script src="js/live.js"></script>
   <script src="js/playground.js"></script>
 

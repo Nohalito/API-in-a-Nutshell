@@ -26,11 +26,13 @@
    no second copy to drift from the slide.
 
    Two rules it keeps:
-   1. No credential is stored, defaulted, or logged. The API key is
-      typed into a password box at demo time and read at the moment
-      of the call; the token lives in a closure below and reaches
-      neither storage, nor the page, nor the console. What the page
-      shows of either is truncated or masked.
+   1. No credential is stored or logged. The token slide's token lives
+      in a closure below and reaches neither storage, nor the page, nor
+      the console, and what the page shows of it is truncated. The one
+      key that IS written into the deck is slide 16's, in the spoiler
+      this file also drives — a throwaway that authorises nothing,
+      there because a slide arguing that keys leak has to have one to
+      leak. It is masked on screen until someone uncovers it.
    2. Nothing fires on load. Every request is a click.
    ============================================================ */
 
@@ -290,8 +292,107 @@
     gate();
   }
 
+  /* ----------------------------------------------------------
+     Slide 16's key, redacted
+
+     Kept out of wire() deliberately: this touches no request. It is
+     two buttons over a piece of text that happens to be the value the
+     appid box wants, and the engine above neither reads it nor knows
+     it is there — the key still reaches the call the way every other
+     part of that URL does, by being typed into the blue box.
+     ---------------------------------------------------------- */
+
+  /* Clipboard first, because it is the only path that works from a
+     button with no selection behind it. It needs a secure context,
+     which http://localhost and file:// both are but a plain http://
+     host on the network is not — so the old path stays as a fallback,
+     and a deck served off a laptop's IP for the room still copies.
+
+     The textarea is off-screen rather than hidden: display:none and
+     visibility:hidden cannot be selected, and a selection is the whole
+     mechanism execCommand has. */
+  function legacyCopy(text) {
+    var box = document.createElement('textarea');
+    box.value = text;
+    box.setAttribute('readonly', '');
+    box.style.position = 'fixed';
+    box.style.top = '-2000px';
+    document.body.appendChild(box);
+    box.select();
+
+    var ok = false;
+    try {
+      ok = document.execCommand('copy');
+    } catch (err) {
+      ok = false;
+    }
+
+    document.body.removeChild(box);
+    return ok;
+  }
+
+  function copyText(text, done) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(
+        function () { done(true); },
+        function () { done(legacyCopy(text)); }
+      );
+      return;
+    }
+    done(legacyCopy(text));
+  }
+
+  function spoiler(root) {
+    var box = root.querySelector('.spoiler');
+    if (!box) return;
+
+    var value = box.querySelector('[data-spoiler-value]');
+    var reveal = box.querySelector('[data-action="reveal"]');
+    var copy = box.querySelector('[data-action="copy"]');
+    var restore = null;
+
+    /* The button says what just happened and then goes back to saying
+       what it does. No toast, no aria-live: the room is looking at the
+       slide, and a copy that worked needs one word for one second. */
+    function say(text) {
+      window.clearTimeout(restore);
+      copy.textContent = text;
+      restore = window.setTimeout(function () {
+        copy.textContent = 'Copy';
+      }, 1400);
+    }
+
+    reveal.addEventListener('click', function () {
+      var on = box.classList.toggle('is-revealed');
+      reveal.setAttribute('aria-pressed', on ? 'true' : 'false');
+      reveal.textContent = on ? 'Hide' : 'Reveal';
+      /* Hand the keyboard back to the deck, as every other button here
+         does: a button keeps focus after a click, and Space would flip
+         the blur again instead of advancing the slide. */
+      reveal.blur();
+    });
+
+    copy.addEventListener('click', function () {
+      copy.blur();
+      copyText(value.textContent.trim(), function (ok) {
+        say(ok ? 'Copied' : 'Select it');
+        /* Both paths refused — a hardened browser, or no permission.
+           Uncovering it at least leaves the key readable and selectable
+           by hand, which beats a button that silently did nothing. */
+        if (!ok) {
+          box.classList.add('is-revealed');
+          reveal.textContent = 'Hide';
+          reveal.setAttribute('aria-pressed', 'true');
+        }
+      });
+    });
+  }
+
   /* No early return on an empty list: the three slides are independent,
      and one of them missing must not take the others down with it. A
      forEach over nothing is a no-op anyway. */
-  Array.prototype.forEach.call(document.querySelectorAll('.rr--call'), wire);
+  Array.prototype.forEach.call(document.querySelectorAll('.rr--call'), function (root) {
+    wire(root);
+    spoiler(root);
+  });
 })();

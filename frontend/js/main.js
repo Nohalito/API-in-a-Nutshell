@@ -270,9 +270,17 @@
        Both of that slide's kinds are listed — the three references and
        the point that leads out to the playground. Any anchor added to
        the deck later has to be named here too, or it is unreachable
-       without a mouse. */
+       without a mouse.
+
+       Slide 16's Reveal and Copy are in for the button reason rather
+       than the link one, same as the sidebar: they are real buttons,
+       and Space is how a button is pressed. The Send buttons on the
+       live slides are deliberately NOT here — they are meant to be
+       pressed with a mouse or with Enter from inside a field, and
+       claiming Space for them would cost the deck its main key on the
+       three slides that need it most. */
     if (event.target.closest &&
-        event.target.closest('.toc-link, .reflist__link, .points__link') &&
+        event.target.closest('.toc-link, .reflist__link, .points__link, .spoiler__btn') &&
         (key === 'Enter' || key === ' ' || key === 'Spacebar')) return;
 
     /* A slide with steps left to build spends one before the deck
