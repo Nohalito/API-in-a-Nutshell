@@ -322,6 +322,18 @@
   });
 
   /* ----------------------------------------------------------
+     Sidebar byline: the year, so the notice does not go stale on a
+     deck that gets re-presented. The markup ships with a year already
+     in it, so there is nothing to repair if this never runs — this
+     only replaces one that has been overtaken.
+     ---------------------------------------------------------- */
+
+  function stampYear() {
+    var slot = document.querySelector('[data-year]');
+    if (slot) slot.textContent = new Date().getFullYear();
+  }
+
+  /* ----------------------------------------------------------
      Boot
      ---------------------------------------------------------- */
 
@@ -336,6 +348,7 @@
   });
 
   buildSidebar();
+  stampYear();
   restoreCollapsed();
   index = indexFromHash();
   setStep(0);

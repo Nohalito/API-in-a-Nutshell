@@ -226,6 +226,24 @@ code, kbd, pre { font-family: var(--font-mono); }
   white-space: nowrap;
 }
 
+/* The byline under the hint. A notch smaller than the key hint above it,
+   and the same tertiary grey, because it is the one thing in the sidebar
+   that is neither a control nor a place: it should be findable by anyone
+   looking for it and invisible to a room watching the slides.
+
+   No nowrap, unlike the hint: the hint is three characters and a key cap,
+   this is a sentence, and at 300px minus the foot's padding it sits on
+   one line with room to spare — but a longer name or a wider letter should
+   wrap rather than push the sidebar's scrollbar out. Nothing else is
+   needed for the collapsed and narrow states: both hide .sidebar__foot
+   whole, so this goes with it. */
+.sidebar__note {
+  margin: 10px 0 0;
+  font-size: 10px;
+  line-height: 1.45;
+  color: var(--text-tertiary);
+}
+
 /* --- collapsed state: numbers only --- */
 body.is-collapsed .sidebar__head,
 body.is-collapsed .sidebar__foot,

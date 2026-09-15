@@ -23,6 +23,11 @@
     <nav class="sidebar__nav" id="sidebar-nav"></nav>
     <div class="sidebar__foot">
       <p class="sidebar__hint"><kbd>S</kbd> collapse</p>
+      <!-- The year is written here as well as filled by main.js: the deck is
+           opened straight off the disk as often as off a server, and a byline
+           that reads "©  Noa Boimond" because a script did not run is worse
+           than one that is a year behind. main.js overwrites it on boot. -->
+      <p class="sidebar__note">&copy; <span data-year></span> Noa Boimond. All rights reserved.</p>
     </div>
   </aside>
 
