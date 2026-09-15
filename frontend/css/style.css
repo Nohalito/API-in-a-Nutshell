@@ -409,6 +409,34 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
   height: calc(var(--title-size) * 1.25);
 }
 
+/* A photograph beside a title rather than a flat drawing, and round.
+   Both departures from the rule above have the same cause: a photo
+   carries detail a diagram does not, so it needs the extra size to read
+   at all, and it comes with a ground the drawings do not have. Square
+   box, because a circle wants one — the source is 500x535 and cover
+   trims the difference off the top and bottom.
+
+   The soft edge is a mask, not a fill. The cut-out sits on white and so
+   does the slide, so a hard rim would draw a circle the picture does not
+   have, where a feathered one lets it sit on the page instead. Alpha in
+   a mask is not alpha in a colour: the palette's solid-fill rule governs
+   the five family hues and nothing here touches them. -webkit- first for
+   the Chrome versions that still want it; a browser honouring neither
+   falls back to the square, which is a fine place to land.
+
+   The row is taller than a bare title at this size, which on other
+   slides would push everything below it down. Here it does not: this
+   slide's figure is centred with auto margins, so it simply recentres
+   in the space left. Dial the 1.6 if the crab wants more or less room. */
+.slide__title-art--circle {
+  width: calc(var(--title-size) * 1.6);
+  height: calc(var(--title-size) * 1.6);
+  border-radius: 50%;
+  object-fit: cover;
+  -webkit-mask-image: radial-gradient(circle, #000 58%, transparent 76%);
+  mask-image: radial-gradient(circle, #000 58%, transparent 76%);
+}
+
 /* --- "1/2" beside a title whose slide runs over two. A chip in the
        slide's own hue rather than more heading: it is not part of the
        sentence the title makes, it says where in the pair you are. The
