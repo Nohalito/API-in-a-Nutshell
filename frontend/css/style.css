@@ -2409,9 +2409,8 @@ textarea.call__input {
   transform: scale(1.4);
 }
 
-/* The page that is showing lifts into the card, exactly as the checked
-   tab does below — same three declarations, driven by the step instead
-   of by a radio. */
+/* The page that is showing lifts into the card, exactly as slide 8's
+   tab does below — same three declarations, off the same step. */
 .slide:not([data-step]) .carousel__tab--1,
 .slide[data-step="1"] .carousel__tab--2 {
   background: var(--surface);
@@ -2482,11 +2481,16 @@ textarea.call__input {
 /* ============================================================
    Tabs — a card fronted by browser-style page tabs.
 
-   Driven by three same-name radios that sit ahead of the bar and
-   the body, so :checked ~ can reach both. Selecting a tab both
-   lifts it into the card and swaps the panel underneath. The id
-   selectors are the price of doing this without JavaScript; they
-   are the only ids styled anywhere in the sheet.
+   Driven by the deck's own step counter, the same as the carousels
+   above: data-steps on the section declares how many pages there
+   are, js/main.js mirrors how far the right arrow has got back in
+   data-step, and one line per position below turns the page. The
+   tab that is showing lifts into the card at the same time.
+
+   This used to run on three same-name radios and :checked ~, which
+   is why the bar and the body are still siblings under .tabs — the
+   nesting is now free rather than load-bearing. Those ids were the
+   only ones styled anywhere in the sheet, and they are gone.
    ============================================================ */
 
 .tabs { display: flex; flex-direction: column; }
@@ -2496,15 +2500,6 @@ textarea.call__input {
    carousel use, and it costs nothing on a panel already tall enough to
    fill the slide. Slide 8 only; see the :has() block above for why. */
 .slide--styles .tabs { margin-block: auto; }
-
-.tabs__radio {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: 0;
-  opacity: 0;
-  pointer-events: none;
-}
 
 /* Tabs overlap the card's top border by 1px so the selected one
    reads as continuous with the body below it. */
@@ -2526,12 +2521,13 @@ textarea.call__input {
   font-size: clamp(12px, 1.15vw, 16px);
   font-weight: 600;
   color: var(--text-tertiary);
-  cursor: pointer;
+  /* No pointer and no hover state any more: there is nothing behind
+     these to click, and a cursor that says otherwise is an invitation
+     the slide cannot honour. user-select stays — a stray drag during a
+     talk should not leave the strip highlighted. */
   user-select: none;
   transition: background 0.15s ease, color 0.15s ease;
 }
-
-.tabs__tab:hover { color: var(--text-secondary); }
 
 .tabs__body {
   display: grid;
@@ -2567,20 +2563,27 @@ textarea.call__input {
   font-size: 0.92em;
 }
 
-/* --- selected state: one pair of rules per tab --- */
+/* --- which panel is showing: one line per position ---
+       js/main.js drops data-step entirely at zero rather than writing
+       "0", so the bare slide is REST — which is also what the slide
+       should fall back to if the controller never runs at all. --- */
 
-#style-rest:checked    ~ .tabs__bar .tabs__tab[for="style-rest"],
-#style-graphql:checked ~ .tabs__bar .tabs__tab[for="style-graphql"],
-#style-grpc:checked    ~ .tabs__bar .tabs__tab[for="style-grpc"] {
+.slide:not([data-step]) .tabs__tab--1,
+.slide[data-step="1"] .tabs__tab--2,
+.slide[data-step="2"] .tabs__tab--3 {
   background: var(--surface);
   border-bottom-color: var(--surface);
   color: var(--accent-fg);
   font-weight: 700;
 }
 
-#style-rest:checked    ~ .tabs__body .tabs__panel--rest,
-#style-graphql:checked ~ .tabs__body .tabs__panel--graphql,
-#style-grpc:checked    ~ .tabs__body .tabs__panel--grpc {
+/* Three classes deep against .tabs__panel's one, so these carry without
+   help. Nothing here ever sets visibility back to hidden, which is what
+   lets the print block unstack all three by overriding that base rule
+   alone. */
+.slide:not([data-step]) .tabs__panel--rest,
+.slide[data-step="1"] .tabs__panel--graphql,
+.slide[data-step="2"] .tabs__panel--grpc {
   visibility: visible;
 }
 

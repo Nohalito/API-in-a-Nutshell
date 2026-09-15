@@ -355,7 +355,7 @@
     </section>
 
     <!-- ---------- 8. API Styles ---------- -->
-    <section class="slide slide--styles" data-family="anatomy">
+    <section class="slide slide--styles" data-family="anatomy" data-steps="2">
       <div class="slide__inner">
         <h2 class="slide__title">API Styles</h2>
         <p class="slide__lede slide__lede--wide">
@@ -363,14 +363,21 @@
         </p>
 
         <div class="tabs">
-          <input class="tabs__radio" type="radio" name="api-style" id="style-rest" checked>
-          <input class="tabs__radio" type="radio" name="api-style" id="style-graphql">
-          <input class="tabs__radio" type="radio" name="api-style" id="style-grpc">
 
+          <!-- A position strip rather than a control, the same as slide 20's:
+               the three pages turn on the deck's own right arrow through
+               data-steps="2" on the section, and nothing here is clicked.
+               Spans rather than labels because the radios they used to drive
+               are gone — data-step is the one thing that says which panel is
+               showing, so there is nothing for a label to point at.
+
+               Not aria-hidden, unlike slide 20's strip: those cards each
+               carry their own <h3>, where these panels do not, so this bar
+               is the only place the panel on screen is named. -->
           <div class="tabs__bar">
-            <label class="tabs__tab" for="style-rest">REST</label>
-            <label class="tabs__tab" for="style-graphql">GraphQL</label>
-            <label class="tabs__tab" for="style-grpc">gRPC</label>
+            <span class="tabs__tab tabs__tab--1">REST</span>
+            <span class="tabs__tab tabs__tab--2">GraphQL</span>
+            <span class="tabs__tab tabs__tab--3">gRPC</span>
           </div>
 
           <div class="tabs__body">
