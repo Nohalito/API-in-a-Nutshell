@@ -823,6 +823,129 @@ body.is-collapsed .toc-link__num { width: auto; font-size: 13px; }
 }
 
 
+/* --- the closing bibliography (24). The third link treatment, and it
+       takes the same underline as the two above rather than inventing
+       one: accent on the line, full contrast on the label.
+
+       Everything else about it is the opposite of .reflist. That list is
+       three entries on a slide being talked through, so it is spaced and
+       argued. This is forty-odd in a box nobody presents — set small and
+       tight, sorted by nothing, and read after the talk or photographed
+       off the screen. The categories are the only index it needs. --- */
+
+/* The inner fills the slide so the box can have whatever the title and
+   the lede leave, rather than a height guessed in vh. Same shape as the
+   :has(> .rr) rule far above, by slide class because this one is about
+   a scroll container and not about what it holds. */
+.slide--refs > .slide__inner {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* min-height: 0 is the whole of the scrolling. A flex item's floor is
+   its own content, so without it the box grows to fit every link and
+   pushes the slide into .slide's scrollbar instead of keeping one of
+   its own — which would scroll the title away with it. */
+.refs {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: clamp(14px, 2vw, 24px) clamp(16px, 2.2vw, 28px);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.refs__group + .refs__group { margin-top: clamp(18px, 2.4vw, 28px); }
+
+/* Sized and cased as .reflist__title is — a label, not a heading. Four
+   headings down a box would read as four slide titles; the rule under
+   each one does the separating instead, quietly. */
+.refs__group-title {
+  margin: 0 0 clamp(10px, 1.3vw, 14px);
+  padding-bottom: 5px;
+  border-bottom: 1px solid var(--border);
+  font-size: clamp(11px, 0.95vw, 13px);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-fg);
+}
+
+/* auto-fill rather than a column count: the categories run from one
+   entry to five, and any number fixed here would be wrong at some
+   window width. align-items: start so a short category sits at the top
+   of its cell instead of stretching to match a tall neighbour. */
+.refs__cats {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: clamp(12px, 1.6vw, 20px);
+  align-items: start;
+}
+
+.refs__cat-title {
+  margin: 0 0 6px;
+  font-size: clamp(11px, 0.95vw, 13px);
+  font-weight: 700;
+  color: var(--text);
+}
+
+.refs__items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(7px, 0.9vw, 10px);
+}
+
+/* min-width: 0 so a long title wraps inside its column instead of
+   widening the grid track past the box. */
+.refs__item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+/* align-self keeps the underline as wide as the words rather than as
+   wide as the column — the same reason .reflist__link has it. */
+.refs__link {
+  align-self: flex-start;
+  font-size: clamp(11px, 0.95vw, 13px);
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--text);
+  text-decoration: underline;
+  text-decoration-color: var(--accent-fg);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 2px;
+}
+
+.refs__link:hover,
+.refs__link:focus-visible { color: var(--accent-fg); }
+
+.refs__note {
+  font-size: clamp(10px, 0.85vw, 12px);
+  line-height: 1.4;
+  color: var(--text-secondary);
+}
+
+/* --text-secondary rather than --text-tertiary, as on .reflist__where:
+   small and mono already, and the tertiary grey does not clear AA down
+   here. */
+.refs__where {
+  font-family: var(--font-mono);
+  font-size: clamp(10px, 0.8vw, 11px);
+  line-height: 1.35;
+  color: var(--text-secondary);
+  overflow-wrap: anywhere;
+}
+
+
 /* ============================================================
    Slide lede — the standfirst that sits under a slide title
    ============================================================ */
@@ -3035,6 +3158,10 @@ kbd {
   .slide__inner:has(> .rr),
   .slide__inner:has(> .split--centered),
   .slide__inner:has(> .carousel),
-  .slide--styles > .slide__inner { min-height: 0; }
+  .slide--styles > .slide__inner,
+  .slide--refs > .slide__inner { min-height: 0; }
+  /* Paper does not scroll. The bibliography is the one page of this deck
+     a reader is most likely to want whole, so it prints whole. */
+  .refs { overflow: visible; border: 0; padding: 0; }
   .legend { margin-top: 24px; }
 }

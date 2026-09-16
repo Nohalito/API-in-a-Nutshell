@@ -33,7 +33,6 @@
 ## Written Guides & Articles
 
 ### API Fundamentals
-- [API in a Nutshell](https://docs.google.com/presentation/d/1vvZmLv7OVYyq5SZddWu6ANnmwn29rmDUZePPX7EraOU/edit?slide=id.p#slide=id.p) - Google Slides (Educational Presentation)
 - [Types of API](https://www.abstractapi.com/guides/api-glossary/types-of-api) - Abstract API
 - [API Design Roadmap](https://www.geeksforgeeks.org/blogs/api-design-roadmap/) - GeeksforGeeks
 - [API vs URL](https://thisvsthat.io/api-vs-url) - ThisVsThat
@@ -60,6 +59,7 @@
 
 ### Security
 - [API Security Risks](https://cybelangel.com/blog/api-security-risks/) - CybelAngel
+- [Authentication Explained: When to Use Basic, Bearer, OAuth2, JWT, SSO](https://dev.to/7xmohamed/authentication-explained-when-to-use-basic-bearer-oauth2-jwt-sso-4lc) - Dev.to (7xMohamed)
 
 ### Data Engineering
 - [Data Engineer's Journey with APIs: From Basics to Challenges](https://seattledataguy.substack.com/p/from-basics-to-challenges-a-data) - SeattleDataGuy Newsletter
@@ -81,11 +81,19 @@
 - [Flaticon](https://www.flaticon.com/) - Vector Icons and Stickers (PNG, SVG, EPS, PSD, CSS)
 - [OpenIconLibrary](https://openiconlibrary.com/) - Free SVG Icons and Icon Packs
 
+- [GCP Icons](https://gcpicons.com/) - Official Google Cloud resources icons (PNG, SVG)
+
+- [imgflip](http://imgflip.com/) - Illustrations and internet pictures
+
 ### Deployment
 - [Render Dashboard](https://dashboard.render.com/) - Cloud platform for deploying APIs
 
 ### API Directories & Resources
 - [Public APIs](https://github.com/public-apis/public-apis) - Curated list of free and public APIs
+
+### Official Documentation
+- [FastAPI Documentation](https://fastapi.tiangolo.com/learn/) - Official FastAPI learning resources
+- [Mozilla MDN Web Docs](https://developer.mozilla.org/en-US/) - Comprehensive reference for web technologies (HTTP, JavaScript, APIs, etc.)
 
 ---
 

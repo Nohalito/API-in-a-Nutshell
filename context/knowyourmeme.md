@@ -1,12 +1,21 @@
 Ref to add :
+---
+
 - I created Git in Minecraft
+
+---
 
 - STOP DOING MATHS !!
 
+---
+
 - Where is your backspace ? I don't make mistake
+
+---
 
 - Sexuality is a spectrum
 
+---
 
 ```txt
 STOP DOING API
@@ -34,69 +43,25 @@ LOOK at what microservices have been demanding your respect for all this time, w
 They have played us for absolute fools.
 ```
 
-========================================================
+--- 
 
-Tip of the Iceberg (Difficulty 1-2) ✅ Your presentation covers this
-TCP/IP & OSI — "networking exists"
-Web API — "it's like a waiter taking orders"
-REST API — "GET, POST, PUT, DELETE make sense"
-HTTP Methods — "Oh, they correspond to CRUD operations!"
-Security Basics — Auth (login), Autho (permissions), Rate limiting (don't spam)
-Performance Basics — Load balancing (spread the load), Caching (remember stuff)
-Below the Surface (Difficulty 3-5) 🌊 The joke concludes here
+Iceberg
 
-Level 3 — "Wait, there's more?"
-
-GraphQL vs REST trade-offs
-Webhook architecture
-CORS, CSRF, and other header shenanigans
-API versioning strategies
-Circuit breakers & resilience patterns
-OAuth 2.0 flows (not just "login buttons")
-Request/response compression (gzip, brotli)
-
-Level 4 — "Oh no..."
-
-API Gateway architecture & routing
-Service mesh (Istio, Linkerd)
-Distributed tracing & observability (OpenTelemetry)
-API contract testing & schema validation
-Message queues & async APIs (Kafka, RabbitMQ)
-mTLS & zero-trust security
-Edge computing & CDN API distribution
-Database query optimization for APIs
-
-Level 5 — "Here be dragons 🐉"
-
-Protocol Buffers vs JSON encoding wars
-gRPC, HTTP/2 multiplexing, QUIC
-Byzantine fault tolerance in distributed systems
-Saga patterns for distributed transactions
-Chaos engineering for APIs
-Quantum-resistant cryptography
-Building your own DSL for API definitions
-Advanced caching invalidation ("There are only two hard things in Computer Science: cache invalidation and naming things")
-```
-
-========================================================
+---
 
 User: GET server/apo/v1/Joke
 Server: Why did the chicken cross the road?
 User: GET server/api/v1/Punchline
 Server: ...punchline to what?
 
-========================================================
+--- 
 
 https://programmerhumor.io/memes/api-security
 
 Today's my last day of unpaid internship
 
-========================================================
+--- 
 
 On TCP/IP => Portal 2
 
-========================================================
-
-========================================================
-
-========================================================
+---

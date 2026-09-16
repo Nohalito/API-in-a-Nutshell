@@ -268,9 +268,14 @@
        claims it, not because a link answers to it.
 
        Both of that slide's kinds are listed — the three references and
-       the point that leads out to the playground. Any anchor added to
+       the point that leads out to the playground — and .refs__link puts
+       the closing bibliography in on the same terms. Any anchor added to
        the deck later has to be named here too, or it is unreachable
        without a mouse.
+
+       That last one is also how its box is scrolled from the keyboard:
+       the arrow keys belong to the deck, so tabbing from link to link is
+       what walks it, the browser scrolling each one into view.
 
        Slide 16's Reveal and Copy are in for the button reason rather
        than the link one, same as the sidebar: they are real buttons,
@@ -280,7 +285,7 @@
        claiming Space for them would cost the deck its main key on the
        three slides that need it most. */
     if (event.target.closest &&
-        event.target.closest('.toc-link, .reflist__link, .points__link, .spoiler__btn') &&
+        event.target.closest('.toc-link, .reflist__link, .points__link, .refs__link, .spoiler__btn') &&
         (key === 'Enter' || key === ' ' || key === 'Spacebar')) return;
 
     /* A slide with steps left to build spends one before the deck
